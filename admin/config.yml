@@ -8,6 +8,11 @@ backend:
   repo: Yu-WeiBac/0408Personal-website
   # 这是你的代码主分支名称，也就是你当前所在的默认分支
   branch: main
+  backend:
+  name: github
+  repo: Yu-WeiBac/0408Personal-website
+  branch: main
+  base_url: https://cms-auth.你的前缀.workers.dev  # 新增这一行！(结尾不要加斜杠)
 
 # ---------------------------------------------------------
 # 媒体文件（图片、视频、GIF）的设置

@@ -1,0 +1,19 @@
+backend:
+  name: github
+  repo: Yu-WeiBac/0408Personal-website # 确保这是你的 GitHub 用户名/仓库名
+  branch: main # 你的主分支名称
+
+media_folder: "uploads" # 你在后台上传的视频和GIF会保存在这个文件夹
+public_folder: "/uploads"
+
+collections:
+  - name: "portfolio"
+    label: "作品展示"
+    folder: "_data" # 后台生成的数据文件会存放在这里
+    create: true
+    slug: "content"
+    extension: "json" # 我们将内容保存为 JSON 格式，方便前端读取
+    fields:
+      - {label: "主标题", name: "title", widget: "string"}
+      - {label: "副标题", name: "subtitle", widget: "string"}
+      - {label: "展示视频或GIF", name: "media", widget: "file", required: false}

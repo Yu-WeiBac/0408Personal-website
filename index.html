@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的个人网站 | 04080606.xyz</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+/* 1. 基础重置与黑白主题 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    background-color: #050505; /* 极深的黑色背景 */
+    color: #ffffff; /* 纯白文字 */
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    overflow-x: hidden;
+    cursor: none; /* 隐藏默认鼠标，为自定义光标做准备 */
+}
+
+/* 2. 自定义光标样式 */
+.custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    pointer-events: none; /* 确保光标不会阻挡你点击下方的链接 */
+    mix-blend-mode: difference; /* 魔法属性：实现黑白反色效果 */
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+}
+
+/* 3. 导航栏排版 */
+nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 2rem 4rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+.logo {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+}
+.menu {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+}
+.menu a {
+    color: #ffffff;
+    text-decoration: none;
+    position: relative;
+}
+/* 鼠标悬停在导航上的下划线动画 */
+.menu a::after {
+    content: '';
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background-color: #ffffff;
+    transition: width 0.3s ease;
+}
+.menu a:hover::after {
+    width: 100%;
+}
+
+/* 4. 居中主视觉区域 */
+.hero {
+    height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.title-container {
+    overflow: hidden; /* 隐藏溢出部分，用于实现文字从底下“钻”出来的效果 */
+}
+h1 {
+    font-size: 8vw; /* 字体大小随屏幕宽度变化 */
+    font-weight: 900;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: -2px;
+}
+.subtitle {
+    margin-top: 1rem;
+    font-size: 1.5rem;
+    font-weight: 300;
+    letter-spacing: 4px;
+    color: #aaaaaa;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    nav { padding: 1.5rem; }
+    .custom-cursor { display: none; } /* 移动端手指触摸不需要自定义光标 */
+    body { cursor: auto; }
+}
+</style>
+</head>
+<body>
+
+<div class="custom-cursor"></div>
+
+<nav>
+    <div class="logo logo-anim">04080606.xyz</div>
+    <ul class="menu">
+        <li class="menu-anim"><a href="#" class="hover-target">作品</a></li>
+        <li class="menu-anim"><a href="#" class="hover-target">关于</a></li>
+        <li class="menu-anim"><a href="#" class="hover-target">联系</a></li>
+    </ul>
+</nav>
+
+<main>
+    <section class="hero">
+        <div class="title-container">
+            <h1 class="hero-title">HELLO.</h1>
+        </div>
+        <div class="title-container">
+            <p class="subtitle hero-subtitle">我是一名数字创作者。</p>
+        </div>
+    </section>
+</main>
+
+<script>
+// --- JavaScript 动画逻辑 ---
+
+// 1. 光标跟随逻辑
+const cursor = document.querySelector('.custom-cursor');
+const hoverTargets = document.querySelectorAll('.hover-target');
+
+document.addEventListener('mousemove', (e) => {
+    // 让自定义圆点平滑地跟随鼠标真实坐标
+    gsap.to(cursor, {
+        x: e.clientX,
+        y: e.clientY,
+        duration: 0.1,
+        ease: "power2.out"
+    });
+});
+
+// 当光标悬停在带有 hover-target 类的元素（比如链接）上时，放大光标
+hoverTargets.forEach(target => {
+    target.addEventListener('mouseenter', () => {
+        gsap.to(cursor, { scale: 3, duration: 0.3 });
+    });
+    target.addEventListener('mouseleave', () => {
+        gsap.to(cursor, { scale: 1, duration: 0.3 });
+    });
+});
+
+// 2. 页面加载入场动画
+// 导航栏元素从上方 (-20px) 渐隐进入
+gsap.from(".logo-anim, .menu-anim", {
+    y: -20,
+    opacity: 0,
+    duration: 1,
+    stagger: 0.1, // 元素之间延迟 0.1 秒依次出现
+    ease: "power3.out",
+    delay: 0.2
+});
+
+// 主标题从下方 (150px) 滑出
+gsap.from(".hero-title, .hero-subtitle", {
+    y: 150,
+    duration: 1.2,
+    stagger: 0.2,
+    ease: "power4.out",
+    delay: 0.5
+});
+</script>
+
+</body>
+</html>

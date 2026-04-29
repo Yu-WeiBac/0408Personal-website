@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>于未氵 — Visual Artist</title>
+<meta name="description" content="数字创作者于未氵的作品集">
+
+<!-- 字体：思源宋体 + Fraunces 衬线（替代 Apple New York）+ Inter -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..400&family=Inter:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<style>
+/* ========================================================================
+   设计系统 — Apple Glass Aesthetic
+   克制、温润、留白
+   ======================================================================== */
+:root {
+    /* 默认亮色（月白系） */
+    --paper:        #FAFAF7;
+    --paper-2:      #F2F0EA;
+    --ink:          #0A0A0A;
+    --ink-2:        #1F1F1F;
+    --gray:         #86868B;       /* 苹果中灰 */
+    --gray-2:       #A1A1A6;
+    --line:         rgba(0, 0, 0, 0.08);
+    --line-strong:  rgba(0, 0, 0, 0.16);
+    --accent:       #B8956A;       /* 古铜金，极少量使用 */
+
+    /* 毛玻璃 */
+    --glass-bg:         rgba(250, 250, 247, 0.72);
+    --glass-bg-strong:  rgba(250, 250, 247, 0.88);
+    --glass-border:     rgba(0, 0, 0, 0.06);
+    --glass-shadow:     0 8px 32px rgba(0, 0, 0, 0.06);
+
+    /* 字体 */
+    --font-display:     'Fraunces', 'Noto Serif SC', "Songti SC", serif;
+    --font-serif-cn:    'Noto Serif SC', "Songti SC", serif;
+    --font-sans:        'Inter', -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+
+    /* 间距 */
+    --gutter:       clamp(1.5rem, 5vw, 5rem);
+    --section-pad:  clamp(5rem, 10vw, 9rem);
+
+    /* 缓动 */
+    --ease:         cubic-bezier(0.25, 0.1, 0.25, 1);
+    --ease-out:     cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 深色模式 */
+html[data-theme="dark"] {
+    --paper:        #0A0A0A;
+    --paper-2:      #161616;
+    --ink:          #FAFAF7;
+    --ink-2:        #E8E4D8;
+    --gray:         #86868B;
+    --gray-2:       #6E6E73;
+    --line:         rgba(255, 255, 255, 0.08);
+    --line-strong:  rgba(255, 255, 255, 0.16);
+
+    --glass-bg:         rgba(20, 20, 20, 0.72);
+    --glass-bg-strong:  rgba(20, 20, 20, 0.88);
+    --glass-border:     rgba(255, 255, 255, 0.08);
+    --glass-shadow:     0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+    transition: background 0.4s var(--ease), color 0.4s var(--ease);
+    -webkit-font-smoothing: antialiased;
+}
+img, video { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+/* ========================================================================
+   导航 — 浮动玻璃条
+   ======================================================================== */
+nav.top {
+    position: fixed;
+    top: 1.2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.6rem 0.6rem 0.6rem 1.4rem;
+    background: var(--glass-bg);
+    backdrop-filter: saturate(180%) blur(24px);
+    -webkit-backdrop-filter: saturate(180%) blur(24px);
+    border: 1px solid var(--glass-border);
+    border-radius: 999px;
+    box-shadow: var(--glass-shadow);
+    max-width: calc(100vw - 2rem);
+}
+.brand {
+    font-family: var(--font-serif-cn);
+    font-weight: 500;
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    display: flex;
+    align-items: baseline;
+    gap: 0.15em;
+    padding-right: 1rem;
+    border-right: 1px solid var(--line);
+}
+.brand .water {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--accent);
+    transition: transform 0.6s var(--ease-out);
+}
+.brand:hover .water { transform: translateY(-2px) scaleY(1.15); }
+
+.menu {
+    display: flex;
+    gap: 0.2rem;
+    list-style: none;
+}
+.menu a {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: var(--gray);
+    border-radius: 999px;
+    transition: color 0.3s, background 0.3s;
+    letter-spacing: 0.02em;
+}
+.menu a:hover {
+    color: var(--ink);
+    background: var(--line);
+}
+
+.nav-actions {
+    display: flex;
+    gap: 0.3rem;
+    padding-left: 0.8rem;
+    border-left: 1px solid var(--line);
+}
+.nav-btn {
+    width: 34px; height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    color: var(--gray);
+    font-size: 0.72rem;
+    font-weight: 500;
+    transition: color 0.3s, background 0.3s;
+    letter-spacing: 0;
+}
+.nav-btn:hover {
+    color: var(--ink);
+    background: var(--line);
+}
+.nav-btn svg { width: 16px; height: 16px; }
+
+@media (max-width: 700px) {
+    nav.top { gap: 0.5rem; padding: 0.5rem 0.5rem 0.5rem 1rem; }
+    .brand { font-size: 0.9rem; padding-right: 0.7rem; }
+    .menu { gap: 0; }
+    .menu a { padding: 0.4rem 0.6rem; font-size: 0.75rem; }
+    .nav-actions { padding-left: 0.4rem; gap: 0.1rem; }
+    .nav-btn { width: 30px; height: 30px; }
+}
+
+/* ========================================================================
+   Hero — 全屏视频背景 + 大标题
+   ======================================================================== */
+.hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 0 var(--gutter);
+    overflow: hidden;
+}
+.hero-bg {
+    position: absolute; inset: 0;
+    z-index: 0;
+    overflow: hidden;
+}
+.hero-bg::after {
+    /* 视频上叠一层渐变蒙版，让文字可读 */
+    content: '';
+    position: absolute; inset: 0;
+    background:
+        radial-gradient(ellipse at 30% 30%, transparent 0%, rgba(10,10,10,0.45) 70%),
+        linear-gradient(180deg, rgba(10,10,10,0) 40%, rgba(10,10,10,0.6) 100%);
+    pointer-events: none;
+}
+html[data-theme="dark"] .hero-bg::after {
+    background:
+        radial-gradient(ellipse at 30% 30%, transparent 0%, rgba(0,0,0,0.5) 70%),
+        linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.7) 100%);
+}
+.hero-bg video, .hero-bg .placeholder {
+    width: 100%; height: 100%;
+    object-fit: cover;
+}
+.hero-bg .placeholder {
+    background:
+        radial-gradient(ellipse at 30% 20%, #2a2a2a 0%, #0a0a0a 60%),
+        #0a0a0a;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+    /* 当 hero 有视频背景时，文字始终用月白色（不跟主题切换） */
+    color: #FAFAF7;
+}
+.hero-eyebrow {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    opacity: 0;
+    animation: fadeUp 1.2s 0.3s var(--ease-out) forwards;
+}
+.hero-eyebrow::before {
+    content: '';
+    width: 32px; height: 1px;
+    background: rgba(255, 255, 255, 0.5);
+}
+.hero-title {
+    font-family: var(--font-serif-cn);
+    font-weight: 300;
+    font-size: clamp(2.4rem, 6.5vw, 6rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    max-width: 18ch;
+    margin-bottom: 2rem;
+}
+.hero-title .em {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 300;
+}
+.hero-title .line {
+    display: block;
+    overflow: hidden;
+}
+.hero-title .line > span {
+    display: inline-block;
+    transform: translateY(110%);
+    animation: titleUp 1.4s var(--ease-out) forwards;
+}
+.hero-title .line:nth-child(1) > span { animation-delay: 0.5s; }
+.hero-title .line:nth-child(2) > span { animation-delay: 0.65s; }
+.hero-title .line:nth-child(3) > span { animation-delay: 0.8s; }
+
+.hero-sub {
+    max-width: 32rem;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.78);
+    opacity: 0;
+    animation: fadeUp 1.2s 1.5s var(--ease-out) forwards;
+}
+
+.hero-meta {
+    position: absolute;
+    bottom: 2.2rem;
+    left: var(--gutter);
+    right: var(--gutter);
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 1s 2s var(--ease-out) forwards;
+}
+.hero-meta .scroll-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.7rem;
+}
+.hero-meta .scroll-line {
+    width: 1px; height: 36px;
+    background: rgba(255, 255, 255, 0.4);
+    animation: scrollPulse 2.4s var(--ease) infinite;
+    transform-origin: top;
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes titleUp {
+    to { transform: translateY(0); }
+}
+@keyframes scrollPulse {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(0.3); }
+}
+
+/* ========================================================================
+   通用 Section 与标题
+   ======================================================================== */
+section {
+    padding: var(--section-pad) var(--gutter);
+}
+.container {
+    max-width: 1300px;
+    margin: 0 auto;
+}
+.section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 4rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid var(--line);
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+.section-num {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.78rem;
+    color: var(--gray);
+    letter-spacing: 0.15em;
+}
+.section-title {
+    font-family: var(--font-serif-cn);
+    font-weight: 300;
+    font-size: clamp(1.4rem, 2.4vw, 2rem);
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+}
+.section-title .em {
+    font-family: var(--font-display);
+    font-style: italic;
+}
+
+/* ========================================================================
+   引言 — 大字一句话
+   ======================================================================== */
+.quote {
+    padding: var(--section-pad) var(--gutter);
+}
+.quote-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 4rem;
+    align-items: start;
+}
+.quote-mark {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 0.85rem;
+    color: var(--gray);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding-top: 0.5rem;
+}
+.quote-mark::before {
+    content: '— ';
+    color: var(--accent);
+}
+.quote-text {
+    font-family: var(--font-serif-cn);
+    font-weight: 300;
+    font-size: clamp(1.4rem, 2.6vw, 2.2rem);
+    line-height: 1.5;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+}
+.quote-text .em {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--accent);
+}
+@media (max-width: 800px) {
+    .quote-content { grid-template-columns: 1fr; gap: 1.5rem; }
+}
+
+/* ========================================================================
+   作品 — 不规则毛玻璃网格
+   ======================================================================== */
+.works {
+    background: var(--paper);
+}
+.works-filter {
+    display: flex;
+    gap: 0.4rem;
+}
+.filter-btn {
+    padding: 0.4rem 1rem;
+    font-size: 0.78rem;
+    color: var(--gray);
+    border-radius: 999px;
+    transition: color 0.3s, background 0.3s;
+    letter-spacing: 0.02em;
+}
+.filter-btn:hover { color: var(--ink); }
+.filter-btn.active {
+    color: var(--paper);
+    background: var(--ink);
+}
+
+.works-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.5rem;
+}
+.work-card {
+    grid-column: span 6;
+    aspect-ratio: 4/5;
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    background: var(--paper-2);
+    cursor: pointer;
+    transition: transform 0.7s var(--ease-out), box-shadow 0.7s var(--ease-out);
+}
+.work-card.size-wide { grid-column: span 7; aspect-ratio: 16/10; }
+.work-card.size-tall { grid-column: span 5; }
+.work-card.size-half { grid-column: span 6; aspect-ratio: 4/3; }
+.work-card.size-full { grid-column: span 12; aspect-ratio: 21/9; }
+
+.work-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.12);
+}
+.work-media {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 1.4s var(--ease-out), filter 0.6s;
+    filter: saturate(0.92);
+}
+.work-card:hover .work-media {
+    transform: scale(1.04);
+    filter: saturate(1.05);
+}
+.work-placeholder {
+    position: absolute; inset: 0;
+    background:
+        radial-gradient(ellipse at 30% 30%, rgba(184, 149, 106, 0.12), transparent 60%),
+        linear-gradient(135deg, var(--paper-2) 0%, #E8E4D8 100%);
+}
+html[data-theme="dark"] .work-placeholder {
+    background:
+        radial-gradient(ellipse at 30% 30%, rgba(184, 149, 106, 0.18), transparent 60%),
+        linear-gradient(135deg, #1a1a1a 0%, #0e0e0e 100%);
+}
+
+/* 玻璃信息条贴底 */
+.work-info {
+    position: absolute;
+    left: 1rem; right: 1rem; bottom: 1rem;
+    padding: 0.9rem 1.2rem;
+    background: var(--glass-bg-strong);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    z-index: 2;
+    transition: transform 0.6s var(--ease-out);
+}
+.work-card:hover .work-info {
+    transform: translateY(-4px);
+}
+.work-name {
+    font-family: var(--font-serif-cn);
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.3;
+    color: var(--ink);
+    margin-bottom: 0.15rem;
+}
+.work-meta {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.7rem;
+    color: var(--gray);
+    letter-spacing: 0.05em;
+}
+.work-arrow {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.4s var(--ease-out);
+}
+.work-card:hover .work-arrow {
+    transform: rotate(-45deg);
+}
+.work-arrow svg { width: 14px; height: 14px; }
+
+.works-empty {
+    grid-column: span 12;
+    padding: 5rem 2rem;
+    text-align: center;
+    border: 1px dashed var(--line-strong);
+    border-radius: 24px;
+    color: var(--gray);
+    font-family: var(--font-display);
+    font-style: italic;
+}
+
+@media (max-width: 900px) {
+    .work-card,
+    .work-card.size-wide,
+    .work-card.size-tall,
+    .work-card.size-half,
+    .work-card.size-full { grid-column: span 12; aspect-ratio: 4/5; }
+}
+
+/* ========================================================================
+   作品详情 — 电影院模式
+   ======================================================================== */
+.cinema {
+    position: fixed; inset: 0;
+    z-index: 200;
+    background: rgba(10, 10, 10, 0.92);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    display: none;
+    opacity: 0;
+    transition: opacity 0.4s var(--ease);
+}
+.cinema.is-open {
+    display: flex;
+    opacity: 1;
+}
+.cinema-close {
+    position: absolute;
+    top: 1.2rem; right: 1.5rem;
+    width: 40px; height: 40px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    z-index: 5;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+}
+.cinema-close:hover { background: rgba(255,255,255,0.16); }
+.cinema-close svg { width: 18px; height: 18px; }
+
+.cinema-inner {
+    width: 100%; height: 100%;
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 4rem 3rem;
+    gap: 2rem;
+    align-items: center;
+}
+.cinema-video-box {
+    position: relative;
+    aspect-ratio: 16/9;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+}
+.cinema-video-box video {
+    width: 100%; height: 100%;
+    object-fit: contain;
+}
+.cinema-info {
+    color: #fafaf7;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 1rem;
+}
+.cinema-info::-webkit-scrollbar { width: 4px; }
+.cinema-info::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+
+.cinema-cat {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.8rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+.cinema-title {
+    font-family: var(--font-serif-cn);
+    font-weight: 300;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+}
+.cinema-meta {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.4rem;
+}
+.cinema-meta-val {
+    color: #fafaf7;
+    font-size: 0.95rem;
+    font-weight: 400;
+    margin-bottom: 1.5rem;
+}
+.cinema-desc {
+    font-family: var(--font-serif-cn);
+    font-weight: 300;
+    font-size: 0.95rem;
+    line-height: 1.9;
+    color: rgba(255,255,255,0.75);
+    margin: 1.5rem 0;
+    padding-left: 1rem;
+    border-left: 1px solid var(--accent);
+}
+
+@media (max-width: 1000px) {
+    .cinema-inner {
+        grid-template-columns: 1fr;
+        padding: 4rem 1.5rem 2rem;
+        gap: 1.5rem;
+        align-items: start;
+        overflow-y: auto;
+    }
+    .cinema-info { max-height: none; padding: 0; }
+}
+
+/* ========================================================================
+   合作品牌 — 跑马灯
+   ======================================================================== */
+.clients {
+    padding: 4rem 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+}
+.clients-label {
+    text-align: center;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.8rem;
+    color: var(--gray);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+}
+.clients-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 50s linear infinite;
+    align-items: center;
+    gap: 5rem;
+    padding: 0 2.5rem;
+}
+.client-item {
+    flex-shrink: 0;
+    height: 28px;
+    color: var(--gray);
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    opacity: 0.55;
+    transition: opacity 0.3s;
+    display: flex;
+    align-items: center;
+}
+.client-item img {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+    filter: grayscale(1);
+    opacity: 0.65;
+}
+html[data-theme="dark"] .client-item img {
+    filter: grayscale(1) invert(1);
+}
+.client-item:hover { opacity: 1; }
+.client-item:hover img { opacity: 1; }
+@keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+
+/* ========================================================================
+   关于
+   ======================================================================== */
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 4rem;
+    align-items: start;
+}
+.about-portrait {
+    position: relative;
+    aspect-ratio: 3/4;
+    background: var(--paper-2);
+    border-radius: 24px;
+    overflow: hidden;
+}
+.about-portrait::before {
+    content: '于未氵';
+    position: absolute; inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif-cn);
+    font-weight: 300;
+    font-size: clamp(3rem, 7vw, 6rem);
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    opacity: 0.32;
+}
+.about-body p {
+    font-family: var(--font-serif-cn);
+    font-weight: 300;
+    font-size: 1.05rem;
+    line-height: 1.95;
+    margin-bottom: 1.4rem;
+    color: var(--ink);
+}
+.about-body p:first-child::first-letter {
+    font-family: var(--font-display);
+    font-size: 3.5rem;
+    line-height: 0.9;
+    float: left;
+    margin: 0.4rem 0.8rem 0 0;
+    color: var(--accent);
+    font-weight: 300;
+}
+@media (max-width: 800px) {
+    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+}
+
+/* ========================================================================
+   联系
+   ======================================================================== */
+.contact {
+    text-align: center;
+    padding: var(--section-pad) var(--gutter);
+}
+.contact-eyebrow {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--gray);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+}
+.contact-eyebrow::before {
+    content: '— ';
+    color: var(--accent);
+}
+.contact-title {
+    font-family: var(--font-serif-cn);
+    font-weight: 300;
+    font-size: clamp(2rem, 5.5vw, 5rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 3rem;
+    max-width: 18ch;
+    margin-left: auto;
+    margin-right: auto;
+}
+.contact-title .em {
+    font-family: var(--font-display);
+    font-style: italic;
+}
+.contact-mail {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.2rem, 2.4vw, 1.8rem);
+    color: var(--ink);
+    padding: 1rem 2rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    transition: all 0.5s var(--ease);
+    position: relative;
+    overflow: hidden;
+}
+.contact-mail::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--ink);
+    transform: translateY(101%);
+    transition: transform 0.5s var(--ease);
+    z-index: -1;
+}
+.contact-mail:hover {
+    color: var(--paper);
+    border-color: var(--ink);
+}
+.contact-mail:hover::before { transform: translateY(0); }
+.contact-mail svg { width: 14px; height: 14px; transition: transform 0.4s var(--ease-out); }
+.contact-mail:hover svg { transform: translate(2px, -2px); }
+
+.socials {
+    margin-top: 3rem;
+    display: flex;
+    gap: 0.6rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.socials a {
+    padding: 0.5rem 1rem;
+    font-size: 0.78rem;
+    color: var(--gray);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    transition: all 0.3s;
+    letter-spacing: 0.02em;
+}
+.socials a:hover {
+    color: var(--ink);
+    border-color: var(--ink);
+}
+
+/* ========================================================================
+   页脚
+   ======================================================================== */
+footer {
+    padding: 2.5rem var(--gutter);
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    color: var(--gray);
+    text-transform: uppercase;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* ========================================================================
+   滚动揭示动画
+   ======================================================================== */
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1s var(--ease-out), transform 1s var(--ease-out);
+}
+.reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .hero-title .line > span { animation: none; transform: none; }
+    .hero-eyebrow, .hero-sub, .hero-meta { opacity: 1; animation: none; }
+    .clients-track { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<nav class="top">
+    <a href="#" class="brand">于未<span class="water">氵</span></a>
+    <ul class="menu">
+        <li><a href="#works" data-i18n="nav_work">作品</a></li>
+        <li><a href="#about" data-i18n="nav_about">关于</a></li>
+        <li><a href="#contact" data-i18n="nav_contact">联系</a></li>
+    </ul>
+    <div class="nav-actions">
+        <button class="nav-btn" id="lang-btn" aria-label="Switch language">EN</button>
+        <button class="nav-btn" id="theme-btn" aria-label="Switch theme">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" id="icon-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" id="icon-moon" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+    </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="hero-bg" id="hero-bg">
+        <div class="placeholder"></div>
+    </div>
+    <div class="hero-content">
+        <div class="hero-eyebrow"><span data-i18n="hero_eyebrow">数字创作者 — Visual Artist</span></div>
+        <h1 class="hero-title" data-i18n-html="hero_title">
+            <span class="line"><span>在光影的</span></span>
+            <span class="line"><span>缝隙之间，</span></span>
+            <span class="line"><span>寻找<em class="em">液态的诗意。</em></span></span>
+        </h1>
+        <p class="hero-sub" id="hero-sub" data-i18n="hero_sub">
+            我是于未氵，独立数字创作者。<br>
+            探索流体、噪声与空间的可能性。
+        </p>
+    </div>
+    <div class="hero-meta">
+        <span id="hero-meta-l" data-i18n="meta_l">EST. 2024 · 北京 / Beijing</span>
+        <div class="scroll-indicator">
+            <span data-i18n="scroll">SCROLL</span>
+            <div class="scroll-line"></div>
+        </div>
+        <span data-i18n="meta_r">04080606 · VOL.II</span>
+    </div>
+</section>
+
+<!-- 引言 -->
+<section class="quote">
+    <div class="quote-content reveal">
+        <div class="quote-mark" data-i18n="philosophy">PHILOSOPHY</div>
+        <div class="quote-text" data-i18n-html="quote_text">
+            我相信图像是一种<em class="em">缓慢的语言。</em>当一段视觉变成液体，它会以什么样的姿态流向观者？
+        </div>
+    </div>
+</section>
+
+<!-- 作品 -->
+<section class="works" id="works">
+    <div class="container">
+        <div class="section-head reveal">
+            <div>
+                <div class="section-num">— 01 / Selected Works</div>
+                <h2 class="section-title" data-i18n-html="works_title">
+                    精选<span class="em">作品。</span>
+                </h2>
+            </div>
+            <div class="works-filter" id="works-filter">
+                <button class="filter-btn active" data-filter="all" data-i18n="filter_all">全部</button>
+                <button class="filter-btn" data-filter="Commercial" data-i18n="filter_commercial">商业</button>
+                <button class="filter-btn" data-filter="Personal" data-i18n="filter_personal">个人</button>
+            </div>
+        </div>
+        <div class="works-grid" id="works-grid">
+            <div class="works-empty" data-i18n="works_loading">作品加载中…</div>
+        </div>
+    </div>
+</section>
+
+<!-- 合作 -->
+<div class="clients" id="clients-section" style="display:none;">
+    <div class="clients-label" data-i18n="clients_label">合作品牌 — Trusted by</div>
+    <div class="clients-track" id="clients-track"></div>
+</div>
+
+<!-- 关于 -->
+<section id="about">
+    <div class="container">
+        <div class="section-head reveal">
+            <div>
+                <div class="section-num">— 02 / About</div>
+                <h2 class="section-title" data-i18n-html="about_title">
+                    关于<span class="em">我。</span>
+                </h2>
+            </div>
+        </div>
+        <div class="about-grid">
+            <div class="about-portrait reveal"></div>
+            <div class="about-body reveal" id="about-body" data-i18n-html="about_body">
+                <p>我相信图像是一种缓慢的语言。在很多年里我一直试图回答一个简单的问题：当一段视觉变成液体，它会以什么样的姿态流向观者？</p>
+                <p>我的工作游走在生成艺术、流体模拟、空间装置与品牌动态视觉之间。每一件作品都是一次小型的实验——关于材料、关于时间、关于一个画面在显示器之外还能延伸多远。</p>
+                <p>目前在北京独立工作，接受合作委托。</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 联系 -->
+<section class="contact" id="contact">
+    <div class="reveal">
+        <div class="contact-eyebrow" data-i18n="contact_eyebrow">让水流动起来</div>
+        <h2 class="contact-title" data-i18n-html="contact_title">
+            有想法？<br><em class="em">来一封邮件。</em>
+        </h2>
+        <a href="mailto:hi@04080606.xyz" class="contact-mail" id="contact-mail">
+            <span id="contact-email-text">hi@04080606.xyz</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </a>
+        <div class="socials" id="socials"></div>
+    </div>
+</section>
+
+<footer>
+    <span>© 2026 于未氵 · 04080606.xyz</span>
+    <span data-i18n="footer_r">CRAFTED WITH CARE</span>
+</footer>
+
+<!-- 作品详情电影院 -->
+<div class="cinema" id="cinema" role="dialog" aria-modal="true" aria-hidden="true">
+    <button class="cinema-close" id="cinema-close" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 6L18 18M6 18L18 6"/></svg>
+    </button>
+    <div class="cinema-inner">
+        <div class="cinema-video-box" id="cinema-box"></div>
+        <div class="cinema-info">
+            <div class="cinema-cat" id="cin-cat"></div>
+            <h3 class="cinema-title" id="cin-title"></h3>
+            <div class="cinema-desc" id="cin-desc" style="display:none;"></div>
+            <div id="cin-client-row" style="display:none;">
+                <div class="cinema-meta" data-i18n="meta_client">CLIENT</div>
+                <div class="cinema-meta-val" id="cin-client"></div>
+            </div>
+            <div id="cin-roles-row" style="display:none;">
+                <div class="cinema-meta" data-i18n="meta_roles">ROLES</div>
+                <div class="cinema-meta-val" id="cin-roles"></div>
+            </div>
+            <div id="cin-year-row" style="display:none;">
+                <div class="cinema-meta" data-i18n="meta_year">YEAR</div>
+                <div class="cinema-meta-val" id="cin-year"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+'use strict';
+
+// =============== 国际化 ===============
+const DICT = {
+    zh: {
+        nav_work: '作品', nav_about: '关于', nav_contact: '联系',
+        hero_eyebrow: '数字创作者 — Visual Artist',
+        hero_title: '在光影的缝隙之间，<br>寻找<em class="em">液态的诗意。</em>',
+        hero_sub: '我是于未氵，独立数字创作者。<br>探索流体、噪声与空间的可能性。',
+        meta_l: 'EST. 2024 · 北京 / BEIJING',
+        meta_r: '04080606 · VOL.II',
+        scroll: 'SCROLL',
+        philosophy: 'PHILOSOPHY',
+        quote_text: '我相信图像是一种<em class="em">缓慢的语言。</em>当一段视觉变成液体，它会以什么样的姿态流向观者？',
+        works_title: '精选<span class="em">作品。</span>',
+        filter_all: '全部', filter_commercial: '商业', filter_personal: '个人',
+        works_loading: '作品加载中…',
+        works_empty: '作品暂未发布',
+        clients_label: '合作品牌 — TRUSTED BY',
+        about_title: '关于<span class="em">我。</span>',
+        about_body: '<p>我相信图像是一种缓慢的语言。在很多年里我一直试图回答一个简单的问题：当一段视觉变成液体，它会以什么样的姿态流向观者？</p><p>我的工作游走在生成艺术、流体模拟、空间装置与品牌动态视觉之间。</p><p>目前在北京独立工作，接受合作委托。</p>',
+        contact_eyebrow: '让水流动起来',
+        contact_title: '有想法？<br><em class="em">来一封邮件。</em>',
+        footer_r: 'CRAFTED WITH CARE',
+        meta_client: 'CLIENT', meta_roles: 'ROLES', meta_year: 'YEAR',
+    },
+    en: {
+        nav_work: 'WORK', nav_about: 'ABOUT', nav_contact: 'CONTACT',
+        hero_eyebrow: 'VISUAL ARTIST — 数字创作者',
+        hero_title: 'In the seams of <em class="em">light & shadow,</em><br>I seek the poetry of <em class="em">liquid form.</em>',
+        hero_sub: 'I am Yu Wei, an independent visual artist.<br>Exploring fluid, noise, and spatial possibilities.',
+        meta_l: 'EST. 2024 · BEIJING',
+        meta_r: '04080606 · VOL.II',
+        scroll: 'SCROLL',
+        philosophy: 'PHILOSOPHY',
+        quote_text: 'I believe image is a <em class="em">slow language.</em> When a visual becomes liquid — how does it flow toward its viewer?',
+        works_title: 'Selected <em class="em">Works.</em>',
+        filter_all: 'All', filter_commercial: 'Commercial', filter_personal: 'Personal',
+        works_loading: 'Loading…',
+        works_empty: 'Coming soon',
+        clients_label: 'TRUSTED BY',
+        about_title: 'About <em class="em">me.</em>',
+        about_body: '<p>I believe image is a slow language. For many years I have tried to answer one simple question: when a visual becomes liquid, how does it flow toward its viewer?</p><p>My work moves between generative art, fluid simulation, spatial installations, and motion identity.</p><p>Based in Beijing. Open to commissions.</p>',
+        contact_eyebrow: 'LET WATER FLOW',
+        contact_title: 'Got an idea?<br><em class="em">Send a letter.</em>',
+        footer_r: 'CRAFTED WITH CARE',
+        meta_client: 'CLIENT', meta_roles: 'ROLES', meta_year: 'YEAR',
+    }
+};
+
+let currentLang = localStorage.getItem('lang') || 'zh';
+let currentTheme = localStorage.getItem('theme') || 'light';
+let allWorks = [];
+let siteSettings = {};
+let activeFilter = 'all';
+
+document.documentElement.setAttribute('lang', currentLang === 'zh' ? 'zh-CN' : 'en');
+document.documentElement.setAttribute('data-theme', currentTheme);
+updateThemeIcon();
+
+function applyLang() {
+    const d = DICT[currentLang];
+    document.documentElement.setAttribute('lang', currentLang === 'zh' ? 'zh-CN' : 'en');
+    document.getElementById('lang-btn').textContent = currentLang === 'zh' ? 'EN' : '中';
+
+    // 文本节点
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (d[key]) el.textContent = d[key];
+    });
+    // HTML 节点
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.dataset.i18nHtml;
+        if (d[key]) el.innerHTML = d[key];
+    });
+
+    // 用户设置中的内容（about 等）只覆盖中文版本，英文用 i18n 默认
+    if (currentLang === 'zh' && siteSettings.aboutBody) {
+        document.getElementById('about-body').innerHTML =
+            siteSettings.aboutBody.split('\n').filter(p => p.trim()).map(p => `<p>${escapeHtml(p)}</p>`).join('');
+    }
+    if (currentLang === 'zh' && siteSettings.heroSub) {
+        document.getElementById('hero-sub').innerHTML = escapeHtml(siteSettings.heroSub).replace(/\n/g, '<br>');
+    }
+}
+
+function updateThemeIcon() {
+    document.getElementById('icon-sun').style.display = currentTheme === 'light' ? 'none' : '';
+    document.getElementById('icon-moon').style.display = currentTheme === 'light' ? '' : 'none';
+}
+
+document.getElementById('lang-btn').onclick = () => {
+    currentLang = currentLang === 'zh' ? 'en' : 'zh';
+    localStorage.setItem('lang', currentLang);
+    applyLang();
+    renderWorks();
+};
+document.getElementById('theme-btn').onclick = () => {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('theme', currentTheme);
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    updateThemeIcon();
+};
+
+// =============== 工具 ===============
+function escapeHtml(s) {
+    if (s == null) return '';
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// =============== 加载数据 ===============
+async function loadData() {
+    try {
+        const [wRes, sRes] = await Promise.all([
+            fetch('/api/works'),
+            fetch('/api/settings')
+        ]);
+        allWorks = wRes.ok ? await wRes.json() : [];
+        siteSettings = sRes.ok ? await sRes.json() : {};
+    } catch (e) {
+        console.warn('Data fetch failed:', e);
+        allWorks = []; siteSettings = {};
+    }
+    applyLang();
+    renderHero();
+    renderWorks();
+    renderClients();
+    renderSocials();
+    renderContact();
+    setupReveal();
+}
+
+function renderHero() {
+    if (siteSettings.heroVideo) {
+        const bg = document.getElementById('hero-bg');
+        bg.innerHTML = `<video autoplay muted loop playsinline preload="metadata" src="${escapeHtml(siteSettings.heroVideo)}"></video>`;
+    }
+    if (siteSettings.heroMetaLeft) {
+        document.getElementById('hero-meta-l').textContent = siteSettings.heroMetaLeft;
+    }
+}
+
+function renderWorks() {
+    const grid = document.getElementById('works-grid');
+    if (!allWorks || !allWorks.length) {
+        grid.innerHTML = `<div class="works-empty">${DICT[currentLang].works_empty}</div>`;
+        return;
+    }
+    let list = allWorks;
+    if (activeFilter !== 'all') {
+        list = allWorks.filter(w => (w.category || '').toLowerCase() === activeFilter.toLowerCase());
+    }
+    if (!list.length) {
+        grid.innerHTML = `<div class="works-empty">${DICT[currentLang].works_empty}</div>`;
+        return;
+    }
+    const sizes = ['size-wide', 'size-tall', 'size-half', 'size-half', 'size-full'];
+    grid.innerHTML = list.map((w, i) => {
+        const size = sizes[i % sizes.length];
+        const idx = allWorks.indexOf(w);
+        const media = w.videoUrl
+            ? `<video class="work-media" muted loop playsinline preload="metadata" ${w.posterUrl ? `poster="${escapeHtml(w.posterUrl)}"` : ''} src="${escapeHtml(w.videoUrl)}"></video>`
+            : (w.posterUrl
+                ? `<img class="work-media" src="${escapeHtml(w.posterUrl)}" alt="${escapeHtml(w.title || '')}">`
+                : `<div class="work-media work-placeholder"></div>`);
+        return `
+            <article class="work-card ${size}" data-idx="${idx}">
+                ${media}
+                <div class="work-info">
+                    <div>
+                        <div class="work-name">${escapeHtml(w.title || (currentLang === 'zh' ? '未命名' : 'Untitled'))}</div>
+                        <div class="work-meta">${escapeHtml((w.category || '') + (w.year ? ' · ' + w.year : ''))}</div>
+                    </div>
+                    <div class="work-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                    </div>
+                </div>
+            </article>
+        `;
+    }).join('');
+
+    // 绑定事件
+    grid.querySelectorAll('.work-card').forEach(card => {
+        const v = card.querySelector('video.work-media');
+        if (v) {
+            card.addEventListener('mouseenter', () => v.play().catch(()=>{}));
+            card.addEventListener('mouseleave', () => { v.pause(); try { v.currentTime = 0; } catch {} });
+        }
+        card.addEventListener('click', () => openCinema(parseInt(card.dataset.idx)));
+    });
+
+    setupReveal();
+}
+
+function renderClients() {
+    const list = (siteSettings.clients || []).filter(c => c && (c.name || c.logoUrl));
+    if (!list.length) {
+        document.getElementById('clients-section').style.display = 'none';
+        return;
+    }
+    document.getElementById('clients-section').style.display = '';
+    const html = list.map(c =>
+        c.logoUrl
+            ? `<div class="client-item"><img src="${escapeHtml(c.logoUrl)}" alt="${escapeHtml(c.name || '')}"></div>`
+            : `<div class="client-item">${escapeHtml(c.name)}</div>`
+    ).join('');
+    // 重复一遍以实现无缝循环
+    document.getElementById('clients-track').innerHTML = html + html;
+}
+
+function renderSocials() {
+    const map = [
+        { key: 'insLink',     label: 'Instagram' },
+        { key: 'behanceLink', label: 'Behance' },
+        { key: 'vimeoLink',   label: 'Vimeo' },
+        { key: 'ytLink',      label: 'YouTube' },
+        { key: 'xLink',       label: 'X / Twitter' },
+        { key: 'xhsLink',     label: currentLang === 'zh' ? '小红书' : 'XiaoHongShu' },
+        { key: 'biliLink',    label: currentLang === 'zh' ? '哔哩哔哩' : 'Bilibili' },
+        { key: 'weiboLink',   label: currentLang === 'zh' ? '微博' : 'Weibo' },
+    ];
+    const html = map
+        .filter(m => siteSettings[m.key] && siteSettings[m.key].trim())
+        .map(m => `<a href="${escapeHtml(siteSettings[m.key])}" target="_blank" rel="noopener">${m.label}</a>`)
+        .join('');
+    document.getElementById('socials').innerHTML = html;
+}
+
+function renderContact() {
+    const email = siteSettings.contactEmail || 'hi@04080606.xyz';
+    document.getElementById('contact-email-text').textContent = email;
+    document.getElementById('contact-mail').href = 'mailto:' + email;
+}
+
+// =============== 作品筛选 ===============
+document.getElementById('works-filter').addEventListener('click', (e) => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    renderWorks();
+});
+
+// =============== 电影院模式 ===============
+function openCinema(idx) {
+    const w = allWorks[idx];
+    if (!w) return;
+    const cin = document.getElementById('cinema');
+    document.getElementById('cin-cat').textContent = (w.category || (currentLang === 'zh' ? '作品' : 'Work')).toUpperCase();
+    document.getElementById('cin-title').textContent = w.title || '';
+
+    const descEl = document.getElementById('cin-desc');
+    if (w.desc && w.desc.trim()) {
+        descEl.style.display = ''; descEl.innerHTML = escapeHtml(w.desc).replace(/\n/g, '<br>');
+    } else { descEl.style.display = 'none'; }
+
+    const setRow = (rowId, valId, val) => {
+        const row = document.getElementById(rowId);
+        if (val && String(val).trim()) {
+            row.style.display = ''; document.getElementById(valId).textContent = val;
+        } else { row.style.display = 'none'; }
+    };
+    setRow('cin-client-row', 'cin-client', w.client);
+    setRow('cin-roles-row', 'cin-roles', w.roles);
+    setRow('cin-year-row',  'cin-year',  w.year);
+
+    document.getElementById('cinema-box').innerHTML = w.videoUrl
+        ? `<video src="${escapeHtml(w.videoUrl)}" controls autoplay playsinline ${w.posterUrl ? `poster="${escapeHtml(w.posterUrl)}"` : ''}></video>`
+        : (w.posterUrl ? `<img src="${escapeHtml(w.posterUrl)}" alt="${escapeHtml(w.title)}" style="width:100%;height:100%;object-fit:contain;">` : '');
+
+    cin.classList.add('is-open');
+    cin.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+}
+function closeCinema() {
+    const cin = document.getElementById('cinema');
+    cin.classList.remove('is-open');
+    cin.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    document.getElementById('cinema-box').innerHTML = '';
+}
+document.getElementById('cinema-close').onclick = closeCinema;
+document.getElementById('cinema').addEventListener('click', e => { if (e.target.id === 'cinema') closeCinema(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCinema(); });
+
+// =============== 滚动揭示 ===============
+function setupReveal() {
+    const items = document.querySelectorAll('.reveal:not(.is-visible)');
+    if (!items.length) return;
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach(en => {
+            if (en.isIntersecting) {
+                en.target.classList.add('is-visible');
+                io.unobserve(en.target);
+            }
+        });
+    }, { threshold: 0.12, rootMargin: '0px 0px -10% 0px' });
+    items.forEach(el => io.observe(el));
+}
+
+// =============== 启动 ===============
+loadData();
+</script>
+
+</body>
+</html>

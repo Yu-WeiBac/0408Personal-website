@@ -7,7 +7,7 @@
 <style>
 :root { --bg: #000; --jade: #00D1FF; --glass: rgba(255, 255, 255, 0.04); --border: rgba(255, 255, 255, 0.1); --mx: 50%; --my: 50%; }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: #000; color: #fff; font-family: -apple-system, sans-serif; display: flex; min-height: 100vh; overflow-x: hidden; }
+body { background: #000; color: #fff; font-family: -apple-system, "PingFang SC", sans-serif; display: flex; min-height: 100vh; overflow-x: hidden; }
 
 .ambient { position: fixed; inset: 0; z-index: -1; background: #000; overflow: hidden; }
 .orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.2; transition: transform 1s ease-out; }
@@ -15,30 +15,25 @@ body { background: #000; color: #fff; font-family: -apple-system, sans-serif; di
 .orb-2 { width: 40vw; height: 40vw; background: var(--jade); right: calc(var(--mx) - 20vw); bottom: calc(var(--my) - 20vw); }
 
 aside { width: 250px; background: rgba(10, 10, 12, 0.4); backdrop-filter: blur(40px); border-right: 1px solid var(--border); padding: 3rem 1.5rem; display: flex; flex-direction: column; position: fixed; height: 100vh; }
-.logo { font-size: 1.1rem; font-weight: 600; margin-bottom: 3rem; letter-spacing: 1px; }
-nav button { display: block; width: 100%; background: transparent; border: none; color: rgba(255,255,255,0.4); text-align: left; padding: 1rem; margin-bottom: 0.5rem; border-radius: 12px; cursor: pointer; transition: 0.3s; font-size: 0.9rem; }
-nav button.active { background: rgba(255,255,255,0.06); color: var(--jade); }
+.logo { font-size: 1rem; font-weight: 600; margin-bottom: 3rem; color: #fff; letter-spacing: 2px; }
+nav button { display: block; width: 100%; background: transparent; border: none; color: rgba(255,255,255,0.4); text-align: left; padding: 1rem; margin-bottom: 0.5rem; border-radius: 12px; cursor: pointer; transition: 0.3s; font-size: 0.85rem; }
+nav button.active { background: rgba(0,209,255,0.1); color: var(--jade); }
 
 main { margin-left: 250px; flex: 1; padding: 4rem; max-width: 1000px; }
 .section { display: none; } .section.active { display: block; }
 .glass-card { background: var(--glass); backdrop-filter: blur(40px); padding: 2.5rem; border-radius: 30px; border: 1px solid var(--border); margin-bottom: 2rem; box-shadow: 0 30px 60px rgba(0,0,0,0.4); }
 
-label { display: block; margin-bottom: 0.6rem; font-size: 0.8rem; color: rgba(255,255,255,0.4); text-transform: uppercase; }
-input, textarea, select { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: #fff; padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; outline: none; transition: 0.3s; font-family: inherit; }
+label { display: block; margin-bottom: 0.6rem; font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; }
+input, textarea, select { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: #fff; padding: 0.9rem; border-radius: 12px; margin-bottom: 1.5rem; outline: none; transition: 0.3s; font-family: inherit; font-size: 0.9rem; }
+input:focus { border-color: var(--jade); }
 
 /* === 工业上传区 === */
-.upload-zone { position: relative; border: 1px dashed var(--border); border-radius: 20px; padding: 4rem 2rem; text-align: center; cursor: pointer; background: rgba(255,255,255,0.01); transition: 0.4s; overflow: hidden; margin-bottom: 1rem; }
-.upload-zone:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.03); }
-.upload-zone.dragover { border: 1px solid var(--jade); background: rgba(0, 209, 255, 0.05); box-shadow: 0 0 30px rgba(0, 209, 255, 0.1); }
+.upload-zone { position: relative; border: 1px dashed var(--border); border-radius: 20px; padding: 3rem; text-align: center; cursor: pointer; background: rgba(255,255,255,0.01); transition: 0.4s; margin-bottom: 1.5rem; }
+.upload-zone.dragover { border: 1px solid var(--jade); background: rgba(0, 209, 255, 0.05); }
 .upload-zone input { display: none; }
-.upload-limit { font-size: 0.7rem; color: rgba(255,255,255,0.3); margin-top: 1rem; transition: 0.3s; }
-.upload-limit.error { color: #ff453a; animation: shake 0.4s; }
-@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+.progress-bar { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--jade); width: 0%; transition: width 0.2s; }
 
-.progress-wrap { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.05); display: none; }
-.progress-bar { height: 100%; background: var(--jade); width: 0%; transition: width 0.2s; }
-
-button.primary { background: #fff; color: #000; border: none; padding: 1rem 3rem; border-radius: 12px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+button.primary { background: #fff; color: #000; border: none; padding: 0.9rem 2.5rem; border-radius: 12px; cursor: pointer; font-weight: 600; transition: 0.3s; font-size: 0.9rem; }
 button.primary:hover { background: var(--jade); transform: translateY(-2px); }
 
 #login { position: fixed; inset: 0; background: #000; display: flex; align-items: center; justify-content: center; z-index: 1000; }
@@ -46,14 +41,14 @@ button.primary:hover { background: var(--jade); transform: translateY(-2px); }
 </head>
 <body>
 <div class="ambient"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
-<div id="login"><div class="glass-card" style="width: 350px; text-align: center;"><h2>SYS.ADMIN</h2><input type="password" id="admin-pwd" style="text-align:center; margin-top:2rem"><button class="primary" onclick="login()" style="width:100%">VERIFY</button></div></div>
+<div id="login"><div class="glass-card" style="width: 350px; text-align: center;"><h3>CONSOLE</h3><input type="password" id="admin-pwd" style="text-align:center; margin-top:2rem"><button class="primary" onclick="login()" style="width:100%">ENTER</button></div></div>
 
 <aside>
     <div class="logo">于未<span>氵</span> ADMIN</div>
     <nav>
         <button onclick="showTab('works')" id="btn-works" class="active">成片展示 (Works)</button>
         <button onclick="showTab('settings')" id="btn-settings">全站设置 (System)</button>
-        <button onclick="logout()" style="color:#ff453a; margin-top:2rem">Logout</button>
+        <button onclick="logout()" style="color:#ff453a; margin-top:3rem">Logout</button>
     </nav>
 </aside>
 
@@ -62,41 +57,35 @@ button.primary:hover { background: var(--jade); transform: translateY(-2px); }
         <h1>作品阵列</h1>
         <div id="works-list"></div>
         <div class="glass-card" style="margin-top:3rem">
-            <h3 style="margin-bottom:2rem; color:var(--jade)">+ 部署新影像</h3>
+            <h3 style="margin-bottom:2rem; color:var(--jade); font-weight:400;">+ 部署新影像</h3>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem">
                 <div><label>标题</label><input id="w-title"></div>
-                <div><label>分类</label><select id="w-category"><option value="Commercial">商业广告</option><option value="BrandFilm">品牌宣传</option><option value="Documentary">纪录访谈</option><option value="Personal">个人创作</option></select></div>
-                <div><label>客户</label><input id="w-client"></div>
-                <div><label>职责</label><input id="w-roles"></div>
-                <div style="grid-column:span 2"><label>标签 (逗号隔开)</label><input id="w-tags"></div>
-                <div style="grid-column:span 2"><label>项目简述</label><textarea id="w-desc" rows="3"></textarea></div>
+                <div><label>分类</label><select id="w-category"><option value="Commercial">商业广告</option><option value="Personal">个人创作</option></select></div>
             </div>
-            
-            <label>视频源 (1080P+ / Max 500MB)</label>
-            <div class="upload-zone" id="drop-zone">
-                <div id="upload-content"><div style="font-size:2rem; color:var(--jade); margin-bottom:1rem">+</div><div id="limit-txt" class="upload-limit">拖拽或点击上传 (Max 500MB, 1080P min)</div></div>
-                <div class="progress-wrap" id="p-wrap"><div class="progress-bar" id="p-bar"></div></div>
-                <input type="file" id="video-input" accept="video/*">
+            <label>影像上传 (1080P+ / Max 500MB)</label>
+            <div class="upload-zone" id="drop-zone" onclick="document.getElementById('video-input').click()">
+                <div id="limit-txt" style="font-size:0.8rem; color:rgba(255,255,255,0.4)">拖拽视频或点击此处上传</div>
+                <div class="progress-bar" id="p-bar"></div>
+                <input type="file" id="video-input" accept="video/*" onchange="handleUpload(this.files[0])">
             </div>
             <input type="hidden" id="w-video-url">
-            <button class="primary" onclick="addWork()">保存成片</button>
+            <button class="primary" onclick="addWork()">保存到阵列</button>
         </div>
     </div>
 
     <div id="tab-settings" class="section">
-        <h1>参数设置</h1>
+        <h1>系统参数</h1>
         <div class="glass-card">
-            <label>首页视频 URL</label><input id="s-video">
+            <label>首页视频 (R2)</label><input id="s-video">
             <label>个人简介</label><textarea id="s-about" rows="4"></textarea>
             <label>联系邮箱</label><input id="s-email">
-            <h3 style="margin: 2.5rem 0 1.5rem; border-top: 1px solid #333; padding-top: 2rem;">社交网络终端</h3>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem">
+            <h3 style="margin: 3rem 0 1.5rem; border-top: 1px solid #222; padding-top: 2rem;">社交网络</h3>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem">
                 <div><label>Instagram</label><input id="s-ins"></div><div><label>哔哩哔哩</label><input id="s-bili"></div>
                 <div><label>X (Twitter)</label><input id="s-x"></div><div><label>小红书</label><input id="s-xhs"></div>
-                <div><label>YouTube</label><input id="s-yt"></div><div><label>Behance</label><input id="s-behance"></div>
-                <div><label>Vimeo</label><input id="s-vimeo"></div><div><label>微博</label><input id="s-weibo"></div>
+                <div><label>微博</label><input id="s-weibo"></div>
             </div>
-            <button class="primary" id="save-all" onclick="saveSettings()" style="width:100%; margin-top:2rem">💾 同步至云端</button>
+            <button class="primary" id="save-all" onclick="saveSettings()" style="width:100%; margin-top:2rem">💾 更新配置</button>
         </div>
     </div>
 </main>
@@ -107,66 +96,41 @@ document.addEventListener('mousemove', e => {
     document.documentElement.style.setProperty('--my', (e.clientY/window.innerHeight*100)+'%');
 });
 
-const dropZone = document.getElementById('drop-zone'), videoInput = document.getElementById('video-input');
-const limitTxt = document.getElementById('limit-txt'), pWrap = document.getElementById('p-wrap'), pBar = document.getElementById('p-bar');
-
-dropZone.onclick = () => videoInput.click();
-dropZone.ondragover = e => { e.preventDefault(); dropZone.classList.add('dragover'); };
-dropZone.ondragleave = () => dropZone.classList.remove('dragover');
-dropZone.ondrop = e => { e.preventDefault(); dropZone.classList.remove('dragover'); validateAndUpload(e.dataTransfer.files[0]); };
-videoInput.onchange = () => validateAndUpload(videoInput.files[0]);
-
-async function validateAndUpload(file) {
-    if (!file) return;
-    limitTxt.classList.remove('error');
-    if (file.size > 500 * 1024 * 1024) { limitTxt.innerText = "错误：文件超过 500MB"; limitTxt.classList.add('error'); return; }
-    
-    const video = document.createElement('video');
-    video.preload = 'metadata';
-    video.src = URL.createObjectURL(file);
-    video.onloadedmetadata = () => {
-        window.URL.revokeObjectURL(video.src);
-        if (video.videoWidth < 1920 || video.videoHeight < 1080) { limitTxt.innerText = "错误：分辨率低于 1080P"; limitTxt.classList.add('error'); return; }
-        startUpload(file);
-    };
-}
-
-async function startUpload(file) {
-    pWrap.style.display = 'block';
-    const xhr = new XMLHttpRequest(), token = sessionStorage.getItem('admin_token');
-    xhr.open('PUT', '/api/admin/upload/' + Date.now() + '_' + file.name.replace(/[^\w.-]/g,'_'));
-    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-    xhr.upload.onprogress = e => { pBar.style.width = (e.loaded/e.total*100)+'%'; };
-    xhr.onload = () => {
-        document.getElementById('w-video-url').value = JSON.parse(xhr.responseText).url;
-        limitTxt.innerText = "✅ 上传成功"; setTimeout(() => pWrap.style.display = 'none', 1000);
-    };
-    xhr.send(file);
-}
-
 let token = sessionStorage.getItem('admin_token');
 async function login() { const r = await fetch('/api/login',{method:'POST', body:JSON.stringify({password:document.getElementById('admin-pwd').value})}); if(r.ok){sessionStorage.setItem('admin_token',(await r.json()).token); location.reload();} else alert('Denied'); }
 function showTab(n){ document.querySelectorAll('.section').forEach(s=>s.classList.remove('active')); document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active')); document.getElementById('tab-'+n).classList.add('active'); document.getElementById('btn-'+n).classList.add('active'); }
 async function api(p,m='GET',b=null){const r=await fetch('/api'+p,{method:m,headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:b?JSON.stringify(b):null});return r.json()}
 
+async function handleUpload(file) {
+    if(!file) return;
+    if(file.size > 500*1024*1024) return alert("TOO LARGE");
+    document.getElementById('limit-txt').innerText = "Uploading...";
+    const xhr = new XMLHttpRequest();
+    xhr.open('PUT', '/api/admin/upload/'+Date.now()+'_'+file.name.replace(/[^\w.-]/g,'_'));
+    xhr.setRequestHeader('Authorization', 'Bearer '+token);
+    xhr.upload.onprogress = e => { document.getElementById('p-bar').style.width = (e.loaded/e.total*100)+'%'; };
+    xhr.onload = () => { document.getElementById('w-video-url').value=JSON.parse(xhr.responseText).url; document.getElementById('limit-txt').innerText='✅ Done'; };
+    xhr.send(file);
+}
+
 async function loadData() {
     const works = await api('/admin/works'), s = await api('/admin/settings');
-    document.getElementById('works-list').innerHTML = works.map((w,i)=>`<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02); padding:1.2rem; margin-bottom:0.8rem; border-radius:15px; border:1px solid var(--border);"><span>${w.title}</span><button style="background:#ff453a; border:none; color:#fff; padding:0.5rem 1rem; border-radius:8px; cursor:pointer;" onclick="deleteWork(${i})">Delete</button></div>`).join('');
+    document.getElementById('works-list').innerHTML = works.map((w,i)=>`<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02); padding:1rem; margin-bottom:0.5rem; border-radius:12px; border:1px solid var(--border);"><span>${w.title}</span><button style="background:#ff453a; border:none; color:#fff; padding:0.5rem 1rem; border-radius:8px; cursor:pointer;" onclick="deleteWork(${i})">Delete</button></div>`).join('');
     document.getElementById('s-video').value = s.heroVideo || '';
     document.getElementById('s-about').value = s.aboutBody || ''; document.getElementById('s-email').value = s.contactEmail || '';
-    ['ins','bili','x','xhs','yt','behance','vimeo','weibo'].forEach(k=>{document.getElementById(`s-${k}`).value=s[`${k}Link`]||''});
+    ['ins','bili','x','xhs','weibo'].forEach(k=>{document.getElementById(`s-${k}`).value=s[`${k}Link`]||''});
 }
 
 async function addWork(){
     const works=await api('/admin/works');
-    works.push({title:document.getElementById('w-title').value, videoUrl:document.getElementById('w-video-url').value, category:document.getElementById('w-category').value, client:document.getElementById('w-client').value, roles:document.getElementById('w-roles').value, tags:document.getElementById('w-tags').value, desc:document.getElementById('w-desc').value});
+    works.push({title:document.getElementById('w-title').value, videoUrl:document.getElementById('w-video-url').value, category:document.getElementById('w-category').value});
     await api('/admin/works','PUT',works); location.reload();
 }
 async function deleteWork(i){const works=await api('/admin/works');works.splice(i,1);await api('/admin/works','PUT',works);location.reload()}
 async function saveSettings(){
     const b=document.getElementById('save-all'); b.innerText='Syncing...';
-    const s = { heroVideo: document.getElementById('s-video').value, aboutBody: document.getElementById('s-about').value, contactEmail: document.getElementById('s-email').value, insLink: document.getElementById('s-ins').value, biliLink: document.getElementById('s-bili').value, xLink: document.getElementById('s-x').value, xhsLink: document.getElementById('s-xhs').value, ytLink: document.getElementById('s-yt').value, behanceLink: document.getElementById('s-behance').value, vimeoLink: document.getElementById('s-vimeo').value, weiboLink: document.getElementById('s-weibo').value };
-    await api('/admin/settings','PUT',s); b.innerText='✅ SUCCESS'; setTimeout(()=>b.innerText='💾 更新全站配置',2000);
+    const s = { heroVideo: document.getElementById('s-video').value, aboutBody: document.getElementById('s-about').value, contactEmail: document.getElementById('s-email').value, insLink: document.getElementById('s-ins').value, biliLink: document.getElementById('s-bili').value, xLink: document.getElementById('s-x').value, xhsLink: document.getElementById('s-xhs').value, weiboLink: document.getElementById('s-weibo').value };
+    await api('/admin/settings','PUT',s); b.innerText='✅ SUCCESS'; setTimeout(()=>b.innerText='💾 更新配置',2000);
 }
 if(token){ document.getElementById('login').style.display='none'; loadData(); }
 function logout(){sessionStorage.removeItem('admin_token'); location.reload();}

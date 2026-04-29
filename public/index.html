@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>于未氵 — Visual Artist & Director</title>
+<title>于未氵 — Visual Artist</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 <style>
 :root {
     --bg: #050505; --ink: #0a0a0a; --text: #F5F5F7; --muted: #86868B;
-    --jade: #6FE3D2; /* 标志性的液态青 */
+    --jade: #6FE3D2;
     --font-sans: 'Inter', 'Noto Sans SC', sans-serif;
     --font-serif: 'Noto Serif SC', serif;
     --gutter: clamp(1.5rem, 4vw, 4rem);
@@ -19,117 +19,126 @@
 html { scroll-behavior: smooth; background: var(--bg); }
 body { background: var(--bg); color: var(--text); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; line-height: 1.6; cursor: none; }
 
-/* 恢复：电影胶片噪点 */
 body::before {
     content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: 0.04;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
     mix-blend-mode: overlay;
 }
 
-/* 恢复：双层自定义光标 */
 .cursor, .cursor-ring { position: fixed; top: 0; left: 0; pointer-events: none; transform: translate(-50%, -50%); z-index: 9999; }
 .cursor { width: 6px; height: 6px; background: #fff; border-radius: 50%; mix-blend-mode: difference; transition: width 0.3s, height 0.3s; }
 .cursor-ring { width: 32px; height: 32px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; transition: width 0.4s, height 0.4s, border-color 0.3s; z-index: 9998; }
 .cursor.is-hover { width: 0; height: 0; }
 .cursor-ring.is-hover { width: 60px; height: 60px; border-color: var(--jade); background: rgba(111,227,210,0.1); backdrop-filter: blur(2px); }
 
-/* 导航栏 */
 nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 2rem var(--gutter); display: flex; justify-content: space-between; align-items: center; mix-blend-mode: difference; }
 .logo { font-size: 1.2rem; font-family: var(--font-serif); font-weight: 600; color: #fff; text-decoration: none; letter-spacing: 0.1em; }
 .logo span { font-style: italic; color: var(--jade); }
+.nav-right { display: flex; align-items: center; gap: 3rem; }
 .menu { display: flex; gap: 3rem; list-style: none; }
 .menu a { color: #fff; text-decoration: none; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.15em; transition: color 0.3s; opacity: 0.8; }
 .menu a:hover { color: var(--jade); opacity: 1; }
+.lang-switch { font-size: 0.8rem; cursor: pointer; color: var(--muted); transition: 0.3s; letter-spacing: 1px; }
+.lang-switch:hover { color: var(--jade); }
 
-/* 1. 首页首屏 (Hero) */
 .hero { position: relative; height: 100vh; width: 100%; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-/* 告别黑屏：默认流体光影预览效果 */
 .hero-fallback { position: absolute; inset: 0; z-index: -2; background: #020202; overflow: hidden; }
 .hero-fallback::before, .hero-fallback::after { content: ''; position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.4; animation: floatAnim 15s infinite alternate ease-in-out; }
 .hero-fallback::before { width: 50vw; height: 50vw; background: #0055ff; top: -10%; left: -10%; }
 .hero-fallback::after { width: 45vw; height: 45vw; background: var(--jade); bottom: -10%; right: -10%; animation-delay: -5s; }
 @keyframes floatAnim { 100% { transform: translate(10vw, 10vh) scale(1.2); } }
-
 .hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.7; z-index: -1; }
 .hero-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(5,5,5,1) 100%); z-index: 0; }
 
-/* 2. 个人简介 (About) */
 .about { padding: 10rem var(--gutter); max-width: 1200px; margin: 0 auto; text-align: center; position: relative; z-index: 2; }
-.about-text { font-family: var(--font-serif); font-size: clamp(1.2rem, 2.5vw, 2rem); font-weight: 300; line-height: 1.8; color: var(--text); }
+.about-text { font-family: var(--font-serif); font-size: clamp(1.2rem, 2vw, 1.8rem); font-weight: 300; line-height: 1.8; color: var(--text); }
 .about-text em { font-style: italic; color: var(--jade); font-weight: 400; }
 
-/* 3. 成片展示 (Selected Works) */
 .works { padding: 4rem var(--gutter); position: relative; z-index: 2; }
-.section-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted); margin-bottom: 3rem; display: flex; align-items: center; gap: 1rem; }
-.section-title::after { content: ''; height: 1px; flex: 1; background: rgba(255,255,255,0.1); }
+.works-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; }
+.section-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted); }
+.filter-bar { display: flex; gap: 1.5rem; }
+.filter-btn { background: none; border: none; color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: 0.3s; padding-bottom: 0.2rem; }
+.filter-btn:hover { color: #fff; }
+.filter-btn.active { color: var(--jade); border-bottom: 1px solid var(--jade); }
 
-.works-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; }
-.work-card { position: relative; background: var(--ink); overflow: hidden; cursor: none; display: block; aspect-ratio: 16/9; border-radius: 8px; }
+.works-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; transition: opacity 0.4s; }
+.work-card { position: relative; background: var(--ink); overflow: hidden; display: block; aspect-ratio: 16/9; border-radius: 4px; cursor: pointer; }
 .work-card:nth-child(4n+1) { grid-column: span 8; aspect-ratio: 16/9; }
 .work-card:nth-child(4n+2) { grid-column: span 4; aspect-ratio: 4/5; }
 .work-card:nth-child(4n+3) { grid-column: span 4; aspect-ratio: 4/5; }
 .work-card:nth-child(4n+4) { grid-column: span 8; aspect-ratio: 16/9; }
 
-.work-card video, .work-card img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.6) brightness(0.6); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+.work-card video, .work-card img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.5) brightness(0.6); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
 .work-card:hover video, .work-card:hover img { filter: grayscale(0) brightness(1); transform: scale(1.03); }
-.work-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 2rem; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); opacity: 0; transition: opacity 0.4s ease; transform: translateY(10px); }
-.work-card:hover .work-info { opacity: 1; transform: translateY(0); }
+.work-info { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 2rem; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); opacity: 0; transition: opacity 0.4s ease; }
+.work-card:hover .work-info { opacity: 1; }
 .work-title { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 400; margin-bottom: 0.3rem; }
-.work-roles { font-size: 0.75rem; color: var(--jade); text-transform: uppercase; letter-spacing: 0.1em; }
+.work-meta { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; display: flex; gap: 1rem; }
+.work-meta span { color: var(--jade); }
 
-/* 影院模式 */
-.cinema-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.98); backdrop-filter: blur(20px); z-index: 10000; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; cursor: auto; }
+/* 高级影院弹层 */
+.cinema-modal { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; cursor: auto; }
 .cinema-modal.active { opacity: 1; pointer-events: auto; }
-.cinema-close { position: absolute; top: 2rem; right: 3rem; color: #fff; font-size: 2.5rem; font-weight: 200; cursor: pointer; z-index: 10001; background: none; border: none; transition: color 0.3s; }
-.cinema-close:hover { color: var(--jade); }
-.cinema-video-container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 4rem 2rem 0; }
-.cinema-video-container video { max-width: 100%; max-height: 80vh; outline: none; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border-radius: 8px; }
-.cinema-meta { padding: 2rem 4rem; text-align: left; }
-.cinema-meta h2 { font-family: var(--font-serif); font-size: 1.8rem; font-weight: 400; margin-bottom: 0.5rem; }
-.cinema-meta p { font-size: 0.9rem; color: var(--jade); text-transform: uppercase; letter-spacing: 0.1em; }
+.cinema-close { position: absolute; top: 2rem; right: 3rem; color: #fff; font-size: 2rem; font-weight: 200; cursor: pointer; z-index: 10001; background: none; border: none; transition: 0.3s; }
+.cinema-close:hover { color: var(--jade); transform: rotate(90deg); }
+.cinema-video-area { flex: 7; display: flex; align-items: center; justify-content: center; background: #050505; padding: 2rem; border-right: 1px solid #111; }
+.cinema-video-area video { width: 100%; max-height: 90vh; outline: none; box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
+.cinema-details { flex: 3; padding: 6rem 4rem; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; }
+.cd-title { font-family: var(--font-serif); font-size: 2rem; margin-bottom: 0.5rem; }
+.cd-client { font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 2rem; }
+.cd-client span { color: #fff; }
+.cd-desc { font-size: 0.95rem; color: #ccc; line-height: 1.8; margin-bottom: 3rem; }
+.cd-meta-box { margin-bottom: 1.5rem; }
+.cd-meta-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.3rem; }
+.cd-meta-val { font-size: 0.9rem; color: var(--jade); }
 
-/* 4. 合作品牌跑马灯 */
-.clients { padding: 6rem 0; overflow: hidden; background: #020202; position: relative; z-index: 2; }
+.clients { padding: 6rem 0; overflow: hidden; background: #020202; position: relative; z-index: 2; border-top: 1px solid #111; border-bottom: 1px solid #111; }
 .clients-inner { padding-left: var(--gutter); margin-bottom: 3rem; }
 .marquee { display: flex; width: max-content; animation: scroll 30s linear infinite; }
 .marquee:hover { animation-play-state: paused; }
 .marquee-content { display: flex; align-items: center; }
-.client-item { display: flex; align-items: center; justify-content: center; margin-right: 6rem; filter: grayscale(1) opacity(0.5); transition: all 0.4s ease; }
+.client-item { display: flex; align-items: center; justify-content: center; margin-right: 6rem; filter: grayscale(1) opacity(0.4); transition: all 0.4s ease; }
 .client-item:hover { filter: grayscale(0) opacity(1); }
 .client-item img { max-height: 40px; width: auto; object-fit: contain; }
 .client-item span { font-family: var(--font-sans); font-size: 1.5rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #fff; }
 @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-/* 5. 联系方式 */
 .contact { padding: 10rem var(--gutter); text-align: center; position: relative; z-index: 2; }
-.contact-mail { font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 300; color: var(--text); text-decoration: none; position: relative; display: inline-block; padding-bottom: 0.5rem; transition: color 0.3s; }
+.contact-mail { font-family: var(--font-serif); font-size: clamp(1.5rem, 3vw, 2.5rem); font-weight: 300; color: var(--text); text-decoration: none; position: relative; display: inline-block; padding-bottom: 0.5rem; transition: color 0.3s; }
 .contact-mail::after { content: ''; position: absolute; left: 0; bottom: 0; width: 100%; height: 1px; background: var(--jade); transform: scaleX(0); transform-origin: right; transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
 .contact-mail:hover { color: var(--jade); }
 .contact-mail:hover::after { transform: scaleX(1); transform-origin: left; }
-.socials { display: flex; gap: 2.5rem; justify-content: center; margin-top: 4rem; flex-wrap: wrap; }
-.socials a { color: var(--muted); text-decoration: none; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.3s; }
+.socials { display: flex; gap: 2rem; justify-content: center; margin-top: 4rem; flex-wrap: wrap; }
+.socials a { color: var(--muted); text-decoration: none; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.3s; }
 .socials a:hover { color: var(--text); }
 
-@media (max-width: 800px) {
-    body { cursor: auto; } .cursor, .cursor-ring { display: none; } .work-card { cursor: auto; }
+@media (max-width: 900px) {
+    body { cursor: auto; } .cursor, .cursor-ring { display: none; }
+    .nav-right { gap: 1.5rem; } .menu { display: none; }
+    .works-header { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+    .filter-bar { flex-wrap: wrap; }
     .work-card:nth-child(n) { grid-column: span 12; aspect-ratio: 16/9; }
-    .menu { display: none; }
-    .cinema-meta { padding: 2rem; }
+    .cinema-modal { flex-direction: column; overflow-y: auto; }
+    .cinema-video-area { padding: 1rem; border-right: none; border-bottom: 1px solid #111; }
+    .cinema-details { padding: 2rem; }
 }
 </style>
 </head>
 <body>
 
-<div class="cursor"></div>
-<div class="cursor-ring"></div>
+<div class="cursor"></div><div class="cursor-ring"></div>
 
 <nav>
     <a href="#" class="logo hover-target">于未<span>氵</span></a>
-    <ul class="menu">
-        <li><a href="#works" class="hover-target">Work</a></li>
-        <li><a href="#about" class="hover-target">About</a></li>
-        <li><a href="#contact" class="hover-target">Contact</a></li>
-    </ul>
+    <div class="nav-right">
+        <ul class="menu">
+            <li><a href="#works" class="hover-target" data-i18n="navWork">Work</a></li>
+            <li><a href="#about" class="hover-target" data-i18n="navAbout">About</a></li>
+            <li><a href="#contact" class="hover-target" data-i18n="navContact">Contact</a></li>
+        </ul>
+        <div class="lang-switch hover-target" onclick="toggleLang()" id="lang-btn">EN</div>
+    </div>
 </nav>
 
 <section class="hero">
@@ -140,34 +149,53 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 2rem va
 
 <section class="about" id="about">
     <div class="about-text scroll-reveal" id="about-text">
-        探索影像的边界，专注于 <em>视觉执导</em>、<em>动态剪辑</em> 与 <em>DaVinci Resolve 极致调色</em>。<br>让每一帧光影都拥有其独属的情绪张力。
-    </div>
+        </div>
 </section>
 
 <section class="works" id="works">
-    <div class="section-title scroll-reveal">Selected Works</div>
+    <div class="works-header scroll-reveal">
+        <div class="section-title" data-i18n="secWorks">Selected Works</div>
+        <div class="filter-bar" id="filter-bar">
+            <button class="filter-btn active hover-target" data-filter="All" data-i18n="catAll">All</button>
+            <button class="filter-btn hover-target" data-filter="Commercial" data-i18n="catCom">Commercial</button>
+            <button class="filter-btn hover-target" data-filter="Brand Film" data-i18n="catBrand">Brand Film</button>
+            <button class="filter-btn hover-target" data-filter="Documentary" data-i18n="catDoc">Documentary</button>
+            <button class="filter-btn hover-target" data-filter="Personal" data-i18n="catPer">Personal</button>
+        </div>
+    </div>
     <div class="works-grid" id="works-grid"></div>
 </section>
 
 <div class="cinema-modal" id="cinema-modal">
     <button class="cinema-close hover-target" onclick="closeCinema()">×</button>
-    <div class="cinema-video-container" id="cinema-player-box"></div>
-    <div class="cinema-meta">
-        <h2 id="cinema-title">Title</h2>
-        <p id="cinema-roles">Director / Editor</p>
+    <div class="cinema-video-area" id="cinema-player-box"></div>
+    <div class="cinema-details">
+        <h2 class="cd-title" id="cd-title">Title</h2>
+        <div class="cd-client" id="cd-client-box" style="display:none;">Client: <span id="cd-client">Apple</span></div>
+        <p class="cd-desc" id="cd-desc">Description goes here...</p>
+        
+        <div class="cd-meta-box" id="cd-roles-box" style="display:none;">
+            <div class="cd-meta-label" data-i18n="metaRoles">Roles</div>
+            <div class="cd-meta-val" id="cd-roles">Director / Editor</div>
+        </div>
+        <div class="cd-meta-box" id="cd-tags-box" style="display:none;">
+            <div class="cd-meta-label" data-i18n="metaTags">Tags</div>
+            <div class="cd-meta-val" id="cd-tags">Color Grading, VFX</div>
+        </div>
+        <div class="cd-meta-box" id="cd-cat-box" style="display:none;">
+            <div class="cd-meta-label" data-i18n="metaCat">Category</div>
+            <div class="cd-meta-val" id="cd-cat">Commercial</div>
+        </div>
     </div>
 </div>
 
 <section class="clients">
-    <div class="clients-inner section-title scroll-reveal">Selected Clients</div>
-    <div class="marquee" id="clients-marquee">
-        <div class="marquee-content"><div class="client-item"><span>SYSTEM ONLINE</span></div></div>
-        <div class="marquee-content"><div class="client-item"><span>SYSTEM ONLINE</span></div></div>
-    </div>
+    <div class="clients-inner section-title scroll-reveal" data-i18n="secClients">Selected Clients</div>
+    <div class="marquee" id="clients-marquee"></div>
 </section>
 
 <section class="contact" id="contact">
-    <div class="section-title scroll-reveal" style="margin-bottom: 3rem;">Let's Create</div>
+    <div class="section-title scroll-reveal" style="margin-bottom: 3rem;" data-i18n="secContact">Let's Create</div>
     <a href="mailto:hi@04080606.xyz" class="contact-mail hover-target scroll-reveal" id="contact-email-link">hi@04080606.xyz</a>
     <div class="socials scroll-reveal" id="social-links"></div>
 </section>
@@ -175,9 +203,41 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 2rem va
 <script>
 gsap.registerPlugin(ScrollTrigger);
 
-/* 光标跟随逻辑 */
-const cursor = document.querySelector('.cursor');
-const ring = document.querySelector('.cursor-ring');
+let currentLang = localStorage.getItem('site_lang') || 'zh';
+let allWorks = [];
+let siteSettings = {};
+
+const dict = {
+    zh: {
+        navWork: '作品', navAbout: '关于', navContact: '联系',
+        secWorks: '精选作品 / SELECTED WORKS', catAll: '全部 ALL', catCom: '商业广告', catBrand: '品牌宣传', catDoc: '纪录片', catPer: '个人创作',
+        secClients: '合作品牌 / CLIENTS', secContact: '联系合作 / LETS CREATE',
+        metaRoles: '具体职责', metaTags: '核心技能', metaCat: '作品分类'
+    },
+    en: {
+        navWork: 'WORK', navAbout: 'ABOUT', navContact: 'CONTACT',
+        secWorks: 'SELECTED WORKS', catAll: 'ALL', catCom: 'COMMERCIAL', catBrand: 'BRAND FILM', catDoc: 'DOCUMENTARY', catPer: 'PERSONAL',
+        secClients: 'SELECTED CLIENTS', secContact: 'LET\'S CREATE',
+        metaRoles: 'ROLES', metaTags: 'TAGS', metaCat: 'CATEGORY'
+    }
+};
+
+function toggleLang() {
+    currentLang = currentLang === 'zh' ? 'en' : 'zh';
+    localStorage.setItem('site_lang', currentLang);
+    applyLang();
+}
+
+function applyLang() {
+    document.getElementById('lang-btn').innerText = currentLang === 'zh' ? 'EN' : '中';
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[currentLang][key]) el.innerText = dict[currentLang][key];
+    });
+}
+
+// 游标跟随
+const cursor = document.querySelector('.cursor'), ring = document.querySelector('.cursor-ring');
 if (window.matchMedia('(min-width: 901px)').matches) {
     let mx = 0, my = 0, rx = 0, ry = 0;
     document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; gsap.to(cursor, { x: mx, y: my, duration: 0.05 }); });
@@ -186,8 +246,7 @@ if (window.matchMedia('(min-width: 901px)').matches) {
     document.addEventListener('mouseout', e => { if (e.target.closest('a, button, .hover-target, .work-card, .client-item')) { cursor.classList.remove('is-hover'); ring.classList.remove('is-hover'); } });
 }
 
-/* 恢复：滚动揭示动画 */
-function initScrollAnimations() {
+function initScroll() {
     gsap.utils.toArray('.scroll-reveal, .work-card').forEach(el => {
         gsap.fromTo(el, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 85%' } });
     });
@@ -195,42 +254,88 @@ function initScrollAnimations() {
 
 function closeCinema() {
     document.getElementById('cinema-modal').classList.remove('active');
-    document.getElementById('cinema-player-box').innerHTML = ''; 
+    setTimeout(() => document.getElementById('cinema-player-box').innerHTML = '', 400); // 延迟清空避免闪烁
 }
 
-window.openCinema = function(url, title, roles) {
-    document.getElementById('cinema-title').innerText = title || '未命名作品';
-    document.getElementById('cinema-roles').innerText = roles || 'Visual Work';
-    document.getElementById('cinema-player-box').innerHTML = `<video src="${url}" controls autoplay playsinline></video>`;
+window.openCinema = function(idx) {
+    const w = allWorks[idx];
+    document.getElementById('cd-title').innerText = w.title || '未命名';
+    
+    const clientBox = document.getElementById('cd-client-box');
+    if(w.client) { clientBox.style.display = 'block'; document.getElementById('cd-client').innerText = w.client; } else { clientBox.style.display = 'none'; }
+    
+    document.getElementById('cd-desc').innerHTML = (w.desc || '').replace(/\n/g, '<br>');
+    
+    const rolesBox = document.getElementById('cd-roles-box');
+    if(w.roles) { rolesBox.style.display = 'block'; document.getElementById('cd-roles').innerText = w.roles; } else { rolesBox.style.display = 'none'; }
+    
+    const tagsBox = document.getElementById('cd-tags-box');
+    if(w.tags) { tagsBox.style.display = 'block'; document.getElementById('cd-tags').innerText = w.tags; } else { tagsBox.style.display = 'none'; }
+    
+    const catBox = document.getElementById('cd-cat-box');
+    if(w.category) { catBox.style.display = 'block'; document.getElementById('cd-cat').innerText = w.category; } else { catBox.style.display = 'none'; }
+
+    document.getElementById('cinema-player-box').innerHTML = `<video src="${w.videoUrl}" controls autoplay playsinline></video>`;
     document.getElementById('cinema-modal').classList.add('active');
 };
 
+function renderWorks(filter = 'All') {
+    const grid = document.getElementById('works-grid');
+    grid.style.opacity = 0; // 平滑过渡动画
+    
+    setTimeout(() => {
+        const filtered = filter === 'All' ? allWorks : allWorks.filter(w => w.category === filter);
+        if(filtered.length === 0) {
+            grid.innerHTML = '<div style="grid-column: span 12; padding: 4rem; text-align: center; color: #555;">暂无该分类作品</div>';
+        } else {
+            grid.innerHTML = filtered.map((w) => {
+                // 找到它在 allWorks 中的原索引，以便弹窗获取正确数据
+                const origIdx = allWorks.indexOf(w);
+                return `
+                <div class="work-card hover-target" onclick="openCinema(${origIdx})">
+                    <video src="${w.videoUrl}" muted loop playsinline ${w.posterUrl ? `poster="${w.posterUrl}"` : ''}></video>
+                    <div class="work-info">
+                        <h3 class="work-title">${w.title}</h3>
+                        <div class="work-meta">
+                            ${w.client ? `<span>Client: ${w.client}</span>` : ''}
+                            ${w.tags ? `| ${w.tags}` : ''}
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+
+            // 重新绑定Hover播放
+            document.querySelectorAll('.work-card').forEach(card => {
+                const vid = card.querySelector('video');
+                if(vid) {
+                    card.addEventListener('mouseenter', () => vid.play());
+                    card.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
+                }
+            });
+        }
+        grid.style.opacity = 1;
+        ScrollTrigger.refresh();
+    }, 300);
+}
+
+// 绑定筛选按钮点击
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        renderWorks(e.target.dataset.filter);
+    });
+});
+
 async function loadData() {
     try {
+        applyLang();
         const [wRes, sRes] = await Promise.all([fetch('/api/works'), fetch('/api/settings')]);
-        const works = await wRes.json();
+        allWorks = await wRes.json();
         const s = await sRes.json();
+        
+        renderWorks('All');
 
-        // 渲染作品
-        document.getElementById('works-grid').innerHTML = works.map(w => `
-            <div class="work-card hover-target" onclick="openCinema('${w.videoUrl}', '${w.title}', '${w.roles}')">
-                <video src="${w.videoUrl}" muted loop playsinline ${w.posterUrl ? `poster="${w.posterUrl}"` : ''}></video>
-                <div class="work-info">
-                    <h3 class="work-title">${w.title}</h3>
-                    <div class="work-roles">${w.roles || w.tag || 'Project'}</div>
-                </div>
-            </div>
-        `).join('');
-
-        document.querySelectorAll('.work-card').forEach(card => {
-            const vid = card.querySelector('video');
-            if(vid) {
-                card.addEventListener('mouseenter', () => vid.play());
-                card.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
-            }
-        });
-
-        // 渲染设置
         if(s.heroVideo) document.getElementById('hero-media-container').innerHTML = `<video class="hero-video" autoplay muted loop playsinline src="${s.heroVideo}"></video>`;
         if(s.aboutBody) document.getElementById('about-text').innerHTML = s.aboutBody.replace(/\n/g, '<br>');
         
@@ -238,34 +343,31 @@ async function loadData() {
         mail.href = `mailto:${s.contactEmail}`;
         mail.innerText = s.contactEmail || 'hi@04080606.xyz';
 
-        // 渲染动态社交链接 (注意中英文标签)
         const socialData = [
             {label: 'Instagram', url: s.insLink}, {label: '小红书', url: s.xhsLink},
             {label: 'Behance', url: s.behanceLink}, {label: 'Vimeo', url: s.vimeoLink},
-            {label: 'YouTube', url: s.ytLink}, {label: 'B站', url: s.biliLink},
-            {label: 'X', url: s.xLink}, {label: '微博', url: s.weiboLink}
+            {label: 'YouTube', url: s.ytLink}, {label: '哔哩哔哩 (B站)', url: s.biliLink},
+            {label: 'X (推特)', url: s.xLink}, {label: '微博', url: s.weiboLink}
         ];
         document.getElementById('social-links').innerHTML = socialData
             .filter(d => d.url).map(d => `<a href="${d.url}" target="_blank" class="hover-target">${d.label}</a>`).join('');
 
-        // 渲染合作品牌跑马灯
         if(s.clients && s.clients.length > 0) {
             const clientsHtml = s.clients.map(c => `
                 <div class="client-item hover-target">
                     ${c.logoUrl ? `<img src="${c.logoUrl}" alt="${c.name}">` : `<span>${c.name}</span>`}
                 </div>
             `).join('');
-            // 复制两份实现无缝滚动
             document.getElementById('clients-marquee').innerHTML = `
                 <div class="marquee-content">${clientsHtml}</div>
                 <div class="marquee-content">${clientsHtml}</div>
             `;
+        } else {
+            document.querySelector('.clients').style.display = 'none';
         }
 
-        // 初始化所有动画
-        setTimeout(initScrollAnimations, 100);
-
-    } catch (e) { console.error('Data load failed'); }
+        setTimeout(initScroll, 200);
+    } catch (e) { console.error('Load failed', e); }
 }
 loadData();
 </script>

@@ -3,76 +3,120 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>管理后台 — 于未氵</title>
+<title>SYS.ADMIN — 04080606</title>
 <style>
 :root {
-    --ink: #0A0A0A; --ink-2: #1A1A1A; --paper: #F2F0E6; --jade: #6FE3D2;
-    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+    --bg-base: #000000;
+    --bg-panel: #0E0E0E;
+    --bg-input: #151515;
+    --text-main: #F5F5F7;
+    --text-muted: #86868B;
+    --accent: #00D1FF;
+    --border: #222222;
+    --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
 }
-body { background: var(--ink); color: var(--paper); font-family: var(--font); margin: 0; display: flex; min-height: 100vh; }
-aside { width: 200px; background: var(--ink-2); padding: 2rem; border-right: 1px solid #333; }
-nav button { display: block; width: 100%; background: none; border: none; color: #888; text-align: left; padding: 0.8rem; cursor: pointer; font-size: 1rem; }
-nav button.active { color: var(--jade); }
-main { flex: 1; padding: 3rem; max-width: 800px; }
-.section { display: none; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--bg-base); color: var(--text-main); font-family: var(--font-sans); display: flex; min-height: 100vh; }
+
+/* 侧边栏 */
+aside { width: 260px; background: var(--bg-panel); border-right: 1px solid var(--border); padding: 2.5rem 1.5rem; display: flex; flex-direction: column; }
+.logo { font-size: 1.2rem; font-weight: 700; margin-bottom: 3rem; letter-spacing: 0.1em; color: var(--text-main); }
+.logo span { color: var(--accent); }
+nav button {
+    display: block; width: 100%; background: transparent; border: none; color: var(--text-muted);
+    text-align: left; padding: 0.8rem 1rem; margin-bottom: 0.5rem; border-radius: 8px;
+    cursor: pointer; font-size: 0.95rem; font-weight: 500; transition: all 0.2s;
+}
+nav button:hover { background: rgba(255,255,255,0.05); color: var(--text-main); }
+nav button.active { background: rgba(0, 209, 255, 0.1); color: var(--accent); }
+
+/* 主内容区 */
+main { flex: 1; padding: 4rem; max-width: 900px; }
+.section { display: none; animation: fadeIn 0.3s ease; }
 .section.active { display: block; }
-.card { background: var(--ink-2); padding: 2rem; border-radius: 8px; margin-bottom: 2rem; }
-label { display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: #888; }
-input, textarea { width: 100%; background: #000; border: 1px solid #333; color: #fff; padding: 0.8rem; border-radius: 4px; margin-bottom: 1.5rem; font-family: inherit; }
-button.primary { background: var(--jade); color: #000; border: none; padding: 0.8rem 2rem; border-radius: 4px; cursor: pointer; font-weight: bold; }
-.work-item { display: flex; justify-content: space-between; background: #000; padding: 1rem; margin-bottom: 0.5rem; border-radius: 4px; }
-/* 登录 */
-#login { position: fixed; inset: 0; background: #000; display: flex; align-items: center; justify-content: center; z-index: 1000; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+h1 { font-size: 2rem; font-weight: 600; margin-bottom: 2rem; }
+.card { background: var(--bg-panel); padding: 2.5rem; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 2rem; }
+.card h3 { margin-bottom: 1.5rem; font-weight: 500; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
+
+/* 表单质感 */
+label { display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+input, textarea {
+    width: 100%; background: var(--bg-input); border: 1px solid var(--border); color: var(--text-main);
+    padding: 0.9rem 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-family: inherit; font-size: 0.95rem;
+    transition: all 0.2s; outline: none;
+}
+input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0, 209, 255, 0.15); }
+button.primary {
+    background: var(--text-main); color: var(--bg-base); border: none; padding: 0.9rem 2rem;
+    border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: all 0.2s;
+}
+button.primary:hover { background: var(--accent); transform: translateY(-1px); }
+
+/* 作品列表 */
+.work-item {
+    display: flex; justify-content: space-between; align-items: center; background: var(--bg-input);
+    padding: 1.2rem; margin-bottom: 0.8rem; border-radius: 8px; border: 1px solid var(--border);
+}
+.work-item span { font-weight: 500; }
+.btn-danger { color: #FF453A; background: rgba(255, 69, 58, 0.1); border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 500; }
+.btn-danger:hover { background: rgba(255, 69, 58, 0.2); }
+
+/* 登录全屏 */
+#login { position: fixed; inset: 0; background: var(--bg-base); display: flex; align-items: center; justify-content: center; z-index: 1000; }
 </style>
 </head>
 <body>
 <div id="login">
-    <div class="card" style="width: 300px;">
-        <h2 style="color: var(--jade)">管理登录</h2>
-        <input type="password" id="admin-pwd" placeholder="输入管理密码">
-        <button class="primary" onclick="login()" style="width: 100%">进入控制台</button>
+    <div class="card" style="width: 380px;">
+        <div class="logo" style="margin-bottom: 2rem;">SYS<span>.</span>ADMIN</div>
+        <label>授权密码</label>
+        <input type="password" id="admin-pwd" placeholder="Enter credentials...">
+        <button class="primary" onclick="login()" style="width: 100%">Verify Access</button>
     </div>
 </div>
 
 <aside>
-    <h2 style="color: var(--jade)">于未氵</h2><br>
+    <div class="logo">于未<span>氵</span></div>
     <nav>
-        <button onclick="showTab('works')" id="btn-works" class="active">作品管理</button>
-        <button onclick="showTab('settings')" id="btn-settings">网站设置</button>
-        <button onclick="logout()">退出登录</button>
+        <button onclick="showTab('works')" id="btn-works" class="active">Media / 作品</button>
+        <button onclick="showTab('settings')" id="btn-settings">System / 网站配置</button>
+        <button onclick="logout()" style="margin-top: auto; color: #FF453A;">Logout / 退出</button>
     </nav>
 </aside>
 
 <main>
     <div id="tab-works" class="section active">
-        <h1>作品管理</h1>
+        <h1>作品阵列</h1>
         <div id="works-list"></div>
-        <div class="card">
-            <h3>添加作品</h3>
-            <label>标题</label><input id="w-title">
-            <label>标签</label><input id="w-tag">
-            <label>视频链接 (R2)</label><input id="w-video">
-            <button class="primary" onclick="addWork()">保存作品</button>
+        <div class="card" style="margin-top: 2rem;">
+            <h3>部署新项目</h3>
+            <label>项目代号 (标题)</label><input id="w-title">
+            <label>类型标签 (如: 3D Render)</label><input id="w-tag">
+            <label>视频流地址 (URL)</label><input id="w-video">
+            <button class="primary" onclick="addWork()">Deploy / 部署</button>
         </div>
     </div>
 
     <div id="tab-settings" class="section">
-        <h1>网站设置</h1>
+        <h1>系统配置</h1>
         <div class="card">
-            <label>首页视频链接</label><input id="s-video">
-            <label>首屏副标题</label><textarea id="s-sub"></textarea>
-            <label>联系邮箱</label><input id="s-email">
+            <h3>前端显示参数</h3>
+            <label>首屏动态壁纸 (Video URL)</label><input id="s-video">
+            <label>首屏宣言 (Sub-text)</label><textarea id="s-sub" rows="3"></textarea>
+            <label>联络终端 (Email)</label><input id="s-email">
             
-            <h3 style="color: var(--jade); margin: 2rem 0 1rem;">社交媒体链接</h3>
+            <h3 style="margin-top: 3rem;">外部链接节点 (Socials)</h3>
             <label>Instagram</label><input id="s-ins">
             <label>小红书</label><input id="s-xhs">
             <label>X (Twitter)</label><input id="s-x">
-            <label>Telegram 群组</label><input id="s-tg">
-            <label>B站 (Bilibili)</label><input id="s-bili">
+            <label>Telegram</label><input id="s-tg">
+            <label>Bilibili</label><input id="s-bili">
             <label>Behance</label><input id="s-behance">
-            <label>微博</label><input id="s-weibo">
+            <label>Weibo</label><input id="s-weibo">
             
-            <button class="primary" onclick="saveSettings()">保存所有设置</button>
+            <button class="primary" onclick="saveSettings()" style="margin-top: 1rem;">Update System / 同步配置</button>
         </div>
     </div>
 </main>
@@ -85,10 +129,9 @@ async function login() {
     const pwd = document.getElementById('admin-pwd').value;
     const res = await fetch('/api/login', {method:'POST', body: JSON.stringify({password: pwd})});
     if(res.ok) {
-        const data = await res.json();
-        sessionStorage.setItem('admin_token', data.token);
+        sessionStorage.setItem('admin_token', (await res.json()).token);
         location.reload();
-    } else { alert('密码错误'); }
+    } else { alert('Access Denied'); }
 }
 
 function showTab(name) {
@@ -100,8 +143,7 @@ function showTab(name) {
 
 async function api(path, method='GET', body=null) {
     const res = await fetch('/api'+path, {
-        method,
-        headers: {'Authorization': 'Bearer ' + sessionStorage.getItem('admin_token'), 'Content-Type': 'application/json'},
+        method, headers: {'Authorization': 'Bearer ' + sessionStorage.getItem('admin_token'), 'Content-Type': 'application/json'},
         body: body ? JSON.stringify(body) : null
     });
     if(res.status === 401) logout();
@@ -112,8 +154,8 @@ async function loadData() {
     const works = await api('/admin/works');
     document.getElementById('works-list').innerHTML = works.map((w, i) => `
         <div class="work-item">
-            <span>${w.title}</span>
-            <button onclick="deleteWork(${i})" style="color: red; background: none; border: none; cursor: pointer;">删除</button>
+            <span>${w.title} <span style="color:var(--text-muted); font-size:0.8rem; margin-left:1rem">${w.tag || ''}</span></span>
+            <button class="btn-danger" onclick="deleteWork(${i})">Delete</button>
         </div>
     `).join('');
 
@@ -121,22 +163,14 @@ async function loadData() {
     document.getElementById('s-video').value = s.heroVideo || '';
     document.getElementById('s-sub').value = s.heroSub || '';
     document.getElementById('s-email').value = s.contactEmail || '';
-    document.getElementById('s-ins').value = s.insLink || '';
-    document.getElementById('s-xhs').value = s.xhsLink || '';
-    document.getElementById('s-x').value = s.xLink || '';
-    document.getElementById('s-tg').value = s.tgLink || '';
-    document.getElementById('s-bili').value = s.biliLink || '';
-    document.getElementById('s-behance').value = s.behanceLink || '';
-    document.getElementById('s-weibo').value = s.weiboLink || '';
+    ['ins','xhs','x','tg','bili','behance','weibo'].forEach(key => {
+        document.getElementById(`s-${key}`).value = s[`${key}Link`] || '';
+    });
 }
 
 async function addWork() {
     const works = await api('/admin/works');
-    works.push({
-        title: document.getElementById('w-title').value,
-        tag: document.getElementById('w-tag').value,
-        videoUrl: document.getElementById('w-video').value
-    });
+    works.push({ title: document.getElementById('w-title').value, tag: document.getElementById('w-tag').value, videoUrl: document.getElementById('w-video').value });
     await api('/admin/works', 'PUT', works);
     location.reload();
 }
@@ -150,19 +184,12 @@ async function deleteWork(i) {
 
 async function saveSettings() {
     const s = {
-        heroVideo: document.getElementById('s-video').value,
-        heroSub: document.getElementById('s-sub').value,
-        contactEmail: document.getElementById('s-email').value,
-        insLink: document.getElementById('s-ins').value,
-        xhsLink: document.getElementById('s-xhs').value,
-        xLink: document.getElementById('s-x').value,
-        tgLink: document.getElementById('s-tg').value,
-        biliLink: document.getElementById('s-bili').value,
-        behanceLink: document.getElementById('s-behance').value,
-        weiboLink: document.getElementById('s-weibo').value
+        heroVideo: document.getElementById('s-video').value, heroSub: document.getElementById('s-sub').value, contactEmail: document.getElementById('s-email').value,
+        insLink: document.getElementById('s-ins').value, xhsLink: document.getElementById('s-xhs').value, xLink: document.getElementById('s-x').value,
+        tgLink: document.getElementById('s-tg').value, biliLink: document.getElementById('s-bili').value, behanceLink: document.getElementById('s-behance').value, weiboLink: document.getElementById('s-weibo').value
     };
     await api('/admin/settings', 'PUT', s);
-    alert('设置已保存并同步到前台！');
+    alert('System Updated Successfully.');
 }
 
 function logout() { sessionStorage.removeItem('admin_token'); location.reload(); }

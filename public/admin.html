@@ -5,36 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>管理后台 — 于未氵</title>
 <style>
-:root { --bg: #0A0A0A; --panel: #141414; --border: #222; --text: #E5E5E5; --muted: #888; --accent: #fff; }
+:root { --bg: #0A0A0A; --panel: #141414; --border: #222; --text: #E5E5E5; --muted: #888; --accent: #fff; --jade: #6FE3D2; }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; display: flex; min-height: 100vh; }
-aside { width: 240px; background: var(--panel); border-right: 1px solid var(--border); padding: 3rem 2rem; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; display: flex; min-height: 100vh; }
+aside { width: 240px; background: var(--panel); border-right: 1px solid var(--border); padding: 3rem 2rem; position: fixed; height: 100vh; }
 .logo { font-size: 1.2rem; font-weight: bold; margin-bottom: 3rem; color: #fff; }
-nav button { display: block; width: 100%; background: none; border: none; color: var(--muted); text-align: left; padding: 0.8rem 1rem; margin-bottom: 0.5rem; border-radius: 6px; cursor: pointer; }
-nav button.active { background: rgba(255,255,255,0.05); color: #fff; }
-main { flex: 1; padding: 4rem; max-width: 900px; }
+nav button { display: block; width: 100%; background: none; border: none; color: var(--muted); text-align: left; padding: 0.8rem 1rem; margin-bottom: 0.5rem; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+nav button:hover { background: rgba(255,255,255,0.02); }
+nav button.active { background: rgba(255,255,255,0.08); color: #fff; }
+main { margin-left: 240px; flex: 1; padding: 4rem; max-width: 1000px; }
 .section { display: none; } .section.active { display: block; }
 h1 { font-size: 2rem; font-weight: 400; margin-bottom: 2rem; }
 .card { background: var(--panel); padding: 2rem; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 2rem; }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
-label { display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+label { display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--muted); text-transform: uppercase; }
 input, textarea { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 0.8rem; border-radius: 6px; margin-bottom: 1.5rem; outline: none; transition: 0.3s; }
-input:focus, textarea:focus { border-color: #555; }
-button.primary { background: #fff; color: #000; border: none; padding: 0.8rem 2rem; border-radius: 6px; cursor: pointer; font-weight: 500; transition: 0.3s; }
+input:focus, textarea:focus { border-color: var(--jade); }
+button.primary { background: #fff; color: #000; border: none; padding: 0.8rem 2rem; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
 button.primary:hover { opacity: 0.8; }
-.btn-danger { color: #ff453a; background: none; border: 1px solid #ff453a; padding: 0.4rem 1rem; border-radius: 4px; cursor: pointer; }
+.btn-danger { color: #ff453a; background: none; border: 1px solid #ff453a; padding: 0.4rem 1rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+.btn-ghost { background: transparent; color: #fff; border: 1px solid #555; padding: 0.4rem 1rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem; transition: 0.3s; }
+.btn-ghost:hover { border-color: #fff; }
 
-/* 真正的文件拖拽上传区域 */
-.upload-zone { border: 1px dashed var(--border); border-radius: 8px; padding: 2rem; text-align: center; cursor: pointer; transition: 0.3s; margin-bottom: 1rem; }
-.upload-zone:hover { border-color: #666; background: rgba(255,255,255,0.02); }
+.upload-zone { border: 1px dashed var(--border); border-radius: 8px; padding: 2rem; text-align: center; cursor: pointer; transition: 0.3s; margin-bottom: 1rem; background: #000; }
+.upload-zone:hover { border-color: var(--jade); background: rgba(111,227,210,0.02); }
 .upload-zone input[type="file"] { display: none; }
 .upload-progress { height: 3px; background: #222; margin-top: 1rem; border-radius: 3px; overflow: hidden; display: none; }
 .upload-progress.active { display: block; }
-.upload-bar { height: 100%; background: #fff; width: 0%; transition: width 0.2s; }
+.upload-bar { height: 100%; background: var(--jade); width: 0%; transition: width 0.2s; }
 .status-text { font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem; }
 
-.work-item { display: flex; justify-content: space-between; align-items: center; background: #000; padding: 1rem; margin-bottom: 0.5rem; border-radius: 8px; border: 1px solid var(--border); }
+.list-item { display: flex; justify-content: space-between; align-items: center; background: #000; padding: 1rem; margin-bottom: 0.5rem; border-radius: 8px; border: 1px solid var(--border); }
 #login { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 1000; }
 </style>
 </head>
@@ -43,86 +45,106 @@ button.primary:hover { opacity: 0.8; }
 <div id="login">
     <div class="card" style="width: 320px;">
         <h2 style="margin-bottom: 2rem; text-align: center;">Console</h2>
-        <input type="password" id="admin-pwd" placeholder="Enter Password">
-        <button class="primary" onclick="login()" style="width: 100%">Login</button>
+        <input type="password" id="admin-pwd" placeholder="输入管理密码">
+        <button class="primary" onclick="login()" style="width: 100%">登录系统</button>
     </div>
 </div>
 
 <aside>
     <div class="logo">于未氵 ADMIN</div>
     <nav>
-        <button onclick="showTab('works')" id="btn-works" class="active">Works / 作品</button>
-        <button onclick="showTab('settings')" id="btn-settings">Settings / 设置</button>
-        <button onclick="logout()" style="margin-top: 4rem; color: #ff453a;">Logout</button>
+        <button onclick="showTab('works')" id="btn-works" class="active">成片管理 (Works)</button>
+        <button onclick="showTab('settings')" id="btn-settings">全局设置 (Settings)</button>
+        <button onclick="logout()" style="margin-top: 4rem; color: #ff453a;">退出登录</button>
     </nav>
 </aside>
 
 <main>
     <div id="tab-works" class="section active">
-        <h1>成片管理 (Selected Works)</h1>
+        <h1>成片管理</h1>
         <div id="works-list"></div>
         <div class="card" style="margin-top: 2rem;">
-            <h3 style="margin-bottom: 1.5rem; font-weight: 400;">添加新作品</h3>
+            <h3 style="margin-bottom: 1.5rem; font-weight: 400; color: var(--jade);">+ 部署新作品</h3>
             <div class="grid-2">
                 <div><label>项目名称 (Title)</label><input id="w-title" placeholder="如: NIKE Brand Film"></div>
-                <div><label>具体职责 (Roles)</label><input id="w-roles" placeholder="如: Director / Editor / Colorist"></div>
+                <div><label>具体职责 (Roles)</label><input id="w-roles" placeholder="如: Director / Editor"></div>
             </div>
             
-            <label>上传视频 (Video to R2)</label>
+            <label>上传视频 (Video File)</label>
             <div class="upload-zone" id="w-video-zone">
                 <input type="file" id="w-video-file" accept="video/*">
-                <p>点击或拖拽上传视频文件 (建议 MP4)</p>
+                <p>点击或拖拽上传视频文件</p>
                 <div class="upload-progress" id="w-video-progress"><div class="upload-bar" id="w-video-bar"></div></div>
                 <div class="status-text" id="w-video-status">等待上传</div>
             </div>
             <input type="hidden" id="w-video-url">
 
             <label>上传静帧封面 (Poster) - 选填</label>
-            <div class="upload-zone" id="w-poster-zone">
+            <div class="upload-zone" id="w-poster-zone" style="padding: 1rem;">
                 <input type="file" id="w-poster-file" accept="image/*">
-                <p>点击或拖拽上传封面图</p>
+                <p style="font-size: 0.8rem;">点击上传封面图</p>
                 <div class="status-text" id="w-poster-status">等待上传</div>
             </div>
             <input type="hidden" id="w-poster-url">
 
-            <button class="primary" onclick="addWork()" style="margin-top: 1rem;">保存到作品集</button>
+            <button class="primary" onclick="addWork()">保存到作品集</button>
         </div>
     </div>
 
     <div id="tab-settings" class="section">
-        <h1>全局设置 (Settings)</h1>
+        <h1>全局设置</h1>
         <div class="card">
             <label>首屏背景视频 (Hero Video)</label>
             <div class="upload-zone" id="s-hero-zone">
                 <input type="file" id="s-hero-file" accept="video/*">
-                <p>上传首页全屏循环视频</p>
+                <p>上传首页全屏循环视频（若留空则显示极光流体预览）</p>
                 <div class="upload-progress" id="s-hero-progress"><div class="upload-bar" id="s-hero-bar"></div></div>
                 <div class="status-text" id="s-hero-status">等待上传</div>
             </div>
             <input type="hidden" id="s-hero-url">
 
-            <label>关于我 (About Text)</label>
-            <textarea id="s-about" rows="4" placeholder="你的视觉风格描述、技术栈... 支持HTML标签，如 <em>强调文字</em>"></textarea>
+            <label>个人简介 (About Text)</label>
+            <textarea id="s-about" rows="4" placeholder="支持 <em>强调文字</em> 标签"></textarea>
 
             <label>联系邮箱</label>
-            <input id="s-email" placeholder="hi@example.com">
+            <input id="s-email" placeholder="hi@04080606.xyz">
             
-            <h3 style="margin: 3rem 0 1.5rem; font-weight: 400; border-top: 1px solid var(--border); padding-top: 2rem;">社交媒体 (Socials)</h3>
+            <h3 style="margin: 3rem 0 1.5rem; font-weight: 400; border-top: 1px solid var(--border); padding-top: 2rem;">社交媒体链接</h3>
             <div class="grid-2">
-                <div><label>Vimeo</label><input id="s-vimeo"></div>
-                <div><label>YouTube</label><input id="s-yt"></div>
+                <div><label>Vimeo（维密欧）</label><input id="s-vimeo"></div>
+                <div><label>YouTube（油管）</label><input id="s-yt"></div>
                 <div><label>Instagram</label><input id="s-ins"></div>
                 <div><label>小红书</label><input id="s-xhs"></div>
                 <div><label>Behance</label><input id="s-behance"></div>
                 <div><label>B站</label><input id="s-bili"></div>
+                <div><label>X（推特）</label><input id="s-x"></div>
+                <div><label>微博</label><input id="s-weibo"></div>
             </div>
-            <button class="primary" onclick="saveSettings()" style="margin-top: 1rem;">更新全站设置</button>
+
+            <h3 style="margin: 3rem 0 1.5rem; font-weight: 400; border-top: 1px solid var(--border); padding-top: 2rem; color: var(--jade);">合作品牌管理 (Clients)</h3>
+            <div id="clients-list" style="margin-bottom: 1rem;"></div>
+            
+            <div style="background: #000; padding: 1.5rem; border: 1px dashed var(--border); border-radius: 8px;">
+                <label>新增合作品牌（输入名称，或上传 Logo 二选一即可）</label>
+                <div class="grid-2">
+                    <input id="c-name" placeholder="输入文字名称 (如: Apple)">
+                    <div class="upload-zone" id="c-logo-zone" style="margin: 0; padding: 0.8rem;">
+                        <input type="file" id="c-logo-file" accept="image/*">
+                        <span style="font-size: 0.8rem;" id="c-logo-status">点击上传 Logo 图像</span>
+                    </div>
+                </div>
+                <input type="hidden" id="c-logo-url">
+                <button class="btn-ghost" onclick="addClient()" style="margin-top: 1rem;">+ 加入跑马灯列表</button>
+            </div>
+
+            <button class="primary" onclick="saveSettings()" style="margin-top: 3rem; width: 100%;">💾 保存所有设置</button>
         </div>
     </div>
 </main>
 
 <script>
 let token = sessionStorage.getItem('admin_token');
+let s_clients = [];
 if(token) document.getElementById('login').style.display = 'none';
 
 async function login() {
@@ -150,11 +172,8 @@ async function api(path, method='GET', body=null) {
 async function loadData() {
     const works = await api('/admin/works');
     document.getElementById('works-list').innerHTML = works.map((w, i) => `
-        <div class="work-item">
-            <div>
-                <strong>${w.title}</strong>
-                <span style="color:var(--muted); font-size:0.8rem; margin-left:1rem">${w.roles || ''}</span>
-            </div>
+        <div class="list-item">
+            <div><strong>${w.title}</strong><span style="color:var(--muted); font-size:0.8rem; margin-left:1rem">${w.roles || ''}</span></div>
             <button class="btn-danger" onclick="deleteWork(${i})">删除</button>
         </div>
     `).join('');
@@ -165,8 +184,36 @@ async function loadData() {
     
     document.getElementById('s-about').value = s.aboutBody || '';
     document.getElementById('s-email').value = s.contactEmail || '';
-    ['ins','xhs','behance','vimeo','yt','bili'].forEach(key => { document.getElementById(`s-${key}`).value = s[`${key}Link`] || ''; });
+    ['ins','xhs','behance','vimeo','yt','bili','x','weibo'].forEach(key => { document.getElementById(`s-${key}`).value = s[`${key}Link`] || ''; });
+
+    s_clients = s.clients || [];
+    renderClients();
 }
+
+function renderClients() {
+    document.getElementById('clients-list').innerHTML = s_clients.map((c, i) => `
+        <div class="list-item" style="padding: 0.5rem 1rem;">
+            <div style="display:flex; align-items:center; gap:1rem;">
+                ${c.logoUrl ? `<img src="${c.logoUrl}" style="height:24px; max-width:80px; object-fit:contain;">` : ''}
+                <span>${c.name || '图片Logo'}</span>
+            </div>
+            <button class="btn-ghost" style="color: #ff453a; border-color: #333;" onclick="deleteClient(${i})">移除</button>
+        </div>
+    `).join('');
+}
+
+function addClient() {
+    const name = document.getElementById('c-name').value;
+    const logoUrl = document.getElementById('c-logo-url').value;
+    if(!name && !logoUrl) return alert('必须输入名称或上传Logo');
+    s_clients.push({ name, logoUrl });
+    document.getElementById('c-name').value = '';
+    document.getElementById('c-logo-url').value = '';
+    document.getElementById('c-logo-status').innerText = '点击上传 Logo 图像';
+    renderClients();
+}
+
+function deleteClient(i) { s_clients.splice(i, 1); renderClients(); }
 
 async function addWork() {
     const title = document.getElementById('w-title').value;
@@ -187,39 +234,39 @@ async function deleteWork(i) {
 }
 
 async function saveSettings() {
+    const btn = document.querySelector('#tab-settings .primary:last-child');
+    btn.innerText = '保存中...';
     const s = {
         heroVideo: document.getElementById('s-hero-url').value, aboutBody: document.getElementById('s-about').value, contactEmail: document.getElementById('s-email').value,
         insLink: document.getElementById('s-ins').value, xhsLink: document.getElementById('s-xhs').value, behanceLink: document.getElementById('s-behance').value,
-        vimeoLink: document.getElementById('s-vimeo').value, ytLink: document.getElementById('s-yt').value, biliLink: document.getElementById('s-bili').value
+        vimeoLink: document.getElementById('s-vimeo').value, ytLink: document.getElementById('s-yt').value, biliLink: document.getElementById('s-bili').value,
+        xLink: document.getElementById('s-x').value, weiboLink: document.getElementById('s-weibo').value,
+        clients: s_clients
     };
     await api('/admin/settings', 'PUT', s);
-    alert('设置保存成功');
+    btn.innerText = '✅ 保存成功';
+    setTimeout(() => { btn.innerText = '💾 保存所有设置'; }, 2000);
 }
 
-// 恢复真实的 R2 拖拽上传逻辑
 function setupUpload(zoneId, fileId, urlId, progressId, barId, statusId) {
     const zone = document.getElementById(zoneId), file = document.getElementById(fileId), status = document.getElementById(statusId);
     zone.onclick = () => file.click();
-    zone.ondragover = e => { e.preventDefault(); zone.style.borderColor = '#fff'; };
+    zone.ondragover = e => { e.preventDefault(); zone.style.borderColor = 'var(--jade)'; };
     zone.ondragleave = () => { zone.style.borderColor = 'var(--border)'; };
     zone.ondrop = e => { e.preventDefault(); zone.style.borderColor = 'var(--border)'; if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]); };
     file.onchange = () => { if (file.files.length) handleFile(file.files[0]); };
     
     function handleFile(f) {
-        status.innerText = `正在上传: ${f.name}...`;
+        status.innerText = `上传中: ${f.name}`; status.style.color = '#fff';
         if(progressId) { document.getElementById(progressId).classList.add('active'); document.getElementById(barId).style.width = '0%'; }
-        
-        const xhr = new XMLHttpRequest(), safeName = f.name.replace(/[^\w.\-]/g, '_'), key = Date.now() + '_' + safeName;
+        const xhr = new XMLHttpRequest(), key = Date.now() + '_' + f.name.replace(/[^\w.\-]/g, '_');
         xhr.open('PUT', '/api/admin/upload/' + encodeURIComponent(key));
-        xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-        xhr.setRequestHeader('Content-Type', f.type || 'application/octet-stream');
+        xhr.setRequestHeader('Authorization', 'Bearer ' + token); xhr.setRequestHeader('Content-Type', f.type || 'application/octet-stream');
         xhr.upload.onprogress = e => { if (e.lengthComputable && barId) document.getElementById(barId).style.width = (e.loaded / e.total * 100) + '%'; };
         xhr.onload = () => {
             if(progressId) document.getElementById(progressId).classList.remove('active');
-            if (xhr.status >= 200 && xhr.status < 300) {
-                document.getElementById(urlId).value = JSON.parse(xhr.responseText).url;
-                status.innerText = '✅ 上传成功!'; status.style.color = '#fff';
-            } else { status.innerText = '❌ 上传失败'; status.style.color = '#ff453a'; }
+            if (xhr.status >= 200 && xhr.status < 300) { document.getElementById(urlId).value = JSON.parse(xhr.responseText).url; status.innerText = '✅ 上传成功'; status.style.color = 'var(--jade)'; } 
+            else { status.innerText = '❌ 上传失败'; status.style.color = '#ff453a'; }
         };
         xhr.send(f);
     }
@@ -228,6 +275,7 @@ function setupUpload(zoneId, fileId, urlId, progressId, barId, statusId) {
 setupUpload('w-video-zone', 'w-video-file', 'w-video-url', 'w-video-progress', 'w-video-bar', 'w-video-status');
 setupUpload('w-poster-zone', 'w-poster-file', 'w-poster-url', null, null, 'w-poster-status');
 setupUpload('s-hero-zone', 's-hero-file', 's-hero-url', 's-hero-progress', 's-hero-bar', 's-hero-status');
+setupUpload('c-logo-zone', 'c-logo-file', 'c-logo-url', null, null, 'c-logo-status');
 
 function logout() { sessionStorage.removeItem('admin_token'); location.reload(); }
 if(token) loadData();

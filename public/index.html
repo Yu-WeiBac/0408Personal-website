@@ -11,113 +11,103 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 <style>
 :root {
-    --bg-base: #000000;
+    --bg: #000; --text: #fff; --jade: #00D1FF;
     --glass: rgba(255, 255, 255, 0.03);
     --glass-border: rgba(255, 255, 255, 0.08);
-    --glass-blur: blur(30px);
-    --cyan: #00D1FF;
-    --cyan-glow: rgba(0, 209, 255, 0.2);
-    --text: #FFFFFF;
-    --text-dim: rgba(255, 255, 255, 0.5);
     --font-main: 'Inter', 'Noto Sans SC', sans-serif;
     --gutter: clamp(1.5rem, 4vw, 4rem);
-    /* 鼠标位置变量 */
-    --mx: 50%; --my: 50%;
 }
-
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg-base); }
-body { background: var(--bg-base); color: var(--text); font-family: var(--font-main); -webkit-font-smoothing: antialiased; overflow-x: hidden; cursor: none; }
+body { background: #000; color: var(--text); font-family: var(--font-main); -webkit-font-smoothing: antialiased; overflow-x: hidden; cursor: none; }
 
-/* === 动态液态底光 (响应鼠标) === */
-.ambient { position: fixed; inset: 0; z-index: -2; pointer-events: none; background: #000; overflow: hidden; }
-.orb {
-    position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.3;
-    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1); /* 平滑跟随 */
-}
-/* orb-1 追随鼠标 */
-.orb-1 {
-    width: 60vw; height: 60vw; background: #0044FF;
-    left: calc(var(--mx) - 30vw); top: calc(var(--my) - 30vw);
-}
-/* orb-2 反向运动 */
-.orb-2 {
-    width: 50vw; height: 50vw; background: var(--cyan);
-    right: calc(var(--mx) - 25vw); bottom: calc(var(--my) - 25vw);
-}
+/* 1. 响应式动态背景光 (跟随鼠标) */
+.ambient { position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden; background: #000; }
+.orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.25; will-change: transform; transition: transform 0.8s cubic-bezier(0.2, 0, 0.2, 1); }
+.orb-1 { width: 60vw; height: 60vw; background: #0044FF; top: -10%; left: -10%; }
+.orb-2 { width: 50vw; height: 50vw; background: var(--jade); bottom: -10%; right: -10%; }
 
-/* === 极致跟手光标 === */
-.cursor-dot { position: fixed; top: 0; left: 0; width: 6px; height: 6px; background: #fff; border-radius: 50%; z-index: 10000; pointer-events: none; mix-blend-mode: difference; }
+/* 2. 极致物理光标 (带拉伸形变) */
+.cursor-dot { position: fixed; top: 0; left: 0; width: 4px; height: 4px; background: #fff; border-radius: 50%; z-index: 10001; pointer-events: none; }
 .cursor-ring {
-    position: fixed; top: 0; left: 0; width: 34px; height: 32px;
-    border: 1px solid rgba(255,255,255,0.25); border-radius: 50%;
-    z-index: 9999; pointer-events: none;
+    position: fixed; top: 0; left: 0; width: 36px; height: 36px;
+    border: 1px solid rgba(255,255,255,0.3); border-radius: 50%;
+    z-index: 10000; pointer-events: none;
+    mix-blend-mode: difference; backdrop-filter: blur(2px);
     transition: width 0.3s, height 0.3s, border-color 0.3s, background 0.3s;
 }
-.cursor-ring.is-hover { width: 60px; height: 60px; border-color: var(--cyan); background: rgba(0,209,255,0.05); backdrop-filter: blur(4px); }
+.cursor-ring.is-hover { width: 70px; height: 70px; border-color: var(--jade); background: rgba(0, 209, 255, 0.05); }
 
-/* === 全局毛玻璃胶囊导航 === */
+/* 3. 玻璃拟物 UI 胶囊 */
 nav {
     position: fixed; top: 1.5rem; left: 50%; transform: translateX(-50%); z-index: 100;
-    background: rgba(10, 10, 12, 0.4); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); border-radius: 999px;
-    padding: 0.6rem 2rem; display: flex; align-items: center; gap: 3.5rem;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+    background: rgba(10, 10, 12, 0.4); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 999px;
+    padding: 0.6rem 2rem; display: flex; align-items: center; gap: 4rem; box-shadow: 0 15px 30px rgba(0,0,0,0.5);
 }
 .logo { font-size: 1.1rem; font-weight: 500; color: #fff; text-decoration: none; letter-spacing: 2px; }
-.logo span { color: var(--cyan); }
+.logo span { color: var(--jade); }
 .menu { display: flex; gap: 2.5rem; list-style: none; }
-.menu a { color: var(--text-dim); text-decoration: none; font-size: 0.8rem; text-transform: uppercase; transition: 0.3s; }
+.menu a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.8rem; text-transform: uppercase; transition: 0.3s; }
 .menu a:hover { color: #fff; }
-.lang-switch { font-size: 0.8rem; cursor: pointer; color: var(--text-dim); transition: 0.3s; }
+.lang-btn { font-size: 0.8rem; cursor: pointer; color: rgba(255,255,255,0.4); transition: 0.3s; }
 
-/* === Hero === */
-.hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; }
-.hero-video-container { position: absolute; inset: 0; z-index: -1; opacity: 0.5; overflow: hidden; }
-.hero-video { width: 100%; height: 100%; object-fit: cover; }
-.hero-overlay { position: absolute; inset: 0; background: radial-gradient(circle at center, transparent 0%, #000 100%); z-index: 0; }
-.hero-title { position: relative; z-index: 1; font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 200; line-height: 1.2; letter-spacing: 3px; }
-.hero-title em { background: linear-gradient(135deg, #fff 0%, var(--cyan) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-style: normal; font-weight: 400; }
+/* 4. 沉浸式首屏 (Hero) */
+.hero { height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; position: relative; }
+.hero-video { position: absolute; inset: 0; z-index: -1; opacity: 0.5; width: 100%; height: 100%; object-fit: cover; }
+.hero-title { font-size: clamp(2rem, 6vw, 5rem); font-weight: 200; line-height: 1.3; letter-spacing: 3px; }
+.hero-title em { background: linear-gradient(135deg, #fff 0%, var(--jade) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-style: normal; font-weight: 400; }
 
-/* === 玻璃作品网格 === */
-.works { padding: 6rem var(--gutter); position: relative; z-index: 2; }
-.works-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem; }
+/* 5. 玻璃卡片网格与筛选 */
+.works { padding: 6rem var(--gutter); position: relative; z-index: 1; }
+.works-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 1rem; }
+.filter-bar { display: flex; gap: 1.5rem; }
+.filter-btn { background: none; border: none; color: rgba(255,255,255,0.4); font-size: 0.7rem; text-transform: uppercase; cursor: pointer; transition: 0.3s; border-bottom: 1px solid transparent; }
+.filter-btn.active { color: var(--jade); border-bottom-color: var(--jade); }
+
+.works-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem; transition: opacity 0.4s; }
 .glass-card {
-    background: var(--glass); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border);
+    background: var(--glass); backdrop-filter: blur(25px); border: 1px solid var(--glass-border);
     border-radius: 24px; padding: 1.2rem; grid-column: span 6; aspect-ratio: 16/10;
-    text-decoration: none; color: #fff; transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+    text-decoration: none; color: #fff; transition: transform 0.5s cubic-bezier(0.2, 1, 0.3, 1); cursor: pointer;
 }
-.glass-card:hover { transform: translateY(-8px); border-color: rgba(0,209,255,0.3); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-.work-card:nth-child(4n+1), .work-card:nth-child(4n+4) { grid-column: span 8; }
-.work-card:nth-child(4n+2), .work-card:nth-child(4n+3) { grid-column: span 4; aspect-ratio: 4/5; }
+.glass-card:hover { transform: translateY(-8px); border-color: rgba(0,209,255,0.2); }
+.work-media { border-radius: 16px; overflow: hidden; width: 100%; height: 100%; background: #0a0a0a; position: relative; }
+.work-media video { width: 100%; height: 100%; object-fit: cover; opacity: 0.75; transition: 0.6s; }
+.glass-card:hover video { opacity: 1; transform: scale(1.05); }
 
-.media-wrap { border-radius: 16px; overflow: hidden; height: 100%; width: 100%; position: relative; background: #0a0a0a; }
-.work-media { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.6s; }
-.glass-card:hover .work-media { opacity: 1; transform: scale(1.05); }
+/* 6. 影院模式详情层 */
+.cinema { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; opacity: 0; pointer-events: none; transition: 0.5s; }
+.cinema.active { opacity: 1; pointer-events: auto; }
+.cinema-close { position: absolute; top: 2rem; right: 3rem; color: #fff; font-size: 2.5rem; cursor: pointer; background: none; border: none; font-weight: 100; }
+.cinema-player { flex: 7; display: flex; align-items: center; justify-content: center; padding: 2rem; background: #050505; }
+.cinema-player video { width: 100%; max-height: 85vh; border-radius: 4px; box-shadow: 0 40px 100px rgba(0,0,0,0.8); }
+.cinema-aside { flex: 3; padding: 6rem 4rem; overflow-y: auto; }
+.ca-title { font-size: 2.2rem; font-weight: 300; margin-bottom: 2rem; letter-spacing: 1px; }
+.ca-desc { font-size: 0.95rem; color: #aaa; line-height: 1.8; margin-bottom: 3rem; border-left: 1px solid var(--jade); padding-left: 1.5rem; }
+.ca-meta { margin-bottom: 1.5rem; }
+.ca-label { font-size: 0.7rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.4rem; }
+.ca-val { font-size: 0.95rem; color: var(--jade); }
 
-/* === 社交链接 (完全透明毛玻璃) === */
-.contact { padding: 10rem var(--gutter); text-align: center; position: relative; z-index: 2; }
+/* 7. 极致通透毛玻璃联系区 */
+.contact { padding: 6rem var(--gutter) 10rem; position: relative; z-index: 2; }
 .contact-glass {
-    background: var(--glass); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border);
-    border-radius: 40px; max-width: 850px; margin: 0 auto; padding: 6rem 2rem;
-    box-shadow: 0 40px 100px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+    background: var(--glass); backdrop-filter: blur(40px); border: 1px solid var(--glass-border);
+    border-radius: 40px; max-width: 850px; margin: 0 auto; padding: 6rem 2rem; text-align: center;
+    box-shadow: 0 50px 100px rgba(0,0,0,0.5);
 }
-.email-link { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 200; color: #fff; text-decoration: none; transition: 0.3s; margin-bottom: 3.5rem; display: inline-block; }
-.email-link:hover { color: var(--cyan); text-shadow: 0 0 20px var(--cyan-glow); }
+.email-link { font-size: clamp(1.5rem, 4vw, 2.8rem); font-weight: 200; color: #fff; text-decoration: none; transition: 0.3s; margin-bottom: 4rem; display: inline-block; }
+.email-link:hover { color: var(--jade); text-shadow: 0 0 30px rgba(0, 209, 255, 0.4); }
 
 .social-bar { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
 .social-bar a {
-    background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
+    background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
     padding: 0.8rem 1.8rem; border-radius: 999px; color: #fff; text-decoration: none;
-    font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; transition: 0.3s;
+    font-size: 0.8rem; text-transform: uppercase; transition: 0.3s;
 }
-.social-bar a:hover { background: var(--cyan); color: #000; border-color: var(--cyan); box-shadow: 0 0 20px var(--cyan-glow); transform: translateY(-2px); }
+.social-bar a:hover { background: var(--jade); color: #000; box-shadow: 0 0 25px rgba(0, 209, 255, 0.5); transform: translateY(-3px); }
 
-footer { padding: 4rem; text-align: center; font-size: 0.7rem; color: var(--text-dim); letter-spacing: 2px; }
+footer { padding: 4rem; text-align: center; font-size: 0.7rem; color: rgba(255,255,255,0.3); letter-spacing: 2px; }
 
-@media (max-width: 900px) {
-    nav { width: 92%; padding: 0.6rem 1.2rem; gap: 1rem; } .menu { display: none; }
-    .glass-card:nth-child(n) { grid-column: span 12; aspect-ratio: 16/9; }
-}
+@media (max-width: 900px) { nav { width: 92%; } .menu { display: none; } .glass-card { grid-column: span 12; } .cinema { flex-direction: column; } }
 </style>
 </head>
 <body>
@@ -127,82 +117,134 @@ footer { padding: 4rem; text-align: center; font-size: 0.7rem; color: var(--text
 
 <nav>
     <a href="#" class="logo hover-target">于未<span>氵</span></a>
-    <div class="nav-right">
+    <div style="display:flex; align-items:center; gap:2.5rem">
         <ul class="menu">
             <li><a href="#works" data-i18n="navW">Work</a></li>
             <li><a href="#about" data-i18n="navA">About</a></li>
             <li><a href="#contact" data-i18n="navC">Contact</a></li>
         </ul>
-        <div class="lang-switch hover-target" onclick="toggleLang()" id="lang-btn">EN</div>
+        <div class="lang-btn hover-target" onclick="toggleLang()" id="lang-btn">EN</div>
     </div>
 </nav>
 
 <section class="hero">
-    <div class="hero-video-container" id="hero-media-container"></div>
-    <div class="hero-overlay"></div>
-    <h1 class="hero-title">控制光影，<br><em>重塑液态的边界。</em></h1>
+    <div id="hero-media-container" style="position: absolute; inset: 0; z-index: -1;"></div>
+    <div class="hero-title scroll-reveal">控制光影，<br><em>重塑液态的边界。</em></div>
 </section>
 
+<section class="about" id="about"><div class="about-text scroll-reveal" id="about-text" style="padding: 10rem var(--gutter); text-align: center; font-size: clamp(1.2rem, 2vw, 1.8rem); font-weight: 300; color: #ccc;"></div></section>
+
 <section class="works" id="works">
+    <div class="works-header scroll-reveal">
+        <div class="filter-btn active" data-i18n="secW">SELECTED WORKS</div>
+        <div class="filter-bar">
+            <button class="filter-btn active hover-target" data-filter="All">All</button>
+            <button class="filter-btn hover-target" data-filter="Commercial">Commercial</button>
+            <button class="filter-btn hover-target" data-filter="BrandFilm">Brand Film</button>
+            <button class="filter-btn hover-target" data-filter="Personal">Personal</button>
+        </div>
+    </div>
     <div class="works-grid" id="works-grid"></div>
 </section>
 
+<div class="cinema" id="cinema">
+    <button class="cinema-close hover-target" onclick="closeCinema()">×</button>
+    <div class="cinema-player" id="cinema-box"></div>
+    <div class="cinema-aside">
+        <h2 class="ca-title" id="ca-title">Title</h2>
+        <div class="ca-label">Client: <span id="ca-client" style="color:#fff">Brand</span></div>
+        <p class="ca-desc" id="ca-desc"></p>
+        <div class="ca-meta"><div class="ca-label" data-i18n="mR">Roles</div><div class="ca-val" id="ca-roles"></div></div>
+        <div class="ca-meta"><div class="ca-label" data-i18n="mS">Skills</div><div class="ca-val" id="ca-tags"></div></div>
+    </div>
+</div>
+
 <section class="contact">
-    <div class="contact-glass">
+    <div class="contact-glass scroll-reveal">
         <a href="" class="email-link hover-target" id="contact-email-link">...</a>
         <div class="social-bar" id="social-links"></div>
     </div>
 </section>
 
-<footer>© 2026 于未氵 · LIQUID GLASS VISION</footer>
+<footer>© 2026 于未氵 · LIQUID GLASS VISION SYNDICATE</footer>
 
 <script>
-// 1. 0 延迟交互引擎
+// 1. 物理交互引擎 (LERP + 拉伸)
 const dot = document.querySelector('.cursor-dot'), ring = document.querySelector('.cursor-ring');
-const root = document.documentElement;
+const orb1 = document.querySelector('.orb-1'), orb2 = document.querySelector('.orb-2');
+let mouse = { x: 0, y: 0 }, pos = { x: 0, y: 0 }, lastPos = { x: 0, y: 0 };
+const ease = 0.15; // 物理跟随因子
 
 document.addEventListener('mousemove', e => {
-    const x = e.clientX, y = e.clientY;
-    // 瞬时更新光标
-    dot.style.transform = `translate(${x}px, ${y}px)`;
-    // 极低延迟平滑跟随
-    gsap.to(ring, { x: x, y: y, duration: 0.15, ease: "power2.out" });
-    // 更新背景光位置变量
-    root.style.setProperty('--mx', (x / window.innerWidth * 100) + '%');
-    root.style.setProperty('--my', (y / window.innerHeight * 100) + '%');
+    mouse.x = e.clientX; mouse.y = e.clientY;
+    dot.style.transform = `translate(${mouse.x}px, ${mouse.y}px)`;
 });
+
+function updatePhysics() {
+    pos.x += (mouse.x - pos.x) * ease;
+    pos.y += (mouse.y - pos.y) * ease;
+    const dx = pos.x - lastPos.x, dy = pos.y - lastPos.y;
+    const vel = Math.sqrt(dx*dx + dy*dy);
+    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+    const stretch = Math.min(vel * 0.02, 0.5); 
+    ring.style.transform = `translate(${pos.x}px, ${pos.y}px) rotate(${angle}deg) scale(${1 + stretch}, ${1 - stretch})`;
+    orb1.style.transform = `translate(${mouse.x * 0.1}px, ${mouse.y * 0.1}px)`;
+    orb2.style.transform = `translate(${-mouse.x * 0.1}px, ${-mouse.y * 0.1}px)`;
+    lastPos.x = pos.x; lastPos.y = pos.y;
+    requestAnimationFrame(updatePhysics);
+}
+requestAnimationFrame(updatePhysics);
 
 document.addEventListener('mouseover', e => { if (e.target.closest('.hover-target, .glass-card, a, button')) ring.classList.add('is-hover'); });
 document.addEventListener('mouseout', e => { if (e.target.closest('.hover-target, .glass-card, a, button')) ring.classList.remove('is-hover'); });
 
-// 2. 数据渲染
+// 2. 数据渲染与链接对齐
+let allWorks = [], currentLang = localStorage.getItem('site_lang') || 'zh';
+const dict = {
+    zh: { navW: '作品', navA: '关于', navC: '联系', secW: '精选成片', mR: '具体职责', mS: '核心技能' },
+    en: { navW: 'WORK', navA: 'ABOUT', navC: 'CONTACT', secW: 'SELECTED WORKS', mR: 'ROLES', mS: 'SKILLS' }
+};
+
+function toggleLang() { currentLang = currentLang === 'zh' ? 'en' : 'zh'; localStorage.setItem('site_lang', currentLang); applyLang(); }
+function applyLang() { 
+    document.getElementById('lang-btn').innerText = currentLang === 'zh' ? 'EN' : '中';
+    document.querySelectorAll('[data-i18n]').forEach(el => { el.innerText = dict[currentLang][el.getAttribute('data-i18n')]; });
+}
+
+window.openCinema = (idx) => {
+    const w = allWorks[idx];
+    document.getElementById('ca-title').innerText = w.title;
+    document.getElementById('ca-client').innerText = w.client || 'N/A';
+    document.getElementById('ca-desc').innerHTML = (w.desc || '').replace(/\n/g, '<br>');
+    document.getElementById('ca-roles').innerText = w.roles || '-';
+    document.getElementById('ca-tags').innerText = w.tags || '-';
+    document.getElementById('cinema-box').innerHTML = `<video src="${w.videoUrl}" controls autoplay playsinline></video>`;
+    document.getElementById('cinema').classList.add('active');
+};
+function closeCinema() { document.getElementById('cinema').classList.remove('active'); setTimeout(()=>document.getElementById('cinema-box').innerHTML='', 500); }
+
 async function loadData() {
     try {
+        applyLang();
         const [wRes, sRes] = await Promise.all([fetch('/api/works'), fetch('/api/settings')]);
-        const works = await wRes.json(), s = await sRes.json();
+        allWorks = await wRes.json(); const s = await sRes.json();
         
-        document.getElementById('works-grid').innerHTML = works.map(w => `
-            <a href="${w.link || '#'}" class="glass-card work-card hover-target" target="_blank">
-                <div class="media-wrap">
-                    <video class="work-media" muted loop playsinline ${w.posterUrl ? `poster="${w.posterUrl}"` : ''} src="${w.videoUrl}"></video>
+        document.getElementById('works-grid').innerHTML = allWorks.map((w, idx) => `
+            <div class="glass-card hover-target" onclick="openCinema(${idx})">
+                <div class="work-media">
+                    <video src="${w.videoUrl}" muted loop playsinline ${w.posterUrl ? `poster="${w.posterUrl}"` : ''}></video>
                 </div>
-                <div style="margin-top:1.2rem">
-                    <div class="work-tag">${w.client || w.category || 'PROJECT'}</div>
-                    <div class="work-name">${w.title}</div>
+                <div style="margin-top:1.5rem">
+                    <div style="font-size:0.7rem; color:var(--jade); letter-spacing:2px; text-transform:uppercase; margin-bottom:0.4rem">${w.category || 'PROJECT'}</div>
+                    <div style="font-size:1.2rem; font-weight:300">${w.title}</div>
                 </div>
-            </a>
-        `).join('');
-
-        // 视频悬停播放
-        document.querySelectorAll('.glass-card').forEach(c => {
-            const v = c.querySelector('video');
-            c.onmouseenter = () => v.play(); c.onmouseleave = () => { v.pause(); v.currentTime = 0; };
-        });
+            </div>`).join('');
 
         if(s.heroVideo) document.getElementById('hero-media-container').innerHTML = `<video class="hero-video" autoplay muted loop playsinline src="${s.heroVideo}"></video>`;
-        const mail = document.getElementById('contact-email-link'); mail.href = `mailto:${s.contactEmail}`; mail.innerText = s.contactEmail;
+        if(s.aboutBody) document.getElementById('about-text').innerHTML = s.aboutBody.replace(/\n/g, '<br>');
+        const mail = document.getElementById('contact-email-link'); mail.href = `mailto:${s.contactEmail}`; mail.innerText = s.contactEmail || 'hi@04080606.xyz';
         
-        // 社交链接全量渲染
+        // 社交链接修复 (严格对应后台键名)
         const socialData = [
             {label: 'Vimeo', url: s.vimeoLink}, {label: 'YouTube', url: s.ytLink}, {label: 'Instagram', url: s.insLink},
             {label: '小红书', url: s.xhsLink}, {label: 'Behance', url: s.behanceLink}, {label: '哔哩哔哩', url: s.biliLink},
@@ -210,8 +252,7 @@ async function loadData() {
         ];
         document.getElementById('social-links').innerHTML = socialData.filter(d => d.url).map(d => `<a href="${d.url}" target="_blank" class="hover-target">${d.label}</a>`).join('');
 
-        // 揭示动画
-        gsap.from('.glass-card', { y: 50, opacity: 0, stagger: 0.1, scrollTrigger: { trigger: '.works-grid', start: 'top 80%' } });
+        gsap.from('.glass-card', { y: 50, opacity: 0, stagger: 0.1, scrollTrigger: { trigger: '.works-grid', start: 'top 85%' } });
     } catch (e) { console.error(e); }
 }
 loadData();

@@ -8,10 +8,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..600,0..100&family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..600,0..100&display=swap" rel="stylesheet">
 
 <style>
 :root {
@@ -22,9 +19,10 @@
     --paper-faint: rgba(242, 240, 230, 0.25);
     --jade: #6FE3D2;
 
-    --font-display: 'Fraunces', 'Noto Serif SC', serif;
-    --font-serif-cn: 'Noto Serif SC', 'Songti SC', serif;
-    --font-sans: 'Noto Sans SC', -apple-system, sans-serif;
+    /* 字体已全面替换为现代无衬线黑体 */
+    --font-display: 'Fraunces', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    --font-serif-cn: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Microsoft YaHei", "PingFang SC", sans-serif;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Microsoft YaHei", "PingFang SC", sans-serif;
 
     --gutter: clamp(1.5rem, 4vw, 4rem);
     --section-pad: clamp(6rem, 12vw, 10rem);
@@ -148,11 +146,13 @@ nav {
         var(--ink);
 }
 
-/* 视频上的暗色蒙版 */
+/* 视频上的暗色蒙版与高斯模糊（解决视频文字重叠） */
 .hero::after {
     content: '';
     position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(10,10,10,0.4) 0%, rgba(10,10,10,0.1) 40%, rgba(10,10,10,0.7) 100%);
+    background: linear-gradient(180deg, rgba(10,10,10,0.7) 0%, rgba(10,10,10,0.5) 40%, rgba(10,10,10,0.85) 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     z-index: 1;
 }
 
@@ -416,11 +416,11 @@ nav {
 }
 .contact-mail {
     display: inline-block;
-    font-family: var(--font-display);
-    font-size: clamp(1.2rem, 2.5vw, 2rem);
+    font-family: var(--font-sans);
+    font-size: clamp(0.9rem, 1.2vw, 1.1rem);
     color: var(--paper);
     text-decoration: none;
-    padding: 1rem 2rem;
+    padding: 0.8rem 1.8rem;
     border: 1px solid var(--paper-faint);
     border-radius: 999px;
     transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -482,6 +482,8 @@ footer {
     .hero-meta .scroll { display: none; }
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 </head>
 <body>
 
@@ -498,7 +500,6 @@ footer {
 </nav>
 
 <section class="hero">
-    <!-- 默认显示 fallback 渐变背景；当 settings.heroVideo 有值时，JS 会插入视频 -->
     <div class="hero-fallback" id="hero-bg"></div>
 
     <div class="hero-content">
@@ -532,7 +533,6 @@ footer {
         </h2>
     </div>
     <div class="works-grid" id="works-grid">
-        <!-- 由 JS 从 API 渲染 -->
         <div class="work-empty">作品加载中…</div>
     </div>
 </section>
@@ -563,10 +563,10 @@ footer {
     </h2>
     <a href="mailto:hi@04080606.xyz" class="contact-mail hover-target" id="contact-mail">hi@04080606.xyz</a>
     <div class="contact-socials">
-        <a href="#" class="hover-target">Instagram</a>
-        <a href="#" class="hover-target">Behance</a>
-        <a href="#" class="hover-target">微博</a>
-        <a href="#" class="hover-target">小红书</a>
+        <a href="#" target="_blank" class="hover-target">Instagram</a>
+        <a href="#" target="_blank" class="hover-target">Behance</a>
+        <a href="#" target="_blank" class="hover-target">微博</a>
+        <a href="#" target="_blank" class="hover-target">小红书</a>
     </div>
 </section>
 
@@ -650,7 +650,6 @@ function renderWorks(works) {
         grid.innerHTML = '<div class="work-empty">作品暂未发布</div>';
         return;
     }
-    // 自动给作品分配尺寸：第1个wide，第2个tall，第3、4个half，第5个full，循环
     const sizes = ['size-wide', 'size-tall', 'size-half', 'size-half', 'size-full'];
     grid.innerHTML = works.map((w, i) => {
         const size = sizes[i % sizes.length];
@@ -660,7 +659,7 @@ function renderWorks(works) {
                 ? `<img class="work-media" src="${w.posterUrl}" alt="${escapeHtml(w.title)}">`
                 : `<div class="work-media" style="background:linear-gradient(135deg,#1a1a1a,#0a0a0a);"></div>`);
         return `
-            <a href="${w.link || '#'}" class="work-card ${size} hover-target">
+            <a href="${w.link || '#'}" class="work-card ${size} hover-target" target="_blank">
                 ${media}
                 <div class="work-overlay">
                     ${w.tag ? `<span class="work-tag">— ${escapeHtml(w.tag)}</span>` : ''}

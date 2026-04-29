@@ -7,333 +7,162 @@
 <style>
 :root { --bg: #0A0A0A; --panel: #141414; --border: #222; --text: #E5E5E5; --muted: #888; --jade: #6FE3D2; }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: var(--bg); color: var(--text); font-family: -apple-system, "PingFang SC", sans-serif; display: flex; min-height: 100vh; font-weight: 300; }
-aside { width: 240px; background: var(--panel); border-right: 1px solid var(--border); padding: 3rem 2rem; position: fixed; height: 100vh; display: flex; flex-direction: column; }
-.logo { font-size: 1.2rem; font-weight: 600; margin-bottom: 3rem; color: #fff; letter-spacing: 1px; }
-nav button { display: block; width: 100%; background: none; border: none; color: var(--muted); text-align: left; padding: 0.8rem 1rem; margin-bottom: 0.5rem; border-radius: 6px; cursor: pointer; transition: 0.2s; font-size: 0.9rem; }
-nav button:hover { background: rgba(255,255,255,0.03); color: #fff; }
-nav button.active { background: rgba(111,227,210,0.1); color: var(--jade); font-weight: 500; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system, "PingFang SC", sans-serif; display: flex; min-height: 100vh; }
+aside { width: 250px; background: var(--panel); border-right: 1px solid var(--border); padding: 3rem 2rem; position: fixed; height: 100vh; display: flex; flex-direction: column; }
+.logo { font-size: 1.2rem; font-weight: 600; margin-bottom: 3rem; letter-spacing: 1px; }
+nav button { display: block; width: 100%; background: none; border: none; color: var(--muted); text-align: left; padding: 0.8rem 1rem; margin-bottom: 0.5rem; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+nav button.active { background: rgba(111,227,210,0.1); color: var(--jade); }
 .lang-toggle { margin-top: auto; padding: 1rem 0; cursor: pointer; color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--border); }
-.lang-toggle:hover { color: #fff; }
 
-main { margin-left: 240px; flex: 1; padding: 4rem; max-width: 1000px; }
+main { margin-left: 250px; flex: 1; padding: 4rem; max-width: 1000px; }
 .section { display: none; } .section.active { display: block; }
 h1 { font-size: 1.8rem; font-weight: 400; margin-bottom: 2rem; }
 .card { background: var(--panel); padding: 2rem; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 2rem; }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
-.full-width { grid-column: span 2; }
-
-label { display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--muted); }
-input, textarea, select { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 0.8rem; border-radius: 6px; outline: none; transition: 0.3s; font-family: inherit; font-size: 0.9rem; }
-input:focus, textarea:focus, select:focus { border-color: var(--jade); }
+label { display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--muted); text-transform: uppercase; }
+input, textarea, select { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 0.8rem; border-radius: 6px; outline: none; font-family: inherit; }
+input:focus, select:focus { border-color: var(--jade); }
 button.primary { background: #fff; color: #000; border: none; padding: 0.8rem 2rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.3s; }
 button.primary:hover { background: var(--jade); }
 .btn-danger { color: #ff453a; background: none; border: 1px solid #ff453a; padding: 0.4rem 1rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
-.btn-ghost { background: transparent; color: #fff; border: 1px solid #555; padding: 0.4rem 1rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+.btn-ghost { background: transparent; color: #fff; border: 1px solid #444; padding: 0.4rem 1rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
 
-.upload-zone { border: 1px dashed var(--border); border-radius: 8px; padding: 2rem; text-align: center; cursor: pointer; transition: 0.3s; background: #000; margin-bottom: 1rem; }
+.upload-zone { border: 1px dashed var(--border); border-radius: 8px; padding: 2rem; text-align: center; cursor: pointer; background: #000; margin-bottom: 1rem; transition: 0.3s; }
 .upload-zone:hover { border-color: var(--jade); }
-.upload-zone input[type="file"] { display: none; }
-.upload-progress { height: 3px; background: #222; margin-top: 1rem; border-radius: 3px; overflow: hidden; display: none; }
-.upload-progress.active { display: block; }
-.upload-bar { height: 100%; background: var(--jade); width: 0%; transition: width 0.2s; }
+.upload-zone input { display: none; }
+.upload-bar { height: 3px; background: var(--jade); width: 0%; transition: 0.2s; margin-top: 1rem; }
 .status-text { font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem; }
 
-.list-item { display: flex; justify-content: space-between; align-items: center; background: #000; padding: 1.2rem; margin-bottom: 0.5rem; border-radius: 8px; border: 1px solid var(--border); }
+.item { display: flex; justify-content: space-between; align-items: center; background: #000; padding: 1rem; margin-bottom: 0.5rem; border-radius: 8px; border: 1px solid var(--border); }
 #login { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 1000; }
 </style>
 </head>
 <body>
 
 <div id="login">
-    <div class="card" style="width: 320px;">
-        <h2 style="margin-bottom: 2rem; text-align: center; font-weight: 400;">04080606</h2>
-        <input type="password" id="admin-pwd" placeholder="Password">
-        <button class="primary" onclick="login()" style="width: 100%">Enter</button>
-    </div>
+    <div class="card" style="width: 320px;"><input type="password" id="admin-pwd" placeholder="Password" style="margin-bottom: 1rem;"><button class="primary" onclick="login()" style="width:100%">LOGIN</button></div>
 </div>
 
 <aside>
-    <div class="logo">SYS.ADMIN</div>
+    <div class="logo">于未氵 ADMIN</div>
     <nav>
-        <button onclick="showTab('works')" id="btn-works" class="active" data-i18n="navWorks">成片展示 (Works)</button>
-        <button onclick="showTab('clients')" id="btn-clients" data-i18n="navClients">品牌库 (Clients)</button>
-        <button onclick="showTab('settings')" id="btn-settings" data-i18n="navSettings">全局设置 (Settings)</button>
+        <button onclick="showTab('works')" id="btn-works" class="active" data-i18n="nWorks">成片展示 (Works)</button>
+        <button onclick="showTab('clients')" id="btn-clients" data-i18n="nClients">品牌库 (Clients)</button>
+        <button onclick="showTab('settings')" id="btn-settings" data-i18n="nSettings">全局设置 (Settings)</button>
     </nav>
     <div class="lang-toggle" onclick="toggleLang()">🌍 <span id="lang-text">English</span></div>
-    <button onclick="logout()" style="background:none; border:none; color:#ff453a; cursor:pointer; text-align:left; font-size:0.8rem; margin-top:1rem;" data-i18n="logout">退出登录</button>
+    <button onclick="logout()" style="background:none; border:none; color:#ff453a; margin-top:1rem; cursor:pointer;" data-i18n="logout">退出</button>
 </aside>
 
 <main>
     <div id="tab-works" class="section active">
-        <h1 data-i18n="titleWorks">成片展示库</h1>
+        <h1 data-i18n="tWorks">成片库</h1>
         <div id="works-list"></div>
-        
-        <div class="card" style="margin-top: 3rem;">
-            <h3 style="margin-bottom: 1.5rem; font-weight: 400; color: var(--jade);" data-i18n="addWork">+ 部署新作品</h3>
+        <div class="card" style="margin-top:3rem;">
+            <h3 style="margin-bottom:1.5rem; color:var(--jade)" data-i18n="add">+ 部署新成片</h3>
             <div class="grid-2">
-                <div><label data-i18n="wTitle">项目名称 (Title)</label><input id="w-title" placeholder="e.g. NIKE Brand Film"></div>
-                <div>
-                    <label data-i18n="wCat">作品分类 (Category)</label>
-                    <select id="w-category">
-                        <option value="Commercial">商业广告 (Commercial)</option>
-                        <option value="Brand Film">品牌宣传片 (Brand Film)</option>
-                        <option value="Documentary">纪录/访谈 (Documentary)</option>
-                        <option value="Personal">个人创作 (Personal/Experimental)</option>
-                    </select>
-                </div>
-                <div><label data-i18n="wClient">客户/品牌 (Client)</label><input id="w-client" placeholder="e.g. Apple, OKX"></div>
-                <div><label data-i18n="wRoles">具体职责 (Roles)</label><input id="w-roles" placeholder="e.g. Director / Colorist"></div>
-                <div class="full-width"><label data-i18n="wTags">核心技能标签 (Tags - 用逗号隔开)</label><input id="w-tags" placeholder="e.g. Offline Editing, VFX, Sound Design"></div>
-                <div class="full-width"><label data-i18n="wDesc">项目简述 (Description)</label><textarea id="w-desc" rows="3" placeholder="交代项目背景或使用的特定技术栈..."></textarea></div>
+                <div><label data-i18n="f1">名称 (Title)</label><input id="w-title"></div>
+                <div><label data-i18n="f2">分类 (Category)</label><select id="w-category"><option value="Commercial">商业广告</option><option value="BrandFilm">品牌宣传</option><option value="Documentary">纪录访谈</option><option value="Personal">个人创作</option></select></div>
+                <div><label data-i18n="f3">客户 (Client)</label><input id="w-client"></div>
+                <div><label data-i18n="f4">职责 (Roles)</label><input id="w-roles" placeholder="如: 剪辑 / 调色"></div>
+                <div class="grid-column:span 2"><label data-i18n="f5">技能标签 (Tags)</label><input id="w-tags" placeholder="多项用逗号隔开"></div>
+                <div style="grid-column:span 2"><label data-i18n="f6">项目简述 (Description)</label><textarea id="w-desc" rows="3"></textarea></div>
             </div>
-            
-            <label data-i18n="wVideo">上传视频 (Video to R2)</label>
-            <div class="upload-zone" id="w-video-zone">
-                <input type="file" id="w-video-file" accept="video/*">
-                <p data-i18n="uploadHint">点击或拖拽上传视频文件 (推荐 MP4)</p>
-                <div class="upload-progress" id="w-video-progress"><div class="upload-bar" id="w-video-bar"></div></div>
-                <div class="status-text" id="w-video-status">Waiting...</div>
-            </div>
+            <label data-i18n="f7">视频上传 (R2)</label>
+            <div class="upload-zone" id="w-video-zone"><input type="file" id="w-video-file" accept="video/*"><p>点击或拖拽上传视频</p><div class="upload-bar" id="w-video-bar"></div><div class="status-text" id="w-video-status">Waiting...</div></div>
             <input type="hidden" id="w-video-url">
-
-            <label data-i18n="wPoster">上传静帧封面 (Poster) - 选填</label>
-            <div class="upload-zone" id="w-poster-zone" style="padding: 1rem;">
-                <input type="file" id="w-poster-file" accept="image/*">
-                <div class="status-text" id="w-poster-status">Waiting...</div>
-            </div>
-            <input type="hidden" id="w-poster-url">
-
-            <button class="primary" onclick="addWork()" style="margin-top: 1rem;" data-i18n="btnSaveWork">保存至作品集</button>
+            <button class="primary" onclick="addWork()" data-i18n="save">保存成片</button>
         </div>
     </div>
 
     <div id="tab-clients" class="section">
-        <h1 data-i18n="titleClients">合作品牌跑马灯</h1>
-        <p style="color: var(--muted); margin-bottom: 2rem; font-size: 0.9rem;" data-i18n="subClients">在前台底部以横向跑马灯形式展示。</p>
-        
-        <div id="clients-list" style="margin-bottom: 2rem;"></div>
-        
+        <h1 data-i18n="tClients">合作品牌</h1>
+        <div id="clients-list" style="margin-bottom:2rem;"></div>
         <div class="card">
-            <h3 style="margin-bottom: 1.5rem; font-weight: 400; color: var(--jade);" data-i18n="addClient">+ 新增合作品牌</h3>
-            <div class="grid-2">
-                <div><label data-i18n="cName">输入文字名称 (若无Logo)</label><input id="c-name" placeholder="e.g. Porsche"></div>
-                <div>
-                    <label data-i18n="cLogo">或上传纯色 Logo 图像</label>
-                    <div class="upload-zone" id="c-logo-zone" style="margin: 0; padding: 0.8rem;">
-                        <input type="file" id="c-logo-file" accept="image/*">
-                        <span style="font-size: 0.8rem;" id="c-logo-status">Click to upload</span>
-                    </div>
-                    <input type="hidden" id="c-logo-url">
-                </div>
-            </div>
-            <button class="primary" onclick="addClient()" data-i18n="btnAddClient">加入列队</button>
+            <label data-i18n="c1">品牌名称 / Logo上传</label>
+            <div class="grid-2"><input id="c-name" placeholder="文字名称"><div class="upload-zone" id="c-logo-zone" style="margin:0; padding:0.8rem;"><input type="file" id="c-logo-file" accept="image/*"><span id="c-logo-status">上传Logo</span></div><input type="hidden" id="c-logo-url"></div>
+            <button class="btn-ghost" onclick="addClient()" style="margin-top:1rem;">+ 加入列表</button>
         </div>
     </div>
 
     <div id="tab-settings" class="section">
-        <h1 data-i18n="titleSettings">全局设置</h1>
+        <h1 data-i18n="tSettings">全局设置</h1>
         <div class="card">
-            <label data-i18n="sHero">首屏背景视频 (Hero Video - 留空则显流体光影)</label>
-            <div class="upload-zone" id="s-hero-zone" style="padding: 1.5rem;">
-                <input type="file" id="s-hero-file" accept="video/*">
-                <div class="upload-progress" id="s-hero-progress"><div class="upload-bar" id="s-hero-bar"></div></div>
-                <div class="status-text" id="s-hero-status">Waiting...</div>
-            </div>
-            <input type="hidden" id="s-hero-url">
-
-            <label data-i18n="sAbout">个人简介 (About Text - 支持HTML强调)</label>
-            <textarea id="s-about" rows="4" style="margin-bottom: 2rem;"></textarea>
-
-            <label data-i18n="sEmail">联系邮箱 (Contact Email)</label>
-            <input id="s-email" placeholder="hi@04080606.xyz">
-            
-            <h3 style="margin: 3rem 0 1.5rem; font-weight: 400; border-top: 1px solid var(--border); padding-top: 2rem;" data-i18n="sSocials">社交媒体链接 (留空则不在前台显示)</h3>
+            <label data-i18n="s1">首屏背景视频</label>
+            <div class="upload-zone" id="s-hero-zone" style="padding:1rem;"><input type="file" id="s-hero-file" accept="video/*"><div class="upload-bar" id="s-hero-bar"></div><div class="status-text" id="s-hero-status">Waiting...</div></div><input type="hidden" id="s-hero-url">
+            <label data-i18n="s2">个人简介</label><textarea id="s-about" rows="4"></textarea>
+            <label data-i18n="s3">联系邮箱</label><input id="s-email">
+            <h3 style="margin:3rem 0 1rem; border-top:1px solid #222; padding-top:2rem;" data-i18n="s4">社交链接 (区分大小写)</h3>
             <div class="grid-2">
-                <div><label>Vimeo (维密欧)</label><input id="s-vimeo"></div>
-                <div><label>YouTube (油管)</label><input id="s-yt"></div>
-                <div><label>Instagram</label><input id="s-ins"></div>
-                <div><label>小红书</label><input id="s-xhs"></div>
-                <div><label>Behance</label><input id="s-behance"></div>
-                <div><label>哔哩哔哩 (B站)</label><input id="s-bili"></div>
-                <div><label>X (推特)</label><input id="s-x"></div>
-                <div><label>微博</label><input id="s-weibo"></div>
+                <div><label>Vimeo (维密欧)</label><input id="s-vimeo"></div><div><label>YouTube (油管)</label><input id="s-yt"></div>
+                <div><label>Instagram</label><input id="s-ins"></div><div><label>小红书</label><input id="s-xhs"></div>
+                <div><label>Behance</label><input id="s-behance"></div><div><label>哔哩哔哩 (B站)</label><input id="s-bili"></div>
+                <div><label>X (推特)</label><input id="s-x"></div><div><label>微博</label><input id="s-weibo"></div>
             </div>
-            <button class="primary" id="btn-save-settings" onclick="saveSettings()" style="margin-top: 2rem; width: 100%;" data-i18n="btnSaveSettings">💾 保存全局设置</button>
+            <button class="primary" id="btn-save-settings" onclick="saveSettings()" style="width:100%; margin-top:2rem;">💾 提交所有更新</button>
         </div>
     </div>
 </main>
 
 <script>
-// i18n Dictionary
 const dict = {
-    zh: {
-        navWorks: '成片展示 (Works)', navClients: '品牌库 (Clients)', navSettings: '全局设置 (Settings)', logout: '退出登录',
-        titleWorks: '成片展示库', addWork: '+ 部署新作品', wTitle: '项目名称 (Title)', wCat: '作品分类 (Category)', wClient: '客户/品牌 (Client)',
-        wRoles: '具体职责 (Roles)', wTags: '核心技能标签 (Tags)', wDesc: '项目简述 (Description)', wVideo: '上传视频 (Video)', wPoster: '上传封面 (Poster)',
-        btnSaveWork: '保存至作品集', titleClients: '合作品牌跑马灯', subClients: '在前台底部以横向跑马灯形式展示。', addClient: '+ 新增合作品牌',
-        cName: '文字名称', cLogo: 'Logo图像', btnAddClient: '加入队列', titleSettings: '全局设置', sHero: '首屏背景视频', sAbout: '个人简介',
-        sEmail: '联系邮箱', sSocials: '社交媒体链接', btnSaveSettings: '💾 保存全局设置', uploadHint: '点击或拖拽上传视频'
-    },
-    en: {
-        navWorks: 'Works', navClients: 'Clients', navSettings: 'Settings', logout: 'Logout',
-        titleWorks: 'Works Library', addWork: '+ Deploy New Work', wTitle: 'Title', wCat: 'Category', wClient: 'Client / Brand',
-        wRoles: 'Roles', wTags: 'Tags (comma separated)', wDesc: 'Description', wVideo: 'Upload Video', wPoster: 'Upload Poster',
-        btnSaveWork: 'Save Work', titleClients: 'Clients Marquee', subClients: 'Displayed as an infinite marquee in frontend footer.', addClient: '+ Add Client',
-        cName: 'Brand Name', cLogo: 'Brand Logo', btnAddClient: 'Add to Marquee', titleSettings: 'Global Settings', sHero: 'Hero Background Video', sAbout: 'About Text',
-        sEmail: 'Contact Email', sSocials: 'Social Media Links', btnSaveSettings: '💾 Save All Settings', uploadHint: 'Click or drag video here'
-    }
+    zh: { nWorks: '成片展示', nClients: '品牌库', nSettings: '全局设置', logout: '退出登录', tWorks: '作品管理', add: '+ 部署新作品', f1: '成片名称', f2: '作品分类', f3: '合作客户', f4: '具体职责', f5: '技能标签', f6: '项目简述', f7: '视频上传', save: '确认保存', tClients: '合作品牌管理', c1: '名称与Logo', tSettings: '系统配置', s1: '首屏背景视频', s2: '个人简介', s3: '联系邮箱', s4: '社交链接' },
+    en: { nWorks: 'Works', nClients: 'Clients', nSettings: 'Settings', logout: 'Logout', tWorks: 'Works Lib', add: '+ New Work', f1: 'Title', f2: 'Category', f3: 'Client', f4: 'Roles', f5: 'Tags', f6: 'Desc', f7: 'Video', save: 'Save Work', tClients: 'Brand Marquee', c1: 'Name / Logo', tSettings: 'Global Config', s1: 'Hero Video', s2: 'About', s3: 'Email', s4: 'Social Links' }
 };
+let currentLang = localStorage.getItem('admin_lang') || 'zh', token = sessionStorage.getItem('admin_token'), s_clients = [];
+function toggleLang() { currentLang = currentLang === 'zh' ? 'en' : 'zh'; localStorage.setItem('admin_lang', currentLang); apply(); }
+function apply() { document.getElementById('lang-text').innerText = currentLang === 'zh' ? 'English' : '中文'; document.querySelectorAll('[data-i18n]').forEach(el => { el.innerText = dict[currentLang][el.getAttribute('data-i18n')]; }); }
+apply();
 
-let currentLang = localStorage.getItem('admin_lang') || 'zh';
-let token = sessionStorage.getItem('admin_token');
-let s_clients = [];
-
-function toggleLang() {
-    currentLang = currentLang === 'zh' ? 'en' : 'zh';
-    localStorage.setItem('admin_lang', currentLang);
-    applyLang();
-}
-
-function applyLang() {
-    document.getElementById('lang-text').innerText = currentLang === 'zh' ? 'English' : '中文';
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (dict[currentLang][key]) {
-            if(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.placeholder = dict[currentLang][key];
-            else el.innerText = dict[currentLang][key];
-        }
-    });
-}
-applyLang();
-
-if(token) document.getElementById('login').style.display = 'none';
-
-async function login() {
-    const res = await fetch('/api/login', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({password: document.getElementById('admin-pwd').value})});
-    if(res.ok) { sessionStorage.setItem('admin_token', (await res.json()).token); location.reload(); } else { alert('Access Denied'); }
-}
-
-function showTab(name) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-    document.getElementById('tab-'+name).classList.add('active');
-    document.getElementById('btn-'+name).classList.add('active');
-}
-
-async function api(path, method='GET', body=null) {
-    const res = await fetch('/api'+path, { method, headers: {'Authorization': 'Bearer ' + sessionStorage.getItem('admin_token'), 'Content-Type': 'application/json'}, body: body ? JSON.stringify(body) : null });
-    if(res.status === 401) logout();
-    return res.json();
-}
+async function login() { const res = await fetch('/api/login', {method:'POST', body: JSON.stringify({password: document.getElementById('admin-pwd').value})}); if(res.ok) { sessionStorage.setItem('admin_token', (await res.json()).token); location.reload(); } else alert('Error'); }
+function showTab(n) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.querySelectorAll('nav button').forEach(b => b.classList.remove('active')); document.getElementById('tab-'+n).classList.add('active'); document.getElementById('btn-'+n).classList.add('active'); }
+async function api(p, m='GET', b=null) { const res = await fetch('/api'+p, { method:m, headers: {'Authorization': 'Bearer ' + sessionStorage.getItem('admin_token'), 'Content-Type': 'application/json'}, body: b ? JSON.stringify(b) : null }); return res.json(); }
 
 async function loadData() {
     const works = await api('/admin/works');
-    document.getElementById('works-list').innerHTML = works.map((w, i) => `
-        <div class="list-item">
-            <div>
-                <strong style="color:var(--jade)">${w.title}</strong>
-                <span style="color:var(--muted); font-size:0.8rem; margin-left:1rem">${w.category || ''} | ${w.client || ''}</span>
-            </div>
-            <button class="btn-danger" onclick="deleteWork(${i})">Delete</button>
-        </div>
-    `).join('');
-
+    document.getElementById('works-list').innerHTML = works.map((w, i) => `<div class="item"><div><strong style="color:var(--jade)">${w.title}</strong><span style="font-size:0.7rem; color:var(--muted); margin-left:1rem">${w.category}</span></div><button class="btn-danger" onclick="deleteWork(${i})">移除</button></div>`).join('');
     const s = await api('/admin/settings');
     document.getElementById('s-hero-url').value = s.heroVideo || '';
-    if(s.heroVideo) document.getElementById('s-hero-status').innerText = 'Video deployed';
-    
-    document.getElementById('s-about').value = s.aboutBody || '';
-    document.getElementById('s-email').value = s.contactEmail || '';
-    ['ins','xhs','behance','vimeo','yt','bili','x','weibo'].forEach(key => { document.getElementById(`s-${key}`).value = s[`${key}Link`] || ''; });
-
-    s_clients = s.clients || [];
-    renderClients();
+    document.getElementById('s-about').value = s.aboutBody || ''; document.getElementById('s-email').value = s.contactEmail || '';
+    ['ins','xhs','behance','vimeo','yt','bili','x','weibo'].forEach(k => { document.getElementById(`s-${k}`).value = s[`${k}Link`] || ''; });
+    s_clients = s.clients || []; renderClients();
 }
 
-function renderClients() {
-    document.getElementById('clients-list').innerHTML = s_clients.map((c, i) => `
-        <div class="list-item" style="padding: 0.8rem 1.2rem;">
-            <div style="display:flex; align-items:center; gap:1rem;">
-                ${c.logoUrl ? `<img src="${c.logoUrl}" style="height:24px; max-width:100px; object-fit:contain;">` : ''}
-                <span style="font-weight:600">${c.name || 'Logo File'}</span>
-            </div>
-            <button class="btn-ghost" style="color: #ff453a; border-color: #333;" onclick="deleteClient(${i})">Remove</button>
-        </div>
-    `).join('');
-}
-
-function addClient() {
-    const name = document.getElementById('c-name').value;
-    const logoUrl = document.getElementById('c-logo-url').value;
-    if(!name && !logoUrl) return;
-    s_clients.push({ name, logoUrl });
-    document.getElementById('c-name').value = ''; document.getElementById('c-logo-url').value = ''; document.getElementById('c-logo-status').innerText = 'Click to upload';
-    renderClients();
-}
-function deleteClient(i) { s_clients.splice(i, 1); renderClients(); }
+function renderClients() { document.getElementById('clients-list').innerHTML = s_clients.map((c, i) => `<div class="item"><span>${c.name || 'Logo File'}</span><button class="btn-ghost" onclick="s_clients.splice(${i},1);renderClients()">移除</button></div>`).join(''); }
+function addClient() { s_clients.push({ name: document.getElementById('c-name').value, logoUrl: document.getElementById('c-logo-url').value }); renderClients(); }
 
 async function addWork() {
-    const title = document.getElementById('w-title').value;
-    const videoUrl = document.getElementById('w-video-url').value;
-    if(!title || !videoUrl) return alert('Title and Video are required');
-    
     const works = await api('/admin/works');
-    works.push({
-        title, videoUrl, posterUrl: document.getElementById('w-poster-url').value,
-        category: document.getElementById('w-category').value,
-        client: document.getElementById('w-client').value,
-        roles: document.getElementById('w-roles').value,
-        tags: document.getElementById('w-tags').value,
-        desc: document.getElementById('w-desc').value
-    });
+    works.push({ title: document.getElementById('w-title').value, videoUrl: document.getElementById('w-video-url').value, category: document.getElementById('w-category').value, client: document.getElementById('w-client').value, roles: document.getElementById('w-roles').value, tags: document.getElementById('w-tags').value, desc: document.getElementById('w-desc').value });
     await api('/admin/works', 'PUT', works); location.reload();
 }
-async function deleteWork(i) { if(!confirm('Delete this work?')) return; const works = await api('/admin/works'); works.splice(i, 1); await api('/admin/works', 'PUT', works); location.reload(); }
+async function deleteWork(i) { const works = await api('/admin/works'); works.splice(i, 1); await api('/admin/works', 'PUT', works); location.reload(); }
 
 async function saveSettings() {
-    const btn = document.getElementById('btn-save-settings'); btn.innerText = 'Syncing...';
-    const s = {
-        heroVideo: document.getElementById('s-hero-url').value, aboutBody: document.getElementById('s-about').value, contactEmail: document.getElementById('s-email').value,
-        insLink: document.getElementById('s-ins').value, xhsLink: document.getElementById('s-xhs').value, behanceLink: document.getElementById('s-behance').value,
-        vimeoLink: document.getElementById('s-vimeo').value, ytLink: document.getElementById('s-yt').value, biliLink: document.getElementById('s-bili').value,
-        xLink: document.getElementById('s-x').value, weiboLink: document.getElementById('s-weibo').value, clients: s_clients
-    };
-    await api('/admin/settings', 'PUT', s);
-    btn.innerText = '✅ Saved'; setTimeout(() => { btn.innerText = '💾 Save Settings'; }, 2000);
+    const b = document.getElementById('btn-save-settings'); b.innerText = 'Syncing...';
+    const s = { heroVideo: document.getElementById('s-hero-url').value, aboutBody: document.getElementById('s-about').value, contactEmail: document.getElementById('s-email').value, insLink: document.getElementById('s-ins').value, xhsLink: document.getElementById('s-xhs').value, behanceLink: document.getElementById('s-behance').value, vimeoLink: document.getElementById('s-vimeo').value, ytLink: document.getElementById('s-yt').value, biliLink: document.getElementById('s-bili').value, xLink: document.getElementById('s-x').value, weiboLink: document.getElementById('s-weibo').value, clients: s_clients };
+    await api('/admin/settings', 'PUT', s); b.innerText = '✅ SUCCESS'; setTimeout(() => b.innerText = '💾 提交所有更新', 2000);
 }
 
-function setupUpload(zoneId, fileId, urlId, progressId, barId, statusId) {
-    const zone = document.getElementById(zoneId), file = document.getElementById(fileId), status = document.getElementById(statusId);
+function setupUpload(z, f, u, p, b, s) {
+    const zone = document.getElementById(z), file = document.getElementById(f);
     zone.onclick = () => file.click();
-    zone.ondragover = e => { e.preventDefault(); zone.style.borderColor = 'var(--jade)'; };
-    zone.ondragleave = () => { zone.style.borderColor = 'var(--border)'; };
-    zone.ondrop = e => { e.preventDefault(); zone.style.borderColor = 'var(--border)'; if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]); };
-    file.onchange = () => { if (file.files.length) handleFile(file.files[0]); };
-    
-    function handleFile(f) {
-        status.innerText = `Uploading...`; status.style.color = '#fff';
-        if(progressId) { document.getElementById(progressId).classList.add('active'); document.getElementById(barId).style.width = '0%'; }
-        const xhr = new XMLHttpRequest(), key = Date.now() + '_' + f.name.replace(/[^\w.\-]/g, '_');
-        xhr.open('PUT', '/api/admin/upload/' + encodeURIComponent(key));
-        xhr.setRequestHeader('Authorization', 'Bearer ' + token); xhr.setRequestHeader('Content-Type', f.type || 'application/octet-stream');
-        xhr.upload.onprogress = e => { if (e.lengthComputable && barId) document.getElementById(barId).style.width = (e.loaded / e.total * 100) + '%'; };
-        xhr.onload = () => {
-            if(progressId) document.getElementById(progressId).classList.remove('active');
-            if (xhr.status >= 200 && xhr.status < 300) { document.getElementById(urlId).value = JSON.parse(xhr.responseText).url; status.innerText = '✅ Success'; status.style.color = 'var(--jade)'; } 
-            else { status.innerText = '❌ Failed'; status.style.color = '#ff453a'; }
-        };
-        xhr.send(f);
-    }
+    file.onchange = () => {
+        const xhr = new XMLHttpRequest(), fd = file.files[0];
+        document.getElementById(s).innerText = 'Uploading...';
+        xhr.open('PUT', '/api/admin/upload/' + Date.now() + '_' + fd.name);
+        xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+        xhr.upload.onprogress = e => { if(b) document.getElementById(b).style.width = (e.loaded/e.total*100)+'%'; };
+        xhr.onload = () => { document.getElementById(u).value = JSON.parse(xhr.responseText).url; document.getElementById(s).innerText = '✅ Done'; };
+        xhr.send(fd);
+    };
 }
-
-setupUpload('w-video-zone', 'w-video-file', 'w-video-url', 'w-video-progress', 'w-video-bar', 'w-video-status');
-setupUpload('w-poster-zone', 'w-poster-file', 'w-poster-url', null, null, 'w-poster-status');
-setupUpload('s-hero-zone', 's-hero-file', 's-hero-url', 's-hero-progress', 's-hero-bar', 's-hero-status');
+setupUpload('w-video-zone', 'w-video-file', 'w-video-url', null, 'w-video-bar', 'w-video-status');
+setupUpload('s-hero-zone', 's-hero-file', 's-hero-url', null, 's-hero-bar', 's-hero-status');
 setupUpload('c-logo-zone', 'c-logo-file', 'c-logo-url', null, null, 'c-logo-status');
 
 function logout() { sessionStorage.removeItem('admin_token'); location.reload(); }
-if(token) loadData();
+if(token) { document.getElementById('login').style.display='none'; loadData(); }
 </script>
 </body>
 </html>

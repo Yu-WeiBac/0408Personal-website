@@ -3,177 +3,166 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYS.ADMIN — 于未氵</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<title>SYS.ADMIN — 04080606</title>
 <style>
-:root {
-    --bg-base: #000000;
-    --glass: rgba(255, 255, 255, 0.04);
-    --glass-border: rgba(255, 255, 255, 0.08);
-    --cyan: #00D1FF;
-    --text: #FFFFFF;
-    --text-dim: rgba(255, 255, 255, 0.5);
-    --mx: 50%; --my: 50%;
-}
+:root { --bg: #000; --jade: #00D1FF; --glass: rgba(255, 255, 255, 0.04); --border: rgba(255, 255, 255, 0.1); --mx: 50%; --my: 50%; }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: var(--bg-base); color: var(--text); font-family: 'Inter', sans-serif; display: flex; min-height: 100vh; overflow-x: hidden; }
+body { background: #000; color: #fff; font-family: -apple-system, "PingFang SC", sans-serif; display: flex; min-height: 100vh; overflow-x: hidden; }
 
-/* 响应鼠标的背景光 */
+/* 响应式背景光 */
 .ambient { position: fixed; inset: 0; z-index: -1; background: #000; overflow: hidden; }
-.orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.2; transition: transform 0.8s ease-out; }
+.orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.2; transition: transform 1s ease-out; }
 .orb-1 { width: 50vw; height: 50vw; background: #0044FF; left: calc(var(--mx) - 25vw); top: calc(var(--my) - 25vw); }
-.orb-2 { width: 40vw; height: 40vw; background: var(--cyan); right: calc(var(--mx) - 20vw); bottom: calc(var(--my) - 20vw); }
+.orb-2 { width: 40vw; height: 40vw; background: var(--jade); right: calc(var(--mx) - 20vw); bottom: calc(var(--my) - 20vw); }
 
-/* 玻璃侧边栏 */
 aside {
-    width: 260px; background: rgba(10, 10, 12, 0.4); backdrop-filter: blur(30px);
-    border-right: 1px solid var(--glass-border); padding: 3rem 1.5rem; display: flex; flex-direction: column; position: fixed; height: 100vh;
+    width: 250px; background: rgba(10, 10, 12, 0.4); backdrop-filter: blur(40px);
+    border-right: 1px solid var(--border); padding: 3rem 1.5rem; display: flex; flex-direction: column; position: fixed; height: 100vh;
 }
-.logo { font-size: 1.1rem; font-weight: 600; margin-bottom: 3rem; color: #fff; letter-spacing: 1px; }
-.logo span { color: var(--cyan); }
+.logo { font-size: 1.1rem; font-weight: 600; margin-bottom: 3rem; color: #fff; letter-spacing: 2px; }
 nav button {
-    display: block; width: 100%; background: transparent; border: none; color: var(--text-dim);
-    text-align: left; padding: 1rem 1.2rem; margin-bottom: 0.5rem; border-radius: 12px;
-    cursor: pointer; font-size: 0.9rem; transition: 0.3s;
+    display: block; width: 100%; background: transparent; border: none; color: rgba(255,255,255,0.4);
+    text-align: left; padding: 1rem; margin-bottom: 0.5rem; border-radius: 12px; cursor: pointer; transition: 0.3s;
 }
-nav button.active { background: rgba(255,255,255,0.06); color: var(--cyan); }
+nav button.active { background: rgba(255,255,255,0.06); color: var(--jade); }
 
-/* 主面板 */
-main { margin-left: 260px; flex: 1; padding: 4rem; max-width: 1000px; }
+main { margin-left: 250px; flex: 1; padding: 4rem; max-width: 1000px; }
 .section { display: none; animation: fadeIn 0.4s ease; }
 .section.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* 极致玻璃卡片 */
-.glass-card {
-    background: var(--glass); backdrop-filter: blur(40px);
-    padding: 2.5rem; border-radius: 24px; border: 1px solid var(--glass-border); margin-bottom: 2rem;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-}
+.glass-card { background: var(--glass); backdrop-filter: blur(40px); padding: 2.5rem; border-radius: 30px; border: 1px solid var(--border); margin-bottom: 2rem; box-shadow: 0 30px 60px rgba(0,0,0,0.4); }
+label { display: block; margin-bottom: 0.6rem; font-size: 0.8rem; color: rgba(255,255,255,0.4); text-transform: uppercase; }
+input, textarea, select { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: #fff; padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; outline: none; transition: 0.3s; }
+input:focus { border-color: var(--jade); box-shadow: 0 0 0 5px rgba(0,209,255,0.1); }
+button.primary { background: #fff; color: #000; border: none; padding: 1rem 3rem; border-radius: 12px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+button.primary:hover { background: var(--jade); transform: translateY(-2px); }
 
-label { display: block; margin-bottom: 0.6rem; font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; }
-input, textarea, select {
-    width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff;
-    padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; outline: none; transition: 0.3s;
-}
-input:focus { border-color: var(--cyan); box-shadow: 0 0 0 4px rgba(0,209,255,0.1); }
+/* R2 拖拽区修复 */
+.upload-zone { border: 1px dashed var(--border); border-radius: 15px; padding: 2.5rem; text-align: center; cursor: pointer; background: rgba(0,0,0,0.3); margin-bottom: 1.5rem; transition: 0.3s; }
+.upload-zone:hover { border-color: var(--jade); }
+.upload-bar { height: 3px; background: var(--jade); width: 0%; transition: 0.2s; margin-top: 1rem; }
 
-button.primary {
-    background: #fff; color: #000; border: none; padding: 1rem 2.5rem;
-    border-radius: 12px; cursor: pointer; font-weight: 600; transition: 0.3s;
-}
-button.primary:hover { background: var(--cyan); transform: translateY(-2px); box-shadow: 0 5px 15px var(--cyan-glow); }
-
-.item {
-    display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02);
-    padding: 1.2rem; margin-bottom: 0.8rem; border-radius: 12px; border: 1px solid var(--glass-border);
-}
-.btn-danger { color: #ff453a; background: none; border: 1px solid #ff453a; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; transition: 0.3s; }
-.btn-danger:hover { background: #ff453a; color: #fff; }
-
+.item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); padding: 1.2rem; margin-bottom: 0.8rem; border-radius: 15px; border: 1px solid var(--border); }
 #login { position: fixed; inset: 0; background: #000; display: flex; align-items: center; justify-content: center; z-index: 1000; }
 </style>
 </head>
 <body>
 <div class="ambient"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
-
-<div id="login"><div class="glass-card" style="width: 380px; text-align: center;"><h2 style="margin-bottom:2rem">SYS<span>.</span>ADMIN</h2><input type="password" id="admin-pwd" style="text-align: center;"><button class="primary" onclick="login()" style="width:100%">VERIFY</button></div></div>
+<div id="login"><div class="glass-card" style="width: 350px; text-align: center;"><h2>SYS.ADMIN</h2><input type="password" id="admin-pwd" style="text-align:center; margin-top:2rem"><button class="primary" onclick="login()" style="width:100%">VERIFY</button></div></div>
 
 <aside>
     <div class="logo">于未<span>氵</span> ADMIN</div>
     <nav>
         <button onclick="showTab('works')" id="btn-works" class="active">成片展示 (Works)</button>
         <button onclick="showTab('settings')" id="btn-settings">全站设置 (System)</button>
-        <button onclick="logout()" style="margin-top: auto; color: #ff453a;">Logout</button>
+        <button onclick="logout()" style="color:#ff453a; margin-top:2rem">Logout</button>
     </nav>
 </aside>
 
 <main>
     <div id="tab-works" class="section active">
-        <h1>成片阵列</h1>
+        <h1>成片管理</h1>
         <div id="works-list"></div>
-        <div class="glass-card" style="margin-top: 3rem;">
-            <h3 style="margin-bottom: 1.5rem; color: var(--cyan);">+ 部署新影像</h3>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 0 1rem;">
-                <div><label>项目标题</label><input id="w-title"></div>
-                <div><label>分类 (如: 3D / 剪辑)</label><input id="w-tag"></div>
+        <div class="glass-card" style="margin-top:3rem">
+            <h3 style="margin-bottom:2rem; color:var(--jade)">+ 部署新影像</h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem">
+                <div><label>标题</label><input id="w-title"></div>
+                <div><label>分类</label><select id="w-category"><option value="Commercial">商业广告</option><option value="BrandFilm">品牌宣传</option><option value="Documentary">纪录访谈</option><option value="Personal">个人创作</option></select></div>
+                <div><label>客户</label><input id="w-client"></div>
+                <div><label>职责</label><input id="w-roles"></div>
+                <div style="grid-column:span 2"><label>标签 (逗号隔开)</label><input id="w-tags"></div>
+                <div style="grid-column:span 2"><label>项目简述</label><textarea id="w-desc" rows="3"></textarea></div>
             </div>
-            <label>视频 URL (R2)</label><input id="w-video">
-            <button class="primary" onclick="addWork()">部署 (Deploy)</button>
+            <label>视频文件 (R2 拖拽上传)</label>
+            <div class="upload-zone" id="w-video-zone" onclick="document.getElementById('w-video-file').click()">
+                <input type="file" id="w-video-file" accept="video/*" onchange="upload(this,'w-video-url','w-video-bar','w-video-status')">
+                <p>点击或拖拽上传 MP4</p><div class="upload-bar" id="w-video-bar"></div><div id="w-video-status" style="font-size:0.8rem; color:rgba(255,255,255,0.4); margin-top:0.5rem">等待中</div>
+            </div>
+            <input type="hidden" id="w-video-url">
+            <button class="primary" onclick="addWork()">保存成片</button>
         </div>
     </div>
 
     <div id="tab-settings" class="section">
-        <h1>系统参数</h1>
+        <h1>系统配置</h1>
         <div class="glass-card">
-            <label>首页视频 URL</label><input id="s-video">
-            <label>联系邮箱</label><input id="s-email">
-            <h3 style="margin: 2.5rem 0 1.5rem; border-top: 1px solid #222; padding-top: 2rem;">社交网络 (Socials)</h3>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 0 1rem;">
-                <div><label>Instagram</label><input id="s-ins"></div>
-                <div><label>哔哩哔哩 (B站)</label><input id="s-bili"></div>
-                <div><label>X (Twitter)</label><input id="s-x"></div>
-                <div><label>小红书</label><input id="s-xhs"></div>
-                <div><label>YouTube (油管)</label><input id="s-yt"></div>
-                <div><label>Behance</label><input id="s-behance"></div>
-                <div><label>Vimeo (维密欧)</label><input id="s-vimeo"></div>
-                <div><label>微博</label><input id="s-weibo"></div>
+            <label>首页视频 (R2)</label>
+            <div class="upload-zone" onclick="document.getElementById('s-hero-file').click()" style="padding:1.5rem">
+                <input type="file" id="s-hero-file" accept="video/*" onchange="upload(this,'s-hero-url','s-hero-bar','s-hero-status')">
+                <div class="upload-bar" id="s-hero-bar"></div><div id="s-hero-status" style="font-size:0.8rem; color:rgba(255,255,255,0.4); margin-top:0.5rem">等待上传</div>
             </div>
-            <button class="primary" id="save-btn" onclick="saveSettings()" style="width: 100%; margin-top: 2rem;">更新全站配置</button>
+            <input type="hidden" id="s-hero-url">
+            <label>个人简介文案</label><textarea id="s-about" rows="4"></textarea>
+            <label>联系邮箱</label><input id="s-email">
+            <h3 style="margin: 2.5rem 0 1.5rem; border-top:1px solid #333; padding-top: 2rem;">社交网络终端</h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem">
+                <div><label>Instagram</label><input id="s-ins"></div><div><label>哔哩哔哩 (B站)</label><input id="s-bili"></div>
+                <div><label>X (Twitter)</label><input id="s-x"></div><div><label>小红书</label><input id="s-xhs"></div>
+                <div><label>YouTube (油管)</label><input id="s-yt"></div><div><label>Behance</label><input id="s-behance"></div>
+                <div><label>Vimeo (维密欧)</label><input id="s-vimeo"></div><div><label>微博</label><input id="s-weibo"></div>
+            </div>
+            <button class="primary" id="save-all" onclick="saveSettings()" style="width: 100%; margin-top: 2rem;">💾 更新并同步前台</button>
         </div>
     </div>
 </main>
 
 <script>
-// 鼠标光影驱动
 document.addEventListener('mousemove', e => {
     document.documentElement.style.setProperty('--mx', (e.clientX/window.innerWidth*100)+'%');
     document.documentElement.style.setProperty('--my', (e.clientY/window.innerHeight*100)+'%');
 });
 
 let token = sessionStorage.getItem('admin_token');
-if(token) document.getElementById('login').style.display = 'none';
-
 async function login() {
     const r = await fetch('/api/login',{method:'POST', body:JSON.stringify({password:document.getElementById('admin-pwd').value})});
     if(r.ok){sessionStorage.setItem('admin_token',(await r.json()).token); location.reload();} else alert('Denied');
 }
-
 function showTab(n){
     document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
     document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-    document.getElementById('tab-'+n).classList.add('active');
-    document.getElementById('btn-'+n).classList.add('active');
+    document.getElementById('tab-'+n).classList.add('active'); document.getElementById('btn-'+n).classList.add('active');
 }
-
 async function api(p,m='GET',b=null){const r=await fetch('/api'+p,{method:m,headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:b?JSON.stringify(b):null});return r.json()}
+
+async function upload(el,targetId,barId,statusId) {
+    const f=el.files[0]; document.getElementById(statusId).innerText='正在上传: '+f.name;
+    const xhr = new XMLHttpRequest();
+    xhr.open('PUT', '/api/admin/upload/'+Date.now()+'_'+f.name.replace(/[^\w.-]/g,'_'));
+    xhr.setRequestHeader('Authorization', 'Bearer '+token);
+    xhr.upload.onprogress = e => { if(barId) document.getElementById(barId).style.width = (e.loaded/e.total*100)+'%'; };
+    xhr.onload = () => { document.getElementById(targetId).value=JSON.parse(xhr.responseText).url; document.getElementById(statusId).innerText='✅ 上传成功'; };
+    xhr.send(f);
+}
 
 async function loadData() {
     const works = await api('/admin/works');
-    document.getElementById('works-list').innerHTML = works.map((w,i)=>`<div class="item"><span>${w.title}</span><button class="btn-danger" onclick="deleteWork(${i})">Remove</button></div>`).join('');
+    document.getElementById('works-list').innerHTML = works.map((w,i)=>`<div class="item"><span>${w.title}</span><button class="primary" style="background:#ff453a; color:#fff; padding:0.5rem 1rem" onclick="deleteWork(${i})">Delete</button></div>`).join('');
     const s = await api('/admin/settings');
     document.getElementById('s-video').value = s.heroVideo || '';
+    document.getElementById('s-about').value = s.aboutBody || '';
     document.getElementById('s-email').value = s.contactEmail || '';
     ['ins','bili','x','xhs','yt','behance','vimeo','weibo'].forEach(k=>{document.getElementById(`s-${k}`).value=s[`${k}Link`]||''});
 }
 
 async function addWork(){
     const works=await api('/admin/works');
-    works.push({title:document.getElementById('w-title').value, videoUrl:document.getElementById('w-video').value, tag:document.getElementById('w-tag').value});
+    works.push({title:document.getElementById('w-title').value, videoUrl:document.getElementById('w-video-url').value, category:document.getElementById('w-category').value, client:document.getElementById('w-client').value, roles:document.getElementById('w-roles').value, tags:document.getElementById('w-tags').value, desc:document.getElementById('w-desc').value});
     await api('/admin/works','PUT',works); location.reload();
 }
+async function deleteWork(i){const works=await api('/admin/works');works.splice(i,1);await api('/admin/works','PUT',works);location.reload()}
 
 async function saveSettings(){
-    const b=document.getElementById('save-btn'); b.innerText='Syncing...';
+    const b=document.getElementById('save-all'); b.innerText='Syncing...';
     const s = {
-        heroVideo: document.getElementById('s-video').value, contactEmail: document.getElementById('s-email').value,
+        heroVideo: document.getElementById('s-video').value, aboutBody: document.getElementById('s-about').value, contactEmail: document.getElementById('s-email').value,
         insLink: document.getElementById('s-ins').value, biliLink: document.getElementById('s-bili').value, xLink: document.getElementById('s-x').value,
         xhsLink: document.getElementById('s-xhs').value, ytLink: document.getElementById('s-yt').value, behanceLink: document.getElementById('s-behance').value,
         vimeoLink: document.getElementById('s-vimeo').value, weiboLink: document.getElementById('s-weibo').value
     };
-    await api('/admin/settings','PUT',s); b.innerText='✅ SUCCESS'; setTimeout(()=>b.innerText='Update System',2000);
+    await api('/admin/settings','PUT',s); b.innerText='✅ SUCCESS'; setTimeout(()=>b.innerText='💾 更新并同步前台',2000);
 }
-if(token) loadData();
+if(token){ document.getElementById('login').style.display='none'; loadData(); }
 function logout(){sessionStorage.removeItem('admin_token'); location.reload();}
 </script>
 </body>

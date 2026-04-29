@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>于未氵 — 数字创作者</title>
+<meta name="description" content="数字创作者于未氵的作品集。">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..600,0..100&family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+<style>
+:root {
+    --ink: #0A0A0A;
+    --ink-2: #131311;
+    --paper: #F2F0E6;
+    --paper-dim: rgba(242, 240, 230, 0.65);
+    --paper-faint: rgba(242, 240, 230, 0.25);
+    --jade: #6FE3D2;
+
+    --font-display: 'Fraunces', 'Noto Serif SC', serif;
+    --font-serif-cn: 'Noto Serif SC', 'Songti SC', serif;
+    --font-sans: 'Noto Sans SC', -apple-system, sans-serif;
+
+    --gutter: clamp(1.5rem, 4vw, 4rem);
+    --section-pad: clamp(6rem, 12vw, 10rem);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+    cursor: none;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* 全局颗粒 */
+body::before {
+    content: '';
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 50;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    mix-blend-mode: overlay;
+}
+
+/* === 光标 === */
+.cursor, .cursor-ring {
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+}
+.cursor {
+    width: 6px; height: 6px;
+    background: var(--paper);
+    border-radius: 50%;
+    mix-blend-mode: difference;
+    transition: width 0.3s, height 0.3s;
+}
+.cursor-ring {
+    width: 32px; height: 32px;
+    border: 1px solid var(--paper-faint);
+    border-radius: 50%;
+    transition: width 0.4s, height 0.4s, border-color 0.3s;
+    z-index: 9998;
+}
+.cursor.is-hover { width: 0; height: 0; }
+.cursor-ring.is-hover { width: 60px; height: 60px; border-color: var(--jade); }
+
+/* === 导航 === */
+nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.5rem var(--gutter);
+    mix-blend-mode: difference;
+}
+.logo {
+    font-family: var(--font-serif-cn);
+    font-weight: 500; font-size: 1.4rem;
+    letter-spacing: 0.15em;
+    color: var(--paper);
+    text-decoration: none;
+    display: flex; align-items: baseline; gap: 0.5rem;
+}
+.logo .water {
+    color: var(--jade);
+    font-style: italic;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-block;
+}
+.logo:hover .water { transform: scaleY(1.4) skewX(-8deg); }
+
+.menu {
+    list-style: none; display: flex; gap: 2.5rem;
+}
+.menu a {
+    color: var(--paper);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    position: relative;
+    padding: 0.3rem 0;
+}
+.menu a::after {
+    content: '';
+    position: absolute; left: 0; bottom: 0;
+    width: 0; height: 1px;
+    background: var(--jade);
+    transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.menu a:hover::after { width: 100%; }
+
+/* === Hero === */
+.hero {
+    position: relative;
+    height: 100vh; min-height: 700px;
+    overflow: hidden;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 0 var(--gutter);
+}
+
+/* 视频背景 */
+.hero-video, .hero-fallback {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+.hero-video { filter: brightness(0.55) contrast(1.05) saturate(0.85); }
+
+/* 没视频时的优雅 fallback：克制的纯色 + 微妙渐变 */
+.hero-fallback {
+    background:
+        radial-gradient(ellipse at 30% 40%, rgba(111,227,210,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 60%, rgba(111,227,210,0.04) 0%, transparent 60%),
+        var(--ink);
+}
+
+/* 视频上的暗色蒙版 */
+.hero::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,10,10,0.4) 0%, rgba(10,10,10,0.1) 40%, rgba(10,10,10,0.7) 100%);
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative; z-index: 2;
+    max-width: 1400px; width: 100%;
+    margin: 0 auto;
+}
+.hero-eyebrow {
+    font-family: var(--font-display);
+    font-style: italic; font-weight: 300;
+    font-size: 0.95rem;
+    color: var(--jade);
+    letter-spacing: 0.1em;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 1s 0.3s ease-out forwards;
+}
+.hero-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 40px; height: 1px;
+    background: var(--jade);
+    vertical-align: middle;
+    margin-right: 1rem;
+}
+.hero-title {
+    font-family: var(--font-serif-cn);
+    font-weight: 300;
+    font-size: clamp(2.5rem, 7vw, 6.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+    max-width: 18ch;
+}
+.hero-title .em {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--jade);
+}
+.hero-title .line {
+    display: block; overflow: hidden;
+}
+.hero-title .line span {
+    display: inline-block;
+    transform: translateY(110%);
+}
+.hero-sub {
+    max-width: 32rem;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--paper-dim);
+    opacity: 0;
+    animation: fadeUp 1s 1.4s ease-out forwards;
+}
+
+.hero-meta {
+    position: absolute;
+    bottom: 2.5rem;
+    left: var(--gutter); right: var(--gutter);
+    display: flex; justify-content: space-between; align-items: flex-end;
+    z-index: 2;
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--paper-faint);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 1s 1.8s ease-out forwards;
+}
+.hero-meta .scroll {
+    display: flex; flex-direction: column; align-items: center; gap: 0.8rem;
+}
+.hero-meta .scroll-line {
+    width: 1px; height: 40px;
+    background: var(--paper-faint);
+    animation: scrollLine 2s ease-in-out infinite;
+    transform-origin: top;
+}
+
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+@keyframes scrollLine {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(0.3); }
+}
+
+/* === Works === */
+.works {
+    position: relative; z-index: 2;
+    padding: var(--section-pad) var(--gutter);
+}
+.section-head {
+    max-width: 1400px;
+    margin: 0 auto 5rem;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 3rem;
+    align-items: end;
+}
+.section-num {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--jade);
+    letter-spacing: 0.2em;
+}
+.section-title {
+    font-family: var(--font-serif-cn);
+    font-weight: 300;
+    font-size: clamp(2rem, 5vw, 4rem);
+    line-height: 1.1;
+}
+.section-title .em {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--jade);
+}
+
+.works-grid {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 2rem;
+}
+.work-card {
+    position: relative;
+    overflow: hidden;
+    background: var(--ink-2);
+    aspect-ratio: 4/5;
+    text-decoration: none;
+    color: var(--paper);
+    cursor: none;
+}
+.work-card.size-wide { grid-column: span 7; aspect-ratio: 16/10; }
+.work-card.size-tall { grid-column: span 5; }
+.work-card.size-full { grid-column: span 12; aspect-ratio: 21/9; }
+.work-card.size-half { grid-column: span 6; aspect-ratio: 4/3; }
+
+.work-media {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s;
+    filter: grayscale(0.2) brightness(0.85);
+}
+.work-card:hover .work-media {
+    transform: scale(1.05);
+    filter: grayscale(0) brightness(1);
+}
+.work-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(10,10,10,0.85) 0%, rgba(10,10,10,0.1) 50%, transparent 100%);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 2rem;
+    z-index: 2;
+}
+.work-tag {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.75rem;
+    color: var(--jade);
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+.work-name {
+    font-family: var(--font-serif-cn);
+    font-weight: 400;
+    font-size: clamp(1.3rem, 1.8vw, 1.8rem);
+    line-height: 1.2;
+}
+.work-year {
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    color: var(--paper-faint);
+    letter-spacing: 0.15em;
+    margin-top: 0.4rem;
+}
+.work-empty {
+    grid-column: span 12;
+    padding: 6rem 2rem;
+    text-align: center;
+    border: 1px dashed var(--paper-faint);
+    color: var(--paper-dim);
+    font-family: var(--font-display);
+    font-style: italic;
+}
+
+/* === About === */
+.about {
+    position: relative; z-index: 2;
+    padding: var(--section-pad) var(--gutter);
+    border-top: 1px solid rgba(242,240,230,0.08);
+}
+.about-grid {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 6rem;
+    align-items: start;
+}
+.about-portrait {
+    position: relative;
+    aspect-ratio: 3/4;
+    background: var(--ink-2);
+    overflow: hidden;
+}
+.about-portrait::before {
+    content: '于未氵';
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-serif-cn);
+    font-size: clamp(4rem, 9vw, 8rem);
+    color: var(--jade);
+    opacity: 0.18;
+    letter-spacing: 0.1em;
+}
+.about-body p {
+    font-family: var(--font-serif-cn);
+    font-size: 1.05rem;
+    line-height: 1.9;
+    margin-bottom: 1.5rem;
+}
+.about-body p:first-child::first-letter {
+    font-family: var(--font-display);
+    font-size: 4rem;
+    float: left;
+    line-height: 0.9;
+    margin: 0.4rem 0.8rem 0 0;
+    color: var(--jade);
+}
+
+/* === Contact === */
+.contact {
+    position: relative; z-index: 2;
+    padding: var(--section-pad) var(--gutter);
+    border-top: 1px solid rgba(242,240,230,0.08);
+    text-align: center;
+}
+.contact-eyebrow {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--jade);
+    letter-spacing: 0.2em;
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+}
+.contact-title {
+    font-family: var(--font-serif-cn);
+    font-weight: 300;
+    font-size: clamp(2.5rem, 7vw, 6rem);
+    line-height: 1.05;
+    margin-bottom: 3rem;
+}
+.contact-title .em {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--jade);
+}
+.contact-mail {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 2.5vw, 2rem);
+    color: var(--paper);
+    text-decoration: none;
+    padding: 1rem 2rem;
+    border: 1px solid var(--paper-faint);
+    border-radius: 999px;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+.contact-mail::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--jade);
+    transform: translateY(101%);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: -1;
+}
+.contact-mail:hover {
+    color: var(--ink);
+    border-color: var(--jade);
+}
+.contact-mail:hover::before { transform: translateY(0); }
+
+.contact-socials {
+    margin-top: 4rem;
+    display: flex; gap: 3rem; justify-content: center; flex-wrap: wrap;
+}
+.contact-socials a {
+    color: var(--paper-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+}
+.contact-socials a:hover { color: var(--jade); }
+
+footer {
+    padding: 3rem var(--gutter);
+    border-top: 1px solid rgba(242,240,230,0.08);
+    display: flex; justify-content: space-between;
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--paper-faint);
+    text-transform: uppercase;
+}
+
+@media (max-width: 900px) {
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
+    .work-card { cursor: auto; }
+    .menu { gap: 1.2rem; }
+    .menu a { font-size: 0.75rem; letter-spacing: 0.1em; }
+    .section-head { grid-template-columns: 1fr; gap: 1rem; }
+    .work-card.size-wide,
+    .work-card.size-tall,
+    .work-card.size-half,
+    .work-card.size-full { grid-column: span 12; aspect-ratio: 4/5; }
+    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .hero-meta { font-size: 0.7rem; }
+    .hero-meta .scroll { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor"></div>
+<div class="cursor-ring"></div>
+
+<nav>
+    <a href="#" class="logo">于未<span class="water">氵</span></a>
+    <ul class="menu">
+        <li><a href="#works" class="hover-target">作品</a></li>
+        <li><a href="#about" class="hover-target">关于</a></li>
+        <li><a href="#contact" class="hover-target">联系</a></li>
+    </ul>
+</nav>
+
+<section class="hero">
+    <!-- 默认显示 fallback 渐变背景；当 settings.heroVideo 有值时，JS 会插入视频 -->
+    <div class="hero-fallback" id="hero-bg"></div>
+
+    <div class="hero-content">
+        <div class="hero-eyebrow">数字创作者 — Digital Artist</div>
+        <h1 class="hero-title">
+            <span class="line"><span>在光影的</span></span>
+            <span class="line"><span>缝隙之间，</span></span>
+            <span class="line"><span>寻找<em class="em">液态的诗意</em>。</span></span>
+        </h1>
+        <p class="hero-sub" id="hero-sub">
+            我是于未氵，独立数字创作者。<br>
+            探索流体、噪声与空间的可能性。
+        </p>
+    </div>
+    <div class="hero-meta">
+        <span id="hero-meta-left">EST. 2024 · 北京 / Beijing</span>
+        <div class="scroll">
+            <span>SCROLL</span>
+            <div class="scroll-line"></div>
+        </div>
+        <span>04080606 · VOL.II</span>
+    </div>
+</section>
+
+<section class="works" id="works">
+    <div class="section-head">
+        <div class="section-num">— 01 / Selected Works</div>
+        <h2 class="section-title">
+            精选<span class="em">作品。</span><br>
+            从 2024 至今。
+        </h2>
+    </div>
+    <div class="works-grid" id="works-grid">
+        <!-- 由 JS 从 API 渲染 -->
+        <div class="work-empty">作品加载中…</div>
+    </div>
+</section>
+
+<section class="about" id="about">
+    <div class="section-head">
+        <div class="section-num">— 02 / About</div>
+        <h2 class="section-title">
+            关于<span class="em">我，</span><br>
+            和我相信的事。
+        </h2>
+    </div>
+    <div class="about-grid">
+        <div class="about-portrait"></div>
+        <div class="about-body" id="about-body">
+            <p>我相信图像是一种缓慢的语言。在很多年里我一直试图回答一个简单的问题：当一段视觉变成液体，它会以什么样的姿态流向观者？</p>
+            <p>我的工作游走在生成艺术、流体模拟、空间装置与品牌动态视觉之间。每一件作品都是一次小型的实验——关于材料、关于时间、关于一个画面在显示器之外还能延伸多远。</p>
+            <p>目前在北京独立工作，接受合作委托。</p>
+        </div>
+    </div>
+</section>
+
+<section class="contact" id="contact">
+    <div class="contact-eyebrow">— 03 / Let's Talk</div>
+    <h2 class="contact-title">
+        有想法？<br>
+        <span class="em">让水流动起来。</span>
+    </h2>
+    <a href="mailto:hi@04080606.xyz" class="contact-mail hover-target" id="contact-mail">hi@04080606.xyz</a>
+    <div class="contact-socials">
+        <a href="#" class="hover-target">Instagram</a>
+        <a href="#" class="hover-target">Behance</a>
+        <a href="#" class="hover-target">微博</a>
+        <a href="#" class="hover-target">小红书</a>
+    </div>
+</section>
+
+<footer>
+    <span>© 2026 于未氵 · 04080606.xyz</span>
+    <span>Crafted with care.</span>
+</footer>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* === 光标 === */
+const cursor = document.querySelector('.cursor');
+const ring = document.querySelector('.cursor-ring');
+if (window.matchMedia('(min-width: 901px)').matches) {
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        gsap.to(cursor, { x: mx, y: my, duration: 0.05 });
+    });
+    gsap.ticker.add(() => {
+        rx += (mx - rx) * 0.15;
+        ry += (my - ry) * 0.15;
+        gsap.set(ring, { x: rx, y: ry });
+    });
+    document.addEventListener('mouseover', e => {
+        if (e.target.closest('a, button, .hover-target, .work-card')) {
+            cursor.classList.add('is-hover');
+            ring.classList.add('is-hover');
+        }
+    });
+    document.addEventListener('mouseout', e => {
+        if (e.target.closest('a, button, .hover-target, .work-card')) {
+            cursor.classList.remove('is-hover');
+            ring.classList.remove('is-hover');
+        }
+    });
+}
+
+/* === Hero 标题入场 === */
+gsap.to('.hero-title .line span', {
+    y: 0, duration: 1.4, stagger: 0.12,
+    ease: 'power4.out', delay: 0.6
+});
+
+/* === 滚动揭示 === */
+function setupReveal() {
+    gsap.utils.toArray('.work-card, .about-portrait, .about-body, .section-title').forEach(el => {
+        gsap.from(el, {
+            y: 60, opacity: 0, duration: 1.1, ease: 'power3.out',
+            scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
+        });
+    });
+}
+
+/* === 从 API 加载数据 === */
+async function loadSiteData() {
+    try {
+        const [worksRes, settingsRes] = await Promise.all([
+            fetch('/api/works'),
+            fetch('/api/settings')
+        ]);
+
+        const works = worksRes.ok ? await worksRes.json() : [];
+        const settings = settingsRes.ok ? await settingsRes.json() : {};
+
+        renderWorks(works);
+        renderSettings(settings);
+        setupReveal();
+        ScrollTrigger.refresh();
+    } catch (err) {
+        console.error('加载数据失败:', err);
+        document.getElementById('works-grid').innerHTML =
+            '<div class="work-empty">作品暂未发布</div>';
+    }
+}
+
+function renderWorks(works) {
+    const grid = document.getElementById('works-grid');
+    if (!works || !works.length) {
+        grid.innerHTML = '<div class="work-empty">作品暂未发布</div>';
+        return;
+    }
+    // 自动给作品分配尺寸：第1个wide，第2个tall，第3、4个half，第5个full，循环
+    const sizes = ['size-wide', 'size-tall', 'size-half', 'size-half', 'size-full'];
+    grid.innerHTML = works.map((w, i) => {
+        const size = sizes[i % sizes.length];
+        const media = w.videoUrl
+            ? `<video class="work-media" autoplay muted loop playsinline ${w.posterUrl ? `poster="${w.posterUrl}"` : ''} src="${w.videoUrl}"></video>`
+            : (w.posterUrl
+                ? `<img class="work-media" src="${w.posterUrl}" alt="${escapeHtml(w.title)}">`
+                : `<div class="work-media" style="background:linear-gradient(135deg,#1a1a1a,#0a0a0a);"></div>`);
+        return `
+            <a href="${w.link || '#'}" class="work-card ${size} hover-target">
+                ${media}
+                <div class="work-overlay">
+                    ${w.tag ? `<span class="work-tag">— ${escapeHtml(w.tag)}</span>` : ''}
+                    <h3 class="work-name">${escapeHtml(w.title || '未命名')}</h3>
+                    ${w.year ? `<span class="work-year">${escapeHtml(w.year)}</span>` : ''}
+                </div>
+            </a>
+        `;
+    }).join('');
+}
+
+function renderSettings(s) {
+    if (s.heroVideo) {
+        const bg = document.getElementById('hero-bg');
+        bg.outerHTML = `<video class="hero-video" autoplay muted loop playsinline src="${s.heroVideo}"></video>`;
+    }
+    if (s.heroSub) document.getElementById('hero-sub').innerHTML = escapeHtml(s.heroSub).replace(/\n/g, '<br>');
+    if (s.contactEmail) {
+        const a = document.getElementById('contact-mail');
+        a.href = 'mailto:' + s.contactEmail;
+        a.textContent = s.contactEmail;
+    }
+    if (s.aboutBody) {
+        document.getElementById('about-body').innerHTML =
+            s.aboutBody.split('\n').filter(p => p.trim()).map(p => `<p>${escapeHtml(p)}</p>`).join('');
+    }
+    if (s.heroMetaLeft) document.getElementById('hero-meta-left').textContent = s.heroMetaLeft;
+}
+
+function escapeHtml(s) {
+    if (s == null) return '';
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+loadSiteData();
+</script>
+
+</body>
+</html>

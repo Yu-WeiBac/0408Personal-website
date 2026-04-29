@@ -4,178 +4,192 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>于未氵 — Visual Artist & Director</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Noto+Sans+SC:wght@200;300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 <style>
 :root {
-    --bg: #050505; --text: #F5F5F7; --muted: #86868B; --jade: #6FE3D2;
-    --font-sans: 'Inter', 'Noto Sans SC', sans-serif; --font-serif: 'Noto Serif SC', serif;
+    --bg-base: #000000;
+    --glass: rgba(255, 255, 255, 0.04);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-blur: blur(32px);
+    --cyan: #00D1FF;
+    --cyan-glow: rgba(0, 209, 255, 0.3);
+    --text: #FFFFFF;
+    --text-dim: rgba(255, 255, 255, 0.5);
+    --font-main: 'Inter', 'Noto Sans SC', sans-serif;
     --gutter: clamp(1.5rem, 4vw, 4rem);
 }
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: var(--bg); color: var(--text); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; cursor: none; }
-body::before { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: 0.04; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); mix-blend-mode: overlay; }
 
-/* 光标 */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; background: var(--bg-base); }
+body { background: var(--bg-base); color: var(--text); font-family: var(--font-main); -webkit-font-smoothing: antialiased; overflow-x: hidden; cursor: none; }
+
+/* === 噪点与极光背景 === */
+body::before { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: 0.04; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); mix-blend-mode: overlay; }
+.ambient { position: fixed; inset: 0; z-index: -2; pointer-events: none; background: #000; }
+.orb { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.3; animation: float 20s infinite alternate ease-in-out; }
+.orb-1 { width: 60vw; height: 60vw; background: #0055FF; top: -15%; left: -10%; }
+.orb-2 { width: 50vw; height: 50vw; background: var(--cyan); bottom: -10%; right: -5%; animation-delay: -5s; }
+@keyframes float { 100% { transform: translate(10vw, 10vh) scale(1.1); } }
+
+/* === 光标 === */
 .cursor, .cursor-ring { position: fixed; top: 0; left: 0; pointer-events: none; transform: translate(-50%, -50%); z-index: 9999; }
 .cursor { width: 6px; height: 6px; background: #fff; border-radius: 50%; mix-blend-mode: difference; }
-.cursor-ring { width: 32px; height: 32px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; transition: width 0.4s, height 0.4s, border-color 0.3s; z-index: 9998; }
+.cursor-ring { width: 32px; height: 32px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; transition: all 0.3s; z-index: 9998; }
 .cursor.is-hover { width: 0; height: 0; }
-.cursor-ring.is-hover { width: 60px; height: 60px; border-color: var(--jade); background: rgba(111,227,210,0.1); }
+.cursor-ring.is-hover { width: 60px; height: 60px; border-color: var(--cyan); background: rgba(0, 209, 255, 0.1); backdrop-filter: blur(4px); }
 
-/* 导航 */
-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 2rem var(--gutter); display: flex; justify-content: space-between; align-items: center; mix-blend-mode: difference; }
-.logo { font-size: 1.2rem; font-family: var(--font-serif); font-weight: 600; color: #fff; text-decoration: none; }
-.logo span { color: var(--jade); }
-.nav-right { display: flex; align-items: center; gap: 3rem; }
-.menu { display: flex; gap: 3rem; list-style: none; }
-.menu a { color: #fff; text-decoration: none; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.15em; opacity: 0.8; transition: 0.3s; }
-.menu a:hover { color: var(--jade); }
-.lang-switch { font-size: 0.8rem; cursor: pointer; color: var(--muted); transition: 0.3s; }
-.lang-switch:hover { color: #fff; }
+/* === 导航 (iOS Pill) === */
+nav { position: fixed; top: 1.5rem; left: 50%; transform: translateX(-50%); z-index: 100; background: rgba(10, 10, 12, 0.4); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); border-radius: 999px; padding: 0.7rem 2.5rem; display: flex; align-items: center; gap: 4rem; box-shadow: 0 15px 30px rgba(0,0,0,0.5); }
+.logo { font-size: 1.1rem; font-weight: 500; color: #fff; text-decoration: none; letter-spacing: 2px; }
+.logo span { color: var(--cyan); }
+.nav-right { display: flex; align-items: center; gap: 2.5rem; }
+.menu { display: flex; gap: 2.5rem; list-style: none; }
+.menu a { color: var(--text-dim); text-decoration: none; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+.menu a:hover { color: #fff; }
+.lang-switch { font-size: 0.8rem; cursor: pointer; color: var(--text-dim); transition: 0.3s; }
+.lang-switch:hover { color: var(--cyan); }
 
-/* 首页首屏 */
-.hero { position: relative; height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-.hero-fallback { position: absolute; inset: 0; z-index: -2; background: #020202; overflow: hidden; }
-.hero-fallback::before, .hero-fallback::after { content: ''; position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.3; animation: float 15s infinite alternate ease-in-out; }
-.hero-fallback::before { width: 60vw; height: 60vw; background: #0055ff; top: -10%; left: -10%; }
-.hero-fallback::after { width: 50vw; height: 50vw; background: var(--jade); bottom: -10%; right: -10%; animation-delay: -5s; }
-@keyframes float { 100% { transform: translate(15vw, 15vh) scale(1.1); } }
-.hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.7; z-index: -1; }
-.hero-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(5,5,5,1) 100%); z-index: 0; }
+/* === 首页 Hero === */
+.hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.hero-video-container { position: absolute; inset: 0; z-index: -1; opacity: 0.45; }
+.hero-video { width: 100%; height: 100%; object-fit: cover; }
+.hero-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, #000 100%); z-index: 0; }
+.hero-title { position: relative; z-index: 1; font-size: clamp(2.5rem, 6vw, 5.5rem); font-weight: 200; line-height: 1.1; letter-spacing: 2px; text-align: center; }
+.hero-title em { background: linear-gradient(135deg, #fff 0%, var(--cyan) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-style: normal; font-weight: 400; }
 
-/* 作品筛选 */
+/* === 作品网格与筛选 === */
 .works { padding: 6rem var(--gutter); position: relative; z-index: 2; }
-.works-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem; }
+.works-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 1rem; }
 .filter-bar { display: flex; gap: 2rem; }
-.filter-btn { background: none; border: none; color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; cursor: pointer; transition: 0.3s; padding-bottom: 0.3rem; }
-.filter-btn.active { color: var(--jade); border-bottom: 1px solid var(--jade); }
+.filter-btn { background: none; border: none; color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: 0.3s; padding-bottom: 0.3rem; border-bottom: 1px solid transparent; }
+.filter-btn.active { color: var(--cyan); border-bottom-color: var(--cyan); }
 
-/* 作品网格 */
 .works-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; transition: opacity 0.4s; }
 .work-card { position: relative; background: #0a0a0a; overflow: hidden; grid-column: span 6; aspect-ratio: 16/9; border-radius: 4px; cursor: pointer; }
-.work-card:nth-child(4n+1) { grid-column: span 8; }
-.work-card:nth-child(4n+2) { grid-column: span 4; aspect-ratio: 4/5; }
-.work-card:nth-child(4n+3) { grid-column: span 4; aspect-ratio: 4/5; }
-.work-card:nth-child(4n+4) { grid-column: span 8; }
-
-.work-card video, .work-card img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.5) brightness(0.6); transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+.work-card:nth-child(4n+1), .work-card:nth-child(4n+4) { grid-column: span 8; }
+.work-card:nth-child(4n+2), .work-card:nth-child(4n+3) { grid-column: span 4; aspect-ratio: 4/5; }
+.work-card video, .work-card img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.5) brightness(0.65); transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
 .work-card:hover video { filter: grayscale(0) brightness(1); transform: scale(1.03); }
-.work-info { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 2.5rem; background: linear-gradient(to top, rgba(0,0,0,0.95), transparent); opacity: 0; transition: 0.4s; transform: translateY(10px); }
-.work-card:hover .work-info { opacity: 1; transform: translateY(0); }
-.work-title { font-family: var(--font-serif); font-size: 1.8rem; font-weight: 400; margin-bottom: 0.5rem; }
-.work-meta { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
-.work-meta span { color: var(--jade); }
+.work-info { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 2rem; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); opacity: 0; transition: 0.4s; }
+.work-card:hover .work-info { opacity: 1; }
+.work-title { font-size: 1.6rem; font-weight: 300; margin-bottom: 0.4rem; letter-spacing: 1px; }
+.work-meta { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; }
+.work-meta span { color: var(--cyan); }
 
-/* 影院模式 */
-.cinema-modal { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; opacity: 0; pointer-events: none; transition: 0.5s; }
-.cinema-modal.active { opacity: 1; pointer-events: auto; }
-.cinema-close { position: absolute; top: 2rem; right: 3rem; color: #fff; font-size: 2.5rem; cursor: pointer; z-index: 10001; background: none; border: none; }
-.cinema-video-area { flex: 7; display: flex; align-items: center; justify-content: center; background: #050505; padding: 2rem; border-right: 1px solid #111; }
-.cinema-video-area video { width: 100%; max-height: 85vh; box-shadow: 0 30px 80px rgba(0,0,0,0.9); }
-.cinema-details { flex: 3; padding: 6rem 4rem; overflow-y: auto; }
-.cd-title { font-family: var(--font-serif); font-size: 2.2rem; margin-bottom: 0.5rem; }
-.cd-client { font-size: 0.9rem; color: var(--muted); text-transform: uppercase; margin-bottom: 2.5rem; }
-.cd-client span { color: #fff; }
-.cd-desc { font-size: 0.95rem; color: #ccc; line-height: 1.9; margin-bottom: 3rem; border-left: 1px solid var(--jade); padding-left: 1.5rem; }
-.cd-meta-box { margin-bottom: 2rem; }
-.cd-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
-.cd-val { font-size: 0.95rem; color: var(--jade); }
+/* === 影院详情弹层 === */
+.cinema { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; opacity: 0; pointer-events: none; transition: 0.5s; }
+.cinema.active { opacity: 1; pointer-events: auto; }
+.cinema-close { position: absolute; top: 2rem; right: 3rem; color: #fff; font-size: 2.5rem; cursor: pointer; z-index: 10001; background: none; border: none; font-weight: 200; }
+.cinema-player { flex: 7; display: flex; align-items: center; justify-content: center; padding: 2rem; background: #050505; border-right: 1px solid #111; }
+.cinema-player video { width: 100%; max-height: 85vh; border-radius: 4px; box-shadow: 0 30px 80px rgba(0,0,0,0.9); }
+.cinema-aside { flex: 3; padding: 6rem 4rem; overflow-y: auto; }
+.ca-title { font-size: 2rem; font-weight: 300; margin-bottom: 0.5rem; letter-spacing: 1px; }
+.ca-client { font-size: 0.85rem; color: var(--text-dim); text-transform: uppercase; margin-bottom: 2.5rem; }
+.ca-desc { font-size: 0.95rem; color: #ccc; line-height: 1.9; margin-bottom: 3.5rem; border-left: 1px solid var(--cyan); padding-left: 1.5rem; }
+.ca-meta { margin-bottom: 2rem; }
+.ca-label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.4rem; }
+.ca-val { font-size: 0.9rem; color: var(--cyan); font-weight: 400; }
 
-/* 品牌跑马灯 */
-.clients { padding: 8rem 0; overflow: hidden; background: #020202; border-top: 1px solid #111; }
+/* === 跑马灯与毛玻璃联系区 === */
+.clients { padding: 6rem 0; overflow: hidden; background: #020202; border-top: 1px solid #111; }
 .marquee { display: flex; width: max-content; animation: scroll 40s linear infinite; }
 .client-item { display: flex; align-items: center; margin-right: 8rem; filter: grayscale(1) opacity(0.4); transition: 0.4s; }
 .client-item:hover { filter: grayscale(0) opacity(1); }
 .client-item img { max-height: 35px; }
-.client-item span { font-size: 1.8rem; font-weight: 600; color: #fff; letter-spacing: 0.05em; }
+.client-item span { font-size: 1.8rem; font-weight: 600; color: #fff; letter-spacing: 2px; }
 @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-/* Footer */
-.contact { padding: 10rem var(--gutter); text-align: center; }
-.contact-mail { font-family: var(--font-serif); font-size: clamp(2rem, 5vw, 4rem); color: #fff; text-decoration: none; position: relative; }
-.contact-mail::after { content: ''; position: absolute; left: 0; bottom: -5px; width: 100%; height: 1px; background: var(--jade); transform: scaleX(0); transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
-.contact-mail:hover::after { transform: scaleX(1); }
-.socials { display: flex; gap: 3rem; justify-content: center; margin-top: 5rem; }
-.socials a { color: var(--muted); text-decoration: none; font-size: 0.8rem; text-transform: uppercase; transition: 0.3s; }
-.socials a:hover { color: #fff; }
+.contact { padding: 6rem 2rem 10rem; position: relative; z-index: 2; }
+.contact-glass { background: var(--glass); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); border-radius: 40px; max-width: 900px; margin: 0 auto; padding: 6rem 2rem; text-align: center; box-shadow: 0 40px 100px rgba(0,0,0,0.5); }
+.contact-mail { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 200; color: #fff; text-decoration: none; position: relative; transition: 0.3s; }
+.contact-mail:hover { color: var(--cyan); }
+.socials { display: flex; gap: 1rem; justify-content: center; margin-top: 4rem; flex-wrap: wrap; }
+.socials a { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); padding: 0.8rem 1.8rem; border-radius: 999px; color: #fff; text-decoration: none; font-size: 0.8rem; text-transform: uppercase; transition: 0.3s; backdrop-filter: blur(10px); }
+.socials a:hover { background: var(--cyan); color: #000; border-color: var(--cyan); box-shadow: 0 0 20px var(--cyan-glow); }
+
+footer { text-align: center; padding: 4rem; font-size: 0.7rem; color: var(--text-dim); letter-spacing: 2px; border-top: 1px solid var(--glass-border); }
 
 @media (max-width: 900px) {
-    body { cursor: auto; } .cursor, .cursor-ring { display: none; } .nav-right { gap: 1.5rem; } .menu { display: none; }
+    nav { width: 92%; gap: 1rem; } .nav-right { gap: 1rem; } .menu { display: none; }
+    .works-header { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
     .work-card:nth-child(n) { grid-column: span 12; aspect-ratio: 16/9; }
-    .cinema-modal { flex-direction: column; overflow-y: auto; } .cinema-video-area { border-right: none; border-bottom: 1px solid #111; }
+    .cinema { flex-direction: column; overflow-y: auto; } .cinema-player { border-right: none; border-bottom: 1px solid #111; }
 }
 </style>
 </head>
 <body>
 
+<div class="ambient"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
 <div class="cursor"></div><div class="cursor-ring"></div>
 
 <nav>
     <a href="#" class="logo hover-target">于未<span>氵</span></a>
     <div class="nav-right">
         <ul class="menu">
-            <li><a href="#works" class="hover-target" data-i18n="navWork">Work</a></li>
-            <li><a href="#about" class="hover-target" data-i18n="navAbout">About</a></li>
-            <li><a href="#contact" class="hover-target" data-i18n="navContact">Contact</a></li>
+            <li><a href="#works" data-i18n="navW">Work</a></li>
+            <li><a href="#about" data-i18n="navA">About</a></li>
+            <li><a href="#contact" data-i18n="navC">Contact</a></li>
         </ul>
         <div class="lang-switch hover-target" onclick="toggleLang()" id="lang-btn">EN</div>
     </div>
 </nav>
 
 <section class="hero">
-    <div class="hero-fallback"></div>
-    <div id="hero-media-container" style="position: absolute; inset: 0;"></div>
+    <div class="hero-video-container" id="hero-media-container"></div>
     <div class="hero-overlay"></div>
+    <div class="hero-title scroll-reveal">控制光影，<br><em>重塑液态的边界。</em></div>
 </section>
 
-<section class="about" id="about">
-    <div class="about-text scroll-reveal" id="about-text">
-        </div>
-</section>
+<section class="about" id="about"><div class="about-text scroll-reveal" id="about-text"></div></section>
 
 <section class="works" id="works">
     <div class="works-header scroll-reveal">
-        <div class="section-title" data-i18n="secWorks">SELECTED WORKS</div>
-        <div class="filter-bar" id="filter-bar">
-            <button class="filter-btn active hover-target" data-filter="All" data-i18n="catAll">All</button>
-            <button class="filter-btn hover-target" data-filter="Commercial" data-i18n="catCom">Commercial</button>
-            <button class="filter-btn hover-target" data-filter="BrandFilm" data-i18n="catBrand">Brand Film</button>
-            <button class="filter-btn hover-target" data-filter="Documentary" data-i18n="catDoc">Documentary</button>
-            <button class="filter-btn hover-target" data-filter="Personal" data-i18n="catPer">Personal</button>
+        <div class="section-title" data-i18n="secW">SELECTED WORKS</div>
+        <div class="filter-bar">
+            <button class="filter-btn active hover-target" data-filter="All" data-i18n="catA">All</button>
+            <button class="filter-btn hover-target" data-filter="Commercial" data-i18n="catC">Commercial</button>
+            <button class="filter-btn hover-target" data-filter="BrandFilm" data-i18n="catB">Brand Film</button>
+            <button class="filter-btn hover-target" data-filter="Documentary" data-i18n="catD">Documentary</button>
+            <button class="filter-btn hover-target" data-filter="Personal" data-i18n="catP">Personal</button>
         </div>
     </div>
     <div class="works-grid" id="works-grid"></div>
 </section>
 
-<div class="cinema-modal" id="cinema-modal">
+<div class="cinema" id="cinema">
     <button class="cinema-close hover-target" onclick="closeCinema()">×</button>
-    <div class="cinema-video-area" id="cinema-player-box"></div>
-    <div class="cinema-details">
-        <h2 class="cd-title" id="cd-title">Title</h2>
-        <div class="cd-client" id="cd-client-box">Client: <span id="cd-client">Brand</span></div>
-        <p class="cd-desc" id="cd-desc">Description...</p>
-        <div class="cd-meta-box"><div class="cd-label" data-i18n="mRoles">Roles</div><div class="cd-val" id="cd-roles">Director</div></div>
-        <div class="cd-meta-box"><div class="cd-label" data-i18n="mSkills">Skills</div><div class="cd-val" id="cd-tags">VFX</div></div>
+    <div class="cinema-player" id="cinema-box"></div>
+    <div class="cinema-aside">
+        <h2 class="ca-title" id="ca-title">Title</h2>
+        <div class="ca-client">Client: <span id="ca-client">Brand</span></div>
+        <p class="ca-desc" id="ca-desc"></p>
+        <div class="ca-meta"><div class="ca-label" data-i18n="mR">Roles</div><div class="ca-val" id="ca-roles"></div></div>
+        <div class="ca-meta"><div class="ca-label" data-i18n="mS">Skills</div><div class="ca-val" id="ca-tags"></div></div>
     </div>
 </div>
 
-<section class="clients">
-    <div class="marquee" id="clients-marquee"></div>
+<section class="clients"><div class="marquee" id="clients-marquee"></div></section>
+
+<section class="contact">
+    <div class="contact-glass scroll-reveal">
+        <div class="ca-label" style="margin-bottom:2rem" data-i18n="secContact">LETS CREATE</div>
+        <a href="" class="contact-mail hover-target" id="contact-email-link"></a>
+        <div class="socials" id="social-links"></div>
+    </div>
 </section>
 
-<section class="contact" id="contact">
-    <a href="mailto:hi@04080606.xyz" class="contact-mail hover-target scroll-reveal" id="contact-email-link">hi@04080606.xyz</a>
-    <div class="socials scroll-reveal" id="social-links"></div>
-</section>
+<footer>© 2026 于未氵 · LIQUID VISION SYNDICATE</footer>
 
 <script>
 gsap.registerPlugin(ScrollTrigger);
 let currentLang = localStorage.getItem('site_lang') || 'zh', allWorks = [];
 const dict = {
-    zh: { navWork: '作品', navAbout: '关于', navContact: '联系', secWorks: '精选成片', catAll: '全部 ALL', catCom: '商业广告', catBrand: '品牌宣传', catDoc: '纪录访谈', catPer: '个人创作', mRoles: '具体职责', mSkills: '核心技能' },
-    en: { navWork: 'WORK', navAbout: 'ABOUT', navContact: 'CONTACT', secWorks: 'SELECTED WORKS', catAll: 'ALL', catCom: 'COMMERCIAL', catBrand: 'BRAND FILM', catDoc: 'DOCUMENTARY', catPer: 'PERSONAL', mRoles: 'ROLES', mSkills: 'SKILLS' }
+    zh: { navW: '作品', navA: '关于', navC: '联系', secW: '精选成片', catA: '全部', catC: '商业广告', catB: '品牌宣传', catD: '纪录访谈', catP: '个人创作', mR: '具体职责', mS: '核心技能', secContact: '联系合作' },
+    en: { navW: 'WORK', navA: 'ABOUT', navC: 'CONTACT', secW: 'SELECTED WORKS', catA: 'ALL', catC: 'COMMERCIAL', catB: 'BRAND FILM', catD: 'DOCUMENTARY', catP: 'PERSONAL', mR: 'ROLES', mS: 'SKILLS', secContact: 'LETS CREATE' }
 };
 
 function toggleLang() { currentLang = currentLang === 'zh' ? 'en' : 'zh'; localStorage.setItem('site_lang', currentLang); applyLang(); }
@@ -184,28 +198,25 @@ function applyLang() {
     document.querySelectorAll('[data-i18n]').forEach(el => { el.innerText = dict[currentLang][el.getAttribute('data-i18n')]; });
 }
 
-// 光标
-const cursor = document.querySelector('.cursor'), ring = document.querySelector('.cursor-ring');
-if (window.matchMedia('(min-width: 901px)').matches) {
-    let mx = 0, my = 0, rx = 0, ry = 0;
-    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; gsap.to(cursor, { x: mx, y: my, duration: 0.05 }); });
-    gsap.ticker.add(() => { rx += (mx - rx) * 0.15; ry += (my - ry) * 0.15; gsap.set(ring, { x: rx, y: ry }); });
-    document.addEventListener('mouseover', e => { if (e.target.closest('a, button, .hover-target, .work-card')) { cursor.classList.add('is-hover'); ring.classList.add('is-hover'); } });
-    document.addEventListener('mouseout', e => { if (e.target.closest('a, button, .hover-target, .work-card')) { cursor.classList.remove('is-hover'); ring.classList.remove('is-hover'); } });
-}
+const cur = document.querySelector('.cursor'), ring = document.querySelector('.cursor-ring');
+document.addEventListener('mousemove', e => { 
+    gsap.to(cur, { x: e.clientX, y: e.clientY, duration: 0.05 });
+    gsap.to(ring, { x: e.clientX, y: e.clientY, duration: 0.15 });
+});
+document.addEventListener('mouseover', e => { if (e.target.closest('.hover-target, .work-card, a, button')) { cur.classList.add('is-hover'); ring.classList.add('is-hover'); } });
+document.addEventListener('mouseout', e => { if (e.target.closest('.hover-target, .work-card, a, button')) { cur.classList.remove('is-hover'); ring.classList.remove('is-hover'); } });
 
 window.openCinema = (idx) => {
     const w = allWorks[idx];
-    document.getElementById('cd-title').innerText = w.title;
-    document.getElementById('cd-client').innerText = w.client || 'N/A';
-    document.getElementById('cd-desc').innerHTML = (w.desc || '').replace(/\n/g, '<br>');
-    document.getElementById('cd-roles').innerText = w.roles || '-';
-    document.getElementById('cd-tags').innerText = w.tags || '-';
-    document.getElementById('cinema-player-box').innerHTML = `<video src="${w.videoUrl}" controls autoplay playsinline></video>`;
-    document.getElementById('cinema-modal').classList.add('active');
+    document.getElementById('ca-title').innerText = w.title;
+    document.getElementById('ca-client').innerText = w.client || 'N/A';
+    document.getElementById('ca-desc').innerHTML = (w.desc || '').replace(/\n/g, '<br>');
+    document.getElementById('ca-roles').innerText = w.roles || '-';
+    document.getElementById('ca-tags').innerText = w.tags || '-';
+    document.getElementById('cinema-box').innerHTML = `<video src="${w.videoUrl}" controls autoplay playsinline></video>`;
+    document.getElementById('cinema').classList.add('active');
 };
-
-function closeCinema() { document.getElementById('cinema-modal').classList.remove('active'); setTimeout(() => document.getElementById('cinema-player-box').innerHTML = '', 400); }
+function closeCinema() { document.getElementById('cinema').classList.remove('active'); setTimeout(()=>document.getElementById('cinema-box').innerHTML='', 500); }
 
 function renderWorks(filter = 'All') {
     const grid = document.getElementById('works-grid'); grid.style.opacity = 0;
@@ -221,30 +232,30 @@ function renderWorks(filter = 'All') {
                 </div>
             </div>`;
         }).join('');
-        document.querySelectorAll('.work-card video').forEach(v => { v.parentElement.onmouseenter = () => v.play(); v.parentElement.onmouseleave = () => { v.pause(); v.currentTime = 0; }; });
+        document.querySelectorAll('.work-card video').forEach(v => { v.parentElement.onmouseenter=()=>v.play(); v.parentElement.onmouseleave=()=>{v.pause();v.currentTime=0;}; });
         grid.style.opacity = 1; ScrollTrigger.refresh();
     }, 300);
 }
 
-document.querySelectorAll('.filter-btn').forEach(btn => btn.onclick = (e) => { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); e.target.classList.add('active'); renderWorks(e.target.dataset.filter); });
+document.querySelectorAll('.filter-btn').forEach(btn => btn.onclick=(e)=>{ document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active')); e.target.classList.add('active'); renderWorks(e.target.dataset.filter); });
 
 async function loadData() {
     try {
         applyLang();
         const [wRes, sRes] = await Promise.all([fetch('/api/works'), fetch('/api/settings')]);
-        allWorks = await wRes.json(); const s = await sRes.json(); console.log('Loaded Data:', s);
+        allWorks = await wRes.json(); const s = await sRes.json();
         renderWorks('All');
         if(s.heroVideo) document.getElementById('hero-media-container').innerHTML = `<video class="hero-video" autoplay muted loop playsinline src="${s.heroVideo}"></video>`;
         if(s.aboutBody) document.getElementById('about-text').innerHTML = s.aboutBody.replace(/\n/g, '<br>');
         const mail = document.getElementById('contact-email-link'); mail.href = `mailto:${s.contactEmail}`; mail.innerText = s.contactEmail;
         
-        // 社交链接修复
+        // 社交链接修复：确保键名与后台对齐
         const socialData = [
             {label: 'Vimeo', url: s.vimeoLink}, {label: 'YouTube', url: s.ytLink}, {label: 'Instagram', url: s.insLink},
             {label: '小红书', url: s.xhsLink}, {label: 'Behance', url: s.behanceLink}, {label: '哔哩哔哩', url: s.biliLink},
             {label: 'X (Twitter)', url: s.xLink}, {label: '微博', url: s.weiboLink}
         ];
-        document.getElementById('social-links').innerHTML = socialData.filter(d => d.url).map(d => `<a href="${d.url}" target="_blank" class="hover-target">${d.label}</a>`).join('');
+        document.getElementById('social-links').innerHTML = socialData.filter(d => d.url).map(d => `<a href="${d.url}" target="_blank">${d.label}</a>`).join('');
 
         if(s.clients && s.clients.length > 0) {
             const html = s.clients.map(c => `<div class="client-item hover-target">${c.logoUrl ? `<img src="${c.logoUrl}">` : `<span>${c.name}</span>`}</div>`).join('');

@@ -6,115 +6,176 @@
 <title>于未氵 — 数字创作者</title>
 <style>
 :root {
-    --ink: #0A0A0A;
-    --paper: #F2F0E6;
-    --paper-dim: rgba(242, 240, 230, 0.65);
-    --paper-faint: rgba(242, 240, 230, 0.25);
-    --jade: #6FE3D2;
-    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --bg-base: #000000;
+    --bg-panel: #0A0A0A;
+    --text-main: #F5F5F7;
+    --text-muted: #86868B;
+    --accent: #00D1FF; /* 液态荧光蓝 */
+    --border: rgba(255, 255, 255, 0.08);
+    
+    --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "PingFang SC", sans-serif;
+    --font-mono: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, monospace;
     --gutter: clamp(1.5rem, 4vw, 4rem);
 }
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; background: var(--bg-base); }
 body {
-    background: var(--ink); color: var(--paper);
-    font-family: var(--font-sans); font-weight: 300; line-height: 1.6;
-    overflow-x: hidden; cursor: none; -webkit-font-smoothing: antialiased;
+    background: var(--bg-base); color: var(--text-main);
+    font-family: var(--font-sans); -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
 }
-/* 氛围颗粒 */
-body::before {
-    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: 0.05;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+
+/* 顶部毛玻璃导航 */
+nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem var(--gutter);
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
 }
-/* 光标 */
-.cursor, .cursor-ring { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); }
-.cursor { width: 6px; height: 6px; background: var(--paper); border-radius: 50%; mix-blend-mode: difference; }
-.cursor-ring { width: 32px; height: 32px; border: 1px solid var(--paper-faint); border-radius: 50%; transition: all 0.3s; }
-.cursor.is-hover { width: 0; height: 0; }
-.cursor-ring.is-hover { width: 60px; height: 60px; border-color: var(--jade); }
+.logo { font-size: 1.2rem; font-weight: 600; color: var(--text-main); text-decoration: none; letter-spacing: 0.1em; }
+.logo span { color: var(--accent); }
+.menu { display: flex; gap: 2rem; list-style: none; }
+.menu a {
+    color: var(--text-muted); text-decoration: none; font-size: 0.85rem; font-weight: 500;
+    transition: color 0.3s ease; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.menu a:hover { color: var(--text-main); }
 
-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; padding: 1.5rem var(--gutter); mix-blend-mode: difference; }
-.logo { font-weight: 500; font-size: 1.4rem; letter-spacing: 0.1em; color: var(--paper); text-decoration: none; }
-.logo .water { color: var(--jade); font-style: italic; display: inline-block; transition: 0.5s; }
-.logo:hover .water { transform: scaleY(1.3) skewX(-10deg); }
-.menu { list-style: none; display: flex; gap: 2rem; }
-.menu a { color: var(--paper); text-decoration: none; font-size: 0.8rem; letter-spacing: 0.1rem; text-transform: uppercase; }
+/* 沉浸式首屏 */
+.hero { position: relative; height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 var(--gutter); }
+.hero-media-container { position: absolute; inset: 0; z-index: 0; }
+.hero-video { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
+.hero-overlay {
+    position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, var(--bg-base) 100%);
+    /* 去掉了强烈的模糊，保留视频的锐度，仅靠渐变压暗底部 */
+}
+.hero-content { position: relative; z-index: 2; max-width: 1000px; margin-top: 10vh; }
+.hero-badge {
+    display: inline-block; padding: 0.4rem 0.8rem; border-radius: 50px;
+    border: 1px solid var(--border); background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(10px); color: var(--accent); font-family: var(--font-mono);
+    font-size: 0.75rem; margin-bottom: 1.5rem; text-transform: uppercase;
+}
+.hero-title { font-size: clamp(3rem, 7vw, 6rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
+.hero-sub { color: var(--text-muted); font-size: clamp(1rem, 1.5vw, 1.25rem); max-width: 500px; line-height: 1.6; }
 
-.hero { position: relative; height: 100vh; overflow: hidden; display: flex; align-items: center; padding: 0 var(--gutter); }
-.hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; filter: brightness(0.6); }
-.hero::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 1; }
-.hero-content { position: relative; z-index: 2; max-width: 1200px; }
-.hero-title { font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 600; line-height: 1.1; margin-bottom: 2rem; }
-.hero-title em { font-style: italic; color: var(--jade); font-weight: 400; }
-.hero-sub { color: var(--paper-dim); max-width: 30rem; font-size: 1rem; }
+/* Bento Box 模块化网格 (Apple/OKX 风格) */
+.section { padding: 8rem var(--gutter); position: relative; z-index: 2; }
+.section-header { margin-bottom: 4rem; }
+.section-title { font-size: 2.5rem; font-weight: 600; }
+.section-title span { color: var(--text-muted); }
 
-.works { padding: 8rem var(--gutter); }
-.works-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 2rem; max-width: 1400px; margin: 0 auto; }
-.work-card { grid-column: span 6; position: relative; aspect-ratio: 16/10; overflow: hidden; background: var(--ink); text-decoration: none; color: var(--paper); }
-.work-card.size-full { grid-column: span 12; }
-.work-media { width: 100%; height: 100%; object-fit: cover; transition: 1s; opacity: 0.8; }
-.work-card:hover .work-media { transform: scale(1.05); opacity: 1; }
-.work-info { position: absolute; bottom: 2rem; left: 2rem; z-index: 2; }
-.work-tag { color: var(--jade); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; }
-.work-name { font-size: 1.5rem; margin-top: 0.5rem; font-weight: 500; }
+.bento-grid {
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem;
+    max-width: 1600px; margin: 0 auto;
+}
+.bento-card {
+    position: relative; border-radius: 24px; overflow: hidden;
+    background: var(--bg-panel); border: 1px solid var(--border);
+    grid-column: span 6; aspect-ratio: 16/10; text-decoration: none; color: var(--text-main);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s;
+}
+.bento-card:hover { transform: scale(0.98); border-color: rgba(255,255,255,0.2); }
+.bento-card.full { grid-column: span 12; aspect-ratio: 24/9; }
+.bento-media { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: 0.6s; }
+.bento-card:hover .bento-media { opacity: 1; transform: scale(1.05); }
 
-.contact { padding: 8rem var(--gutter); text-align: center; border-top: 1px solid var(--paper-faint); }
-.contact-title { font-size: clamp(2rem, 5vw, 4rem); margin-bottom: 3rem; }
-.contact-mail { display: inline-block; font-size: 1.1rem; color: var(--paper); text-decoration: none; padding: 0.8rem 2rem; border: 1px solid var(--paper-faint); border-radius: 50px; transition: 0.4s; }
-.contact-mail:hover { background: var(--jade); color: var(--ink); border-color: var(--jade); }
-.socials { margin-top: 4rem; display: flex; gap: 2.5rem; justify-content: center; flex-wrap: wrap; }
-.socials a { color: var(--paper-dim); text-decoration: none; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; transition: 0.3s; }
-.socials a:hover { color: var(--jade); }
+.bento-info {
+    position: absolute; bottom: 0; left: 0; right: 0; padding: 2rem;
+    background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+    display: flex; justify-content: space-between; align-items: flex-end;
+}
+.bento-title { font-size: 1.5rem; font-weight: 500; }
+.bento-meta { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); text-transform: uppercase; }
 
-footer { padding: 3rem var(--gutter); border-top: 1px solid var(--paper-faint); display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--paper-faint); }
+/* 联系模块 */
+.contact-module {
+    background: var(--bg-panel); border: 1px solid var(--border);
+    border-radius: 24px; padding: 6rem 2rem; text-align: center;
+}
+.contact-mail {
+    display: inline-block; font-size: clamp(1.5rem, 3vw, 2.5rem); font-weight: 600;
+    color: var(--text-main); text-decoration: none; margin-bottom: 3rem;
+    transition: color 0.3s;
+}
+.contact-mail:hover { color: var(--accent); }
+.socials { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+.socials a {
+    padding: 0.8rem 1.5rem; border-radius: 50px; background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border); color: var(--text-main); text-decoration: none;
+    font-size: 0.85rem; font-weight: 500; transition: all 0.3s;
+}
+.socials a:hover { background: var(--text-main); color: var(--bg-base); }
 
-@media (max-width: 800px) { .work-card { grid-column: span 12; } .menu { display: none; } .cursor, .cursor-ring { display: none; } body { cursor: auto; } }
+footer {
+    padding: 3rem var(--gutter); display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;
+}
+
+@media (max-width: 900px) {
+    .bento-card { grid-column: span 12; aspect-ratio: 4/3; }
+    .bento-card.full { aspect-ratio: 4/3; }
+    .menu { display: none; }
+}
 </style>
 </head>
 <body>
-<div class="cursor"></div><div class="cursor-ring"></div>
+
 <nav>
-    <a href="/" class="logo">于未<span class="water">氵</span></a>
-    <ul class="menu"><li><a href="#works">作品</a></li><li><a href="#contact">联系</a></li></ul>
+    <a href="/" class="logo">于未<span>氵</span></a>
+    <ul class="menu">
+        <li><a href="#works">Works</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
 </nav>
-<section class="hero" id="hero-section">
-    <div id="hero-media-container"></div>
+
+<section class="hero">
+    <div class="hero-media-container" id="hero-media-container"></div>
+    <div class="hero-overlay"></div>
     <div class="hero-content">
-        <h1 class="hero-title">在光影的缝隙之间，<br>寻找<em>液态的诗意</em>。</h1>
-        <p class="hero-sub" id="hero-sub-text">加载中...</p>
+        <div class="hero-badge">Digital Creator & Visual Engineer</div>
+        <h1 class="hero-title">控制光影，<br>重塑液态的边界。</h1>
+        <p class="hero-sub" id="hero-sub-text">Loading protocols...</p>
     </div>
 </section>
-<section class="works" id="works"><div class="works-grid" id="works-grid"></div></section>
-<section class="contact" id="contact">
-    <h2 class="contact-title">有想法？让水流动起来。</h2>
-    <a href="" class="contact-mail" id="contact-email-link">...</a>
-    <div class="socials" id="social-links"></div>
+
+<section class="section" id="works">
+    <div class="section-header">
+        <h2 class="section-title">Selected Works <span>/ 核心项目</span></h2>
+    </div>
+    <div class="bento-grid" id="works-grid"></div>
 </section>
-<footer><span>© 2026 于未氵</span><span>04080606.XYZ</span></footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<section class="section" id="contact">
+    <div class="contact-module">
+        <a href="" class="contact-mail" id="contact-email-link">...</a>
+        <div class="socials" id="social-links"></div>
+    </div>
+</section>
+
+<footer>
+    <span>System Online © 2026</span>
+    <span>04080606.XYZ</span>
+</footer>
+
 <script>
-const cursor = document.querySelector('.cursor');
-const ring = document.querySelector('.cursor-ring');
-document.addEventListener('mousemove', e => {
-    gsap.to(cursor, {x: e.clientX, y: e.clientY, duration: 0});
-    gsap.to(ring, {x: e.clientX, y: e.clientY, duration: 0.3});
-});
-document.addEventListener('mouseover', e => { if(e.target.closest('a, button')) { cursor.classList.add('is-hover'); ring.classList.add('is-hover'); } });
-document.addEventListener('mouseout', e => { if(e.target.closest('a, button')) { cursor.classList.remove('is-hover'); ring.classList.remove('is-hover'); } });
-
 async function loadData() {
     try {
         const [wRes, sRes] = await Promise.all([fetch('/api/works'), fetch('/api/settings')]);
         const works = await wRes.json();
         const s = await sRes.json();
 
-        // 渲染作品
-        document.getElementById('works-grid').innerHTML = works.map(w => `
-            <a href="${w.link || '#'}" class="work-card">
-                <video class="work-media" autoplay muted loop playsinline src="${w.videoUrl}"></video>
-                <div class="work-info">
-                    <div class="work-tag">${w.tag || ''}</div>
-                    <div class="work-name">${w.title}</div>
+        // 渲染作品 (Bento Grid 自动分配大小)
+        document.getElementById('works-grid').innerHTML = works.map((w, i) => `
+            <a href="${w.link || '#'}" class="bento-card ${i % 3 === 0 ? 'full' : ''}" target="_blank">
+                <video class="bento-media" autoplay muted loop playsinline src="${w.videoUrl}"></video>
+                <div class="bento-info">
+                    <div class="bento-title">${w.title}</div>
+                    <div class="bento-meta">${w.tag || 'SYS.OBJ'}</div>
                 </div>
             </a>
         `).join('');
@@ -122,18 +183,16 @@ async function loadData() {
         // 渲染设置
         if(s.heroVideo) document.getElementById('hero-media-container').innerHTML = `<video class="hero-video" autoplay muted loop playsinline src="${s.heroVideo}"></video>`;
         document.getElementById('hero-sub-text').innerText = s.heroSub || '';
+        
         const mail = document.getElementById('contact-email-link');
         mail.href = `mailto:${s.contactEmail}`;
-        mail.innerText = s.contactEmail;
+        mail.innerText = s.contactEmail || 'hi@04080606.xyz';
 
-        // 渲染社交链接
+        // 动态社交链接按钮
         const socialData = [
-            {label: 'Instagram', url: s.insLink},
-            {label: '小红书', url: s.xhsLink},
-            {label: 'X (Twitter)', url: s.xLink},
-            {label: 'Telegram', url: s.tgLink},
-            {label: 'B站', url: s.biliLink},
-            {label: 'Behance', url: s.behanceLink},
+            {label: 'Instagram', url: s.insLink}, {label: '小红书', url: s.xhsLink},
+            {label: 'X (Twitter)', url: s.xLink}, {label: 'Telegram', url: s.tgLink},
+            {label: 'B站', url: s.biliLink}, {label: 'Behance', url: s.behanceLink},
             {label: '微博', url: s.weiboLink}
         ];
         document.getElementById('social-links').innerHTML = socialData

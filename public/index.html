@@ -6,7 +6,7 @@
 <title>于未氵 — Visual Artist & Director</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Noto+Sans+SC:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Noto+Sans+SC:wght@200;300;400;500&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 <style>
@@ -19,93 +19,73 @@
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { background: #000; color: var(--text); font-family: var(--font-main); -webkit-font-smoothing: antialiased; overflow-x: hidden; cursor: none; }
+body::before { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: 0.04; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); mix-blend-mode: overlay; }
 
-/* 1. 响应式动态背景光 (跟随鼠标) */
+/* === 1. 动态极光背景 === */
 .ambient { position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden; background: #000; }
 .orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.25; will-change: transform; transition: transform 0.8s cubic-bezier(0.2, 0, 0.2, 1); }
 .orb-1 { width: 60vw; height: 60vw; background: #0044FF; top: -10%; left: -10%; }
 .orb-2 { width: 50vw; height: 50vw; background: var(--jade); bottom: -10%; right: -10%; }
 
-/* 2. 极致物理光标 (带拉伸形变) */
-.cursor-dot { position: fixed; top: 0; left: 0; width: 4px; height: 4px; background: #fff; border-radius: 50%; z-index: 10001; pointer-events: none; }
+/* === 2. 极致物理光标：白点永居中心 === */
+.cursor-container { position: fixed; top: 0; left: 0; z-index: 10000; pointer-events: none; will-change: transform; }
+.cursor-dot { position: absolute; width: 4px; height: 4px; background: #fff; border-radius: 50%; transform: translate(-50%, -50%); }
 .cursor-ring {
-    position: fixed; top: 0; left: 0; width: 36px; height: 36px;
-    border: 1px solid rgba(255,255,255,0.3); border-radius: 50%;
-    z-index: 10000; pointer-events: none;
-    mix-blend-mode: difference; backdrop-filter: blur(2px);
-    transition: width 0.3s, height 0.3s, border-color 0.3s, background 0.3s;
+    position: absolute; width: 36px; height: 36px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%;
+    transform: translate(-50%, -50%); mix-blend-mode: difference; backdrop-filter: blur(2px);
+    transition: width 0.3s, height 0.3s, border-color 0.3s; transform-origin: center center;
 }
-.cursor-ring.is-hover { width: 70px; height: 70px; border-color: var(--jade); background: rgba(0, 209, 255, 0.05); }
+.cursor-container.is-hover .cursor-ring { width: 70px; height: 70px; border-color: var(--jade); background: rgba(0, 209, 255, 0.05); }
 
-/* 3. 玻璃拟物 UI 胶囊 */
-nav {
-    position: fixed; top: 1.5rem; left: 50%; transform: translateX(-50%); z-index: 100;
-    background: rgba(10, 10, 12, 0.4); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 999px;
-    padding: 0.6rem 2rem; display: flex; align-items: center; gap: 4rem; box-shadow: 0 15px 30px rgba(0,0,0,0.5);
-}
+/* === 3. UI 胶囊 === */
+nav { position: fixed; top: 1.5rem; left: 50%; transform: translateX(-50%); z-index: 100; background: rgba(10, 10, 12, 0.4); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 999px; padding: 0.6rem 2.5rem; display: flex; align-items: center; gap: 4rem; box-shadow: 0 15px 30px rgba(0,0,0,0.5); }
 .logo { font-size: 1.1rem; font-weight: 500; color: #fff; text-decoration: none; letter-spacing: 2px; }
-.logo span { color: var(--jade); }
+.logo span { color: var(--jade); font-family: 'Noto Serif SC', serif; font-style: italic; }
+.nav-right { display: flex; align-items: center; gap: 2.5rem; }
 .menu { display: flex; gap: 2.5rem; list-style: none; }
 .menu a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.8rem; text-transform: uppercase; transition: 0.3s; }
 .menu a:hover { color: #fff; }
-.lang-btn { font-size: 0.8rem; cursor: pointer; color: rgba(255,255,255,0.4); transition: 0.3s; }
+.lang-switch { font-size: 0.8rem; cursor: pointer; color: rgba(255,255,255,0.4); transition: 0.3s; }
 
-/* 4. 沉浸式首屏 (Hero) */
+/* === 4. Sections === */
 .hero { height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; position: relative; }
-.hero-video { position: absolute; inset: 0; z-index: -1; opacity: 0.5; width: 100%; height: 100%; object-fit: cover; }
-.hero-title { font-size: clamp(2rem, 6vw, 5rem); font-weight: 200; line-height: 1.3; letter-spacing: 3px; }
+.hero-video { position: absolute; inset: 0; z-index: -1; opacity: 0.45; width: 100%; height: 100%; object-fit: cover; }
+.hero-title { font-size: clamp(2.5rem, 6vw, 5.5rem); font-weight: 200; line-height: 1.1; letter-spacing: 3px; }
 .hero-title em { background: linear-gradient(135deg, #fff 0%, var(--jade) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-style: normal; font-weight: 400; }
 
-/* 5. 玻璃卡片网格与筛选 */
-.works { padding: 6rem var(--gutter); position: relative; z-index: 1; }
-.works-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 1rem; }
-.filter-bar { display: flex; gap: 1.5rem; }
-.filter-btn { background: none; border: none; color: rgba(255,255,255,0.4); font-size: 0.7rem; text-transform: uppercase; cursor: pointer; transition: 0.3s; border-bottom: 1px solid transparent; }
+.works { padding: 6rem var(--gutter); position: relative; z-index: 2; }
+.works-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 1rem; }
+.filter-bar { display: flex; gap: 2rem; }
+.filter-btn { background: none; border: none; color: rgba(255,255,255,0.4); font-size: 0.75rem; text-transform: uppercase; cursor: pointer; transition: 0.3s; padding-bottom: 0.3rem; border-bottom: 1px solid transparent; }
 .filter-btn.active { color: var(--jade); border-bottom-color: var(--jade); }
 
-.works-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem; transition: opacity 0.4s; }
-.glass-card {
-    background: var(--glass); backdrop-filter: blur(25px); border: 1px solid var(--glass-border);
-    border-radius: 24px; padding: 1.2rem; grid-column: span 6; aspect-ratio: 16/10;
-    text-decoration: none; color: #fff; transition: transform 0.5s cubic-bezier(0.2, 1, 0.3, 1); cursor: pointer;
-}
+.works-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem; }
+.glass-card { background: var(--glass); backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 1.2rem; grid-column: span 6; aspect-ratio: 16/10; text-decoration: none; color: #fff; transition: 0.5s; cursor: pointer; }
 .glass-card:hover { transform: translateY(-8px); border-color: rgba(0,209,255,0.2); }
 .work-media { border-radius: 16px; overflow: hidden; width: 100%; height: 100%; background: #0a0a0a; position: relative; }
 .work-media video { width: 100%; height: 100%; object-fit: cover; opacity: 0.75; transition: 0.6s; }
 .glass-card:hover video { opacity: 1; transform: scale(1.05); }
 
-/* 6. 影院模式详情层 */
+/* 详情层 */
 .cinema { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; opacity: 0; pointer-events: none; transition: 0.5s; }
 .cinema.active { opacity: 1; pointer-events: auto; }
 .cinema-close { position: absolute; top: 2rem; right: 3rem; color: #fff; font-size: 2.5rem; cursor: pointer; background: none; border: none; font-weight: 100; }
-.cinema-player { flex: 7; display: flex; align-items: center; justify-content: center; padding: 2rem; background: #050505; }
-.cinema-player video { width: 100%; max-height: 85vh; border-radius: 4px; box-shadow: 0 40px 100px rgba(0,0,0,0.8); }
+.cinema-player { flex: 7; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+.cinema-player video { width: 100%; max-height: 85vh; border-radius: 8px; box-shadow: 0 30px 80px rgba(0,0,0,0.9); }
 .cinema-aside { flex: 3; padding: 6rem 4rem; overflow-y: auto; }
-.ca-title { font-size: 2.2rem; font-weight: 300; margin-bottom: 2rem; letter-spacing: 1px; }
-.ca-desc { font-size: 0.95rem; color: #aaa; line-height: 1.8; margin-bottom: 3rem; border-left: 1px solid var(--jade); padding-left: 1.5rem; }
-.ca-meta { margin-bottom: 1.5rem; }
-.ca-label { font-size: 0.7rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.4rem; }
-.ca-val { font-size: 0.95rem; color: var(--jade); }
 
-/* 7. 极致通透毛玻璃联系区 */
+/* 跑马灯 */
+.clients { padding: 6rem 0; overflow: hidden; background: #020202; border-top: 1px solid #111; }
+.marquee { display: flex; width: max-content; animation: scroll 40s linear infinite; }
+.client-item { display: flex; align-items: center; margin-right: 8rem; filter: grayscale(1) opacity(0.4); }
+@keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* 社交联系区 (极致通透) */
 .contact { padding: 6rem var(--gutter) 10rem; position: relative; z-index: 2; }
-.contact-glass {
-    background: var(--glass); backdrop-filter: blur(40px); border: 1px solid var(--glass-border);
-    border-radius: 40px; max-width: 850px; margin: 0 auto; padding: 6rem 2rem; text-align: center;
-    box-shadow: 0 50px 100px rgba(0,0,0,0.5);
-}
-.email-link { font-size: clamp(1.5rem, 4vw, 2.8rem); font-weight: 200; color: #fff; text-decoration: none; transition: 0.3s; margin-bottom: 4rem; display: inline-block; }
-.email-link:hover { color: var(--jade); text-shadow: 0 0 30px rgba(0, 209, 255, 0.4); }
-
-.social-bar { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-.social-bar a {
-    background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
-    padding: 0.8rem 1.8rem; border-radius: 999px; color: #fff; text-decoration: none;
-    font-size: 0.8rem; text-transform: uppercase; transition: 0.3s;
-}
+.contact-glass { background: var(--glass); backdrop-filter: blur(40px); border: 1px solid var(--glass-border); border-radius: 40px; max-width: 850px; margin: 0 auto; padding: 6rem 2rem; text-align: center; box-shadow: 0 40px 100px rgba(0,0,0,0.5); }
+.social-bar { display: flex; gap: 1rem; justify-content: center; margin-top: 4rem; }
+.social-bar a { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); padding: 0.8rem 1.8rem; border-radius: 999px; color: #fff; text-decoration: none; font-size: 0.8rem; text-transform: uppercase; transition: 0.3s; }
 .social-bar a:hover { background: var(--jade); color: #000; box-shadow: 0 0 25px rgba(0, 209, 255, 0.5); transform: translateY(-3px); }
-
-footer { padding: 4rem; text-align: center; font-size: 0.7rem; color: rgba(255,255,255,0.3); letter-spacing: 2px; }
 
 @media (max-width: 900px) { nav { width: 92%; } .menu { display: none; } .glass-card { grid-column: span 12; } .cinema { flex-direction: column; } }
 </style>
@@ -113,17 +93,17 @@ footer { padding: 4rem; text-align: center; font-size: 0.7rem; color: rgba(255,2
 <body>
 
 <div class="ambient"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
-<div class="cursor-dot"></div><div class="cursor-ring"></div>
+<div class="cursor-container"><div class="cursor-ring"></div><div class="cursor-dot"></div></div>
 
 <nav>
     <a href="#" class="logo hover-target">于未<span>氵</span></a>
-    <div style="display:flex; align-items:center; gap:2.5rem">
+    <div class="nav-right">
         <ul class="menu">
             <li><a href="#works" data-i18n="navW">Work</a></li>
             <li><a href="#about" data-i18n="navA">About</a></li>
             <li><a href="#contact" data-i18n="navC">Contact</a></li>
         </ul>
-        <div class="lang-btn hover-target" onclick="toggleLang()" id="lang-btn">EN</div>
+        <div class="lang-switch hover-target" onclick="toggleLang()" id="lang-btn">EN</div>
     </div>
 </nav>
 
@@ -132,7 +112,7 @@ footer { padding: 4rem; text-align: center; font-size: 0.7rem; color: rgba(255,2
     <div class="hero-title scroll-reveal">控制光影，<br><em>重塑液态的边界。</em></div>
 </section>
 
-<section class="about" id="about"><div class="about-text scroll-reveal" id="about-text" style="padding: 10rem var(--gutter); text-align: center; font-size: clamp(1.2rem, 2vw, 1.8rem); font-weight: 300; color: #ccc;"></div></section>
+<section class="about" id="about"><div id="about-text" style="padding: 10rem var(--gutter); text-align: center; font-size: clamp(1.2rem, 2vw, 1.8rem); font-weight: 300; color: #ccc;"></div></section>
 
 <section class="works" id="works">
     <div class="works-header scroll-reveal">
@@ -151,17 +131,18 @@ footer { padding: 4rem; text-align: center; font-size: 0.7rem; color: rgba(255,2
     <button class="cinema-close hover-target" onclick="closeCinema()">×</button>
     <div class="cinema-player" id="cinema-box"></div>
     <div class="cinema-aside">
-        <h2 class="ca-title" id="ca-title">Title</h2>
-        <div class="ca-label">Client: <span id="ca-client" style="color:#fff">Brand</span></div>
-        <p class="ca-desc" id="ca-desc"></p>
-        <div class="ca-meta"><div class="ca-label" data-i18n="mR">Roles</div><div class="ca-val" id="ca-roles"></div></div>
-        <div class="ca-meta"><div class="ca-label" data-i18n="mS">Skills</div><div class="ca-val" id="ca-tags"></div></div>
+        <h2 id="ca-title" style="font-size:2rem; font-weight:300; margin-bottom:1rem">Title</h2>
+        <div style="font-size:0.8rem; color:rgba(255,255,255,0.4); margin-bottom:2rem">Client: <span id="ca-client" style="color:#fff"></span></div>
+        <p id="ca-desc" style="font-size:0.95rem; color:#aaa; line-height:1.8; margin-bottom:3rem; border-left:1px solid var(--jade); padding-left:1.5rem"></p>
+        <div style="margin-bottom:1.5rem"><div data-i18n="mR" style="font-size:0.7rem; color:rgba(255,255,255,0.4); text-transform:uppercase; margin-bottom:0.5rem">Roles</div><div id="ca-roles" style="color:var(--jade)"></div></div>
     </div>
 </div>
 
+<section class="clients"><div class="marquee" id="clients-marquee"></div></section>
+
 <section class="contact">
     <div class="contact-glass scroll-reveal">
-        <a href="" class="email-link hover-target" id="contact-email-link">...</a>
+        <a href="" class="email-link hover-target" id="contact-email-link"></a>
         <div class="social-bar" id="social-links"></div>
     </div>
 </section>
@@ -169,40 +150,36 @@ footer { padding: 4rem; text-align: center; font-size: 0.7rem; color: rgba(255,2
 <footer>© 2026 于未氵 · LIQUID GLASS VISION SYNDICATE</footer>
 
 <script>
-// 1. 物理交互引擎 (LERP + 拉伸)
-const dot = document.querySelector('.cursor-dot'), ring = document.querySelector('.cursor-ring');
+// 1. 物理对齐引擎
+const container = document.querySelector('.cursor-container'), ring = document.querySelector('.cursor-ring');
 const orb1 = document.querySelector('.orb-1'), orb2 = document.querySelector('.orb-2');
-let mouse = { x: 0, y: 0 }, pos = { x: 0, y: 0 }, lastPos = { x: 0, y: 0 };
-const ease = 0.15; // 物理跟随因子
+let mouse = { x: window.innerWidth/2, y: window.innerHeight/2 }, pos = { x: mouse.x, y: mouse.y }, lastPos = { x: mouse.x, y: mouse.y };
 
-document.addEventListener('mousemove', e => {
-    mouse.x = e.clientX; mouse.y = e.clientY;
-    dot.style.transform = `translate(${mouse.x}px, ${mouse.y}px)`;
-});
+document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
 
 function updatePhysics() {
-    pos.x += (mouse.x - pos.x) * ease;
-    pos.y += (mouse.y - pos.y) * ease;
+    pos.x += (mouse.x - pos.x) * 0.15; pos.y += (mouse.y - pos.y) * 0.15;
+    container.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0)`;
     const dx = pos.x - lastPos.x, dy = pos.y - lastPos.y;
     const vel = Math.sqrt(dx*dx + dy*dy);
     const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-    const stretch = Math.min(vel * 0.02, 0.5); 
-    ring.style.transform = `translate(${pos.x}px, ${pos.y}px) rotate(${angle}deg) scale(${1 + stretch}, ${1 - stretch})`;
-    orb1.style.transform = `translate(${mouse.x * 0.1}px, ${mouse.y * 0.1}px)`;
-    orb2.style.transform = `translate(${-mouse.x * 0.1}px, ${-mouse.y * 0.1}px)`;
+    const stretch = Math.min(vel * 0.02, 0.4); 
+    ring.style.transform = `translate(-50%, -50%) rotate(${angle}deg) scale(${1 + stretch}, ${1 - stretch})`;
+    orb1.style.transform = `translate(${mouse.x * 0.08}px, ${mouse.y * 0.08}px)`;
+    orb2.style.transform = `translate(${-mouse.x * 0.08}px, ${-mouse.y * 0.08}px)`;
     lastPos.x = pos.x; lastPos.y = pos.y;
     requestAnimationFrame(updatePhysics);
 }
 requestAnimationFrame(updatePhysics);
 
-document.addEventListener('mouseover', e => { if (e.target.closest('.hover-target, .glass-card, a, button')) ring.classList.add('is-hover'); });
-document.addEventListener('mouseout', e => { if (e.target.closest('.hover-target, .glass-card, a, button')) ring.classList.remove('is-hover'); });
+document.addEventListener('mouseover', e => { if (e.target.closest('.hover-target, .glass-card, a, button')) container.classList.add('is-hover'); });
+document.addEventListener('mouseout', e => { if (e.target.closest('.hover-target, .glass-card, a, button')) container.classList.remove('is-hover'); });
 
-// 2. 数据渲染与链接对齐
+// 2. 数据与语言
 let allWorks = [], currentLang = localStorage.getItem('site_lang') || 'zh';
 const dict = {
-    zh: { navW: '作品', navA: '关于', navC: '联系', secW: '精选成片', mR: '具体职责', mS: '核心技能' },
-    en: { navW: 'WORK', navA: 'ABOUT', navC: 'CONTACT', secW: 'SELECTED WORKS', mR: 'ROLES', mS: 'SKILLS' }
+    zh: { navW: '作品', navA: '关于', navC: '联系', secW: '精选成片', mR: '具体职责' },
+    en: { navW: 'WORK', navA: 'ABOUT', navC: 'CONTACT', secW: 'SELECTED WORKS', mR: 'ROLES' }
 };
 
 function toggleLang() { currentLang = currentLang === 'zh' ? 'en' : 'zh'; localStorage.setItem('site_lang', currentLang); applyLang(); }
@@ -217,7 +194,6 @@ window.openCinema = (idx) => {
     document.getElementById('ca-client').innerText = w.client || 'N/A';
     document.getElementById('ca-desc').innerHTML = (w.desc || '').replace(/\n/g, '<br>');
     document.getElementById('ca-roles').innerText = w.roles || '-';
-    document.getElementById('ca-tags').innerText = w.tags || '-';
     document.getElementById('cinema-box').innerHTML = `<video src="${w.videoUrl}" controls autoplay playsinline></video>`;
     document.getElementById('cinema').classList.add('active');
 };
@@ -242,9 +218,9 @@ async function loadData() {
 
         if(s.heroVideo) document.getElementById('hero-media-container').innerHTML = `<video class="hero-video" autoplay muted loop playsinline src="${s.heroVideo}"></video>`;
         if(s.aboutBody) document.getElementById('about-text').innerHTML = s.aboutBody.replace(/\n/g, '<br>');
-        const mail = document.getElementById('contact-email-link'); mail.href = `mailto:${s.contactEmail}`; mail.innerText = s.contactEmail || 'hi@04080606.xyz';
+        document.getElementById('contact-email-link').innerText = s.contactEmail || 'hi@04080606.xyz';
+        document.getElementById('contact-email-link').href = `mailto:${s.contactEmail}`;
         
-        // 社交链接修复 (严格对应后台键名)
         const socialData = [
             {label: 'Vimeo', url: s.vimeoLink}, {label: 'YouTube', url: s.ytLink}, {label: 'Instagram', url: s.insLink},
             {label: '小红书', url: s.xhsLink}, {label: 'Behance', url: s.behanceLink}, {label: '哔哩哔哩', url: s.biliLink},
@@ -252,7 +228,11 @@ async function loadData() {
         ];
         document.getElementById('social-links').innerHTML = socialData.filter(d => d.url).map(d => `<a href="${d.url}" target="_blank" class="hover-target">${d.label}</a>`).join('');
 
-        gsap.from('.glass-card', { y: 50, opacity: 0, stagger: 0.1, scrollTrigger: { trigger: '.works-grid', start: 'top 85%' } });
+        if(s.clients && s.clients.length > 0) {
+            const html = s.clients.map(c => `<div class="client-item">${c.logoUrl ? `<img src="${c.logoUrl}">` : `<span>${c.name}</span>`}</div>`).join('');
+            document.getElementById('clients-marquee').innerHTML = `<div class="marquee">${html}${html}</div>`;
+        }
+        gsap.from('.scroll-reveal', { y: 40, opacity: 0, stagger: 0.1, scrollTrigger: { trigger: '.scroll-reveal', start: 'top 85%' } });
     } catch (e) { console.error(e); }
 }
 loadData();

@@ -3,125 +3,108 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>于未氵 — Visual Artist</title>
+<title>于未氵 — Visual Artist & Director</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 <style>
 :root {
-    --bg: #050505; --ink: #0a0a0a; --text: #F5F5F7; --muted: #86868B;
-    --jade: #6FE3D2;
-    --font-sans: 'Inter', 'Noto Sans SC', sans-serif;
-    --font-serif: 'Noto Serif SC', serif;
+    --bg: #050505; --text: #F5F5F7; --muted: #86868B; --jade: #6FE3D2;
+    --font-sans: 'Inter', 'Noto Sans SC', sans-serif; --font-serif: 'Noto Serif SC', serif;
     --gutter: clamp(1.5rem, 4vw, 4rem);
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body { background: var(--bg); color: var(--text); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; line-height: 1.6; cursor: none; }
+body { background: var(--bg); color: var(--text); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; cursor: none; }
+body::before { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: 0.04; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); mix-blend-mode: overlay; }
 
-body::before {
-    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: 0.04;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-    mix-blend-mode: overlay;
-}
-
+/* 光标 */
 .cursor, .cursor-ring { position: fixed; top: 0; left: 0; pointer-events: none; transform: translate(-50%, -50%); z-index: 9999; }
-.cursor { width: 6px; height: 6px; background: #fff; border-radius: 50%; mix-blend-mode: difference; transition: width 0.3s, height 0.3s; }
+.cursor { width: 6px; height: 6px; background: #fff; border-radius: 50%; mix-blend-mode: difference; }
 .cursor-ring { width: 32px; height: 32px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; transition: width 0.4s, height 0.4s, border-color 0.3s; z-index: 9998; }
 .cursor.is-hover { width: 0; height: 0; }
-.cursor-ring.is-hover { width: 60px; height: 60px; border-color: var(--jade); background: rgba(111,227,210,0.1); backdrop-filter: blur(2px); }
+.cursor-ring.is-hover { width: 60px; height: 60px; border-color: var(--jade); background: rgba(111,227,210,0.1); }
 
+/* 导航 */
 nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 2rem var(--gutter); display: flex; justify-content: space-between; align-items: center; mix-blend-mode: difference; }
-.logo { font-size: 1.2rem; font-family: var(--font-serif); font-weight: 600; color: #fff; text-decoration: none; letter-spacing: 0.1em; }
-.logo span { font-style: italic; color: var(--jade); }
+.logo { font-size: 1.2rem; font-family: var(--font-serif); font-weight: 600; color: #fff; text-decoration: none; }
+.logo span { color: var(--jade); }
 .nav-right { display: flex; align-items: center; gap: 3rem; }
 .menu { display: flex; gap: 3rem; list-style: none; }
-.menu a { color: #fff; text-decoration: none; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.15em; transition: color 0.3s; opacity: 0.8; }
-.menu a:hover { color: var(--jade); opacity: 1; }
-.lang-switch { font-size: 0.8rem; cursor: pointer; color: var(--muted); transition: 0.3s; letter-spacing: 1px; }
-.lang-switch:hover { color: var(--jade); }
+.menu a { color: #fff; text-decoration: none; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.15em; opacity: 0.8; transition: 0.3s; }
+.menu a:hover { color: var(--jade); }
+.lang-switch { font-size: 0.8rem; cursor: pointer; color: var(--muted); transition: 0.3s; }
+.lang-switch:hover { color: #fff; }
 
-.hero { position: relative; height: 100vh; width: 100%; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+/* 首页首屏 */
+.hero { position: relative; height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; }
 .hero-fallback { position: absolute; inset: 0; z-index: -2; background: #020202; overflow: hidden; }
-.hero-fallback::before, .hero-fallback::after { content: ''; position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.4; animation: floatAnim 15s infinite alternate ease-in-out; }
-.hero-fallback::before { width: 50vw; height: 50vw; background: #0055ff; top: -10%; left: -10%; }
-.hero-fallback::after { width: 45vw; height: 45vw; background: var(--jade); bottom: -10%; right: -10%; animation-delay: -5s; }
-@keyframes floatAnim { 100% { transform: translate(10vw, 10vh) scale(1.2); } }
+.hero-fallback::before, .hero-fallback::after { content: ''; position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.3; animation: float 15s infinite alternate ease-in-out; }
+.hero-fallback::before { width: 60vw; height: 60vw; background: #0055ff; top: -10%; left: -10%; }
+.hero-fallback::after { width: 50vw; height: 50vw; background: var(--jade); bottom: -10%; right: -10%; animation-delay: -5s; }
+@keyframes float { 100% { transform: translate(15vw, 15vh) scale(1.1); } }
 .hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.7; z-index: -1; }
 .hero-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(5,5,5,1) 100%); z-index: 0; }
 
-.about { padding: 10rem var(--gutter); max-width: 1200px; margin: 0 auto; text-align: center; position: relative; z-index: 2; }
-.about-text { font-family: var(--font-serif); font-size: clamp(1.2rem, 2vw, 1.8rem); font-weight: 300; line-height: 1.8; color: var(--text); }
-.about-text em { font-style: italic; color: var(--jade); font-weight: 400; }
-
-.works { padding: 4rem var(--gutter); position: relative; z-index: 2; }
-.works-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; }
-.section-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted); }
-.filter-bar { display: flex; gap: 1.5rem; }
-.filter-btn { background: none; border: none; color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: 0.3s; padding-bottom: 0.2rem; }
-.filter-btn:hover { color: #fff; }
+/* 作品筛选 */
+.works { padding: 6rem var(--gutter); position: relative; z-index: 2; }
+.works-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem; }
+.filter-bar { display: flex; gap: 2rem; }
+.filter-btn { background: none; border: none; color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; cursor: pointer; transition: 0.3s; padding-bottom: 0.3rem; }
 .filter-btn.active { color: var(--jade); border-bottom: 1px solid var(--jade); }
 
+/* 作品网格 */
 .works-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; transition: opacity 0.4s; }
-.work-card { position: relative; background: var(--ink); overflow: hidden; display: block; aspect-ratio: 16/9; border-radius: 4px; cursor: pointer; }
-.work-card:nth-child(4n+1) { grid-column: span 8; aspect-ratio: 16/9; }
+.work-card { position: relative; background: #0a0a0a; overflow: hidden; grid-column: span 6; aspect-ratio: 16/9; border-radius: 4px; cursor: pointer; }
+.work-card:nth-child(4n+1) { grid-column: span 8; }
 .work-card:nth-child(4n+2) { grid-column: span 4; aspect-ratio: 4/5; }
 .work-card:nth-child(4n+3) { grid-column: span 4; aspect-ratio: 4/5; }
-.work-card:nth-child(4n+4) { grid-column: span 8; aspect-ratio: 16/9; }
+.work-card:nth-child(4n+4) { grid-column: span 8; }
 
-.work-card video, .work-card img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.5) brightness(0.6); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-.work-card:hover video, .work-card:hover img { filter: grayscale(0) brightness(1); transform: scale(1.03); }
-.work-info { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 2rem; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); opacity: 0; transition: opacity 0.4s ease; }
-.work-card:hover .work-info { opacity: 1; }
-.work-title { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 400; margin-bottom: 0.3rem; }
-.work-meta { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; display: flex; gap: 1rem; }
+.work-card video, .work-card img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.5) brightness(0.6); transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+.work-card:hover video { filter: grayscale(0) brightness(1); transform: scale(1.03); }
+.work-info { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 2.5rem; background: linear-gradient(to top, rgba(0,0,0,0.95), transparent); opacity: 0; transition: 0.4s; transform: translateY(10px); }
+.work-card:hover .work-info { opacity: 1; transform: translateY(0); }
+.work-title { font-family: var(--font-serif); font-size: 1.8rem; font-weight: 400; margin-bottom: 0.5rem; }
+.work-meta { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
 .work-meta span { color: var(--jade); }
 
-/* 高级影院弹层 */
-.cinema-modal { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; cursor: auto; }
+/* 影院模式 */
+.cinema-modal { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; opacity: 0; pointer-events: none; transition: 0.5s; }
 .cinema-modal.active { opacity: 1; pointer-events: auto; }
-.cinema-close { position: absolute; top: 2rem; right: 3rem; color: #fff; font-size: 2rem; font-weight: 200; cursor: pointer; z-index: 10001; background: none; border: none; transition: 0.3s; }
-.cinema-close:hover { color: var(--jade); transform: rotate(90deg); }
+.cinema-close { position: absolute; top: 2rem; right: 3rem; color: #fff; font-size: 2.5rem; cursor: pointer; z-index: 10001; background: none; border: none; }
 .cinema-video-area { flex: 7; display: flex; align-items: center; justify-content: center; background: #050505; padding: 2rem; border-right: 1px solid #111; }
-.cinema-video-area video { width: 100%; max-height: 90vh; outline: none; box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
-.cinema-details { flex: 3; padding: 6rem 4rem; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; }
-.cd-title { font-family: var(--font-serif); font-size: 2rem; margin-bottom: 0.5rem; }
-.cd-client { font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 2rem; }
+.cinema-video-area video { width: 100%; max-height: 85vh; box-shadow: 0 30px 80px rgba(0,0,0,0.9); }
+.cinema-details { flex: 3; padding: 6rem 4rem; overflow-y: auto; }
+.cd-title { font-family: var(--font-serif); font-size: 2.2rem; margin-bottom: 0.5rem; }
+.cd-client { font-size: 0.9rem; color: var(--muted); text-transform: uppercase; margin-bottom: 2.5rem; }
 .cd-client span { color: #fff; }
-.cd-desc { font-size: 0.95rem; color: #ccc; line-height: 1.8; margin-bottom: 3rem; }
-.cd-meta-box { margin-bottom: 1.5rem; }
-.cd-meta-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.3rem; }
-.cd-meta-val { font-size: 0.9rem; color: var(--jade); }
+.cd-desc { font-size: 0.95rem; color: #ccc; line-height: 1.9; margin-bottom: 3rem; border-left: 1px solid var(--jade); padding-left: 1.5rem; }
+.cd-meta-box { margin-bottom: 2rem; }
+.cd-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+.cd-val { font-size: 0.95rem; color: var(--jade); }
 
-.clients { padding: 6rem 0; overflow: hidden; background: #020202; position: relative; z-index: 2; border-top: 1px solid #111; border-bottom: 1px solid #111; }
-.clients-inner { padding-left: var(--gutter); margin-bottom: 3rem; }
-.marquee { display: flex; width: max-content; animation: scroll 30s linear infinite; }
-.marquee:hover { animation-play-state: paused; }
-.marquee-content { display: flex; align-items: center; }
-.client-item { display: flex; align-items: center; justify-content: center; margin-right: 6rem; filter: grayscale(1) opacity(0.4); transition: all 0.4s ease; }
+/* 品牌跑马灯 */
+.clients { padding: 8rem 0; overflow: hidden; background: #020202; border-top: 1px solid #111; }
+.marquee { display: flex; width: max-content; animation: scroll 40s linear infinite; }
+.client-item { display: flex; align-items: center; margin-right: 8rem; filter: grayscale(1) opacity(0.4); transition: 0.4s; }
 .client-item:hover { filter: grayscale(0) opacity(1); }
-.client-item img { max-height: 40px; width: auto; object-fit: contain; }
-.client-item span { font-family: var(--font-sans); font-size: 1.5rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #fff; }
+.client-item img { max-height: 35px; }
+.client-item span { font-size: 1.8rem; font-weight: 600; color: #fff; letter-spacing: 0.05em; }
 @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-.contact { padding: 10rem var(--gutter); text-align: center; position: relative; z-index: 2; }
-.contact-mail { font-family: var(--font-serif); font-size: clamp(1.5rem, 3vw, 2.5rem); font-weight: 300; color: var(--text); text-decoration: none; position: relative; display: inline-block; padding-bottom: 0.5rem; transition: color 0.3s; }
-.contact-mail::after { content: ''; position: absolute; left: 0; bottom: 0; width: 100%; height: 1px; background: var(--jade); transform: scaleX(0); transform-origin: right; transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
-.contact-mail:hover { color: var(--jade); }
-.contact-mail:hover::after { transform: scaleX(1); transform-origin: left; }
-.socials { display: flex; gap: 2rem; justify-content: center; margin-top: 4rem; flex-wrap: wrap; }
-.socials a { color: var(--muted); text-decoration: none; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.3s; }
-.socials a:hover { color: var(--text); }
+/* Footer */
+.contact { padding: 10rem var(--gutter); text-align: center; }
+.contact-mail { font-family: var(--font-serif); font-size: clamp(2rem, 5vw, 4rem); color: #fff; text-decoration: none; position: relative; }
+.contact-mail::after { content: ''; position: absolute; left: 0; bottom: -5px; width: 100%; height: 1px; background: var(--jade); transform: scaleX(0); transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
+.contact-mail:hover::after { transform: scaleX(1); }
+.socials { display: flex; gap: 3rem; justify-content: center; margin-top: 5rem; }
+.socials a { color: var(--muted); text-decoration: none; font-size: 0.8rem; text-transform: uppercase; transition: 0.3s; }
+.socials a:hover { color: #fff; }
 
 @media (max-width: 900px) {
-    body { cursor: auto; } .cursor, .cursor-ring { display: none; }
-    .nav-right { gap: 1.5rem; } .menu { display: none; }
-    .works-header { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
-    .filter-bar { flex-wrap: wrap; }
+    body { cursor: auto; } .cursor, .cursor-ring { display: none; } .nav-right { gap: 1.5rem; } .menu { display: none; }
     .work-card:nth-child(n) { grid-column: span 12; aspect-ratio: 16/9; }
-    .cinema-modal { flex-direction: column; overflow-y: auto; }
-    .cinema-video-area { padding: 1rem; border-right: none; border-bottom: 1px solid #111; }
-    .cinema-details { padding: 2rem; }
+    .cinema-modal { flex-direction: column; overflow-y: auto; } .cinema-video-area { border-right: none; border-bottom: 1px solid #111; }
 }
 </style>
 </head>
@@ -154,11 +137,11 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 2rem va
 
 <section class="works" id="works">
     <div class="works-header scroll-reveal">
-        <div class="section-title" data-i18n="secWorks">Selected Works</div>
+        <div class="section-title" data-i18n="secWorks">SELECTED WORKS</div>
         <div class="filter-bar" id="filter-bar">
             <button class="filter-btn active hover-target" data-filter="All" data-i18n="catAll">All</button>
             <button class="filter-btn hover-target" data-filter="Commercial" data-i18n="catCom">Commercial</button>
-            <button class="filter-btn hover-target" data-filter="Brand Film" data-i18n="catBrand">Brand Film</button>
+            <button class="filter-btn hover-target" data-filter="BrandFilm" data-i18n="catBrand">Brand Film</button>
             <button class="filter-btn hover-target" data-filter="Documentary" data-i18n="catDoc">Documentary</button>
             <button class="filter-btn hover-target" data-filter="Personal" data-i18n="catPer">Personal</button>
         </div>
@@ -171,203 +154,104 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 2rem va
     <div class="cinema-video-area" id="cinema-player-box"></div>
     <div class="cinema-details">
         <h2 class="cd-title" id="cd-title">Title</h2>
-        <div class="cd-client" id="cd-client-box" style="display:none;">Client: <span id="cd-client">Apple</span></div>
-        <p class="cd-desc" id="cd-desc">Description goes here...</p>
-        
-        <div class="cd-meta-box" id="cd-roles-box" style="display:none;">
-            <div class="cd-meta-label" data-i18n="metaRoles">Roles</div>
-            <div class="cd-meta-val" id="cd-roles">Director / Editor</div>
-        </div>
-        <div class="cd-meta-box" id="cd-tags-box" style="display:none;">
-            <div class="cd-meta-label" data-i18n="metaTags">Tags</div>
-            <div class="cd-meta-val" id="cd-tags">Color Grading, VFX</div>
-        </div>
-        <div class="cd-meta-box" id="cd-cat-box" style="display:none;">
-            <div class="cd-meta-label" data-i18n="metaCat">Category</div>
-            <div class="cd-meta-val" id="cd-cat">Commercial</div>
-        </div>
+        <div class="cd-client" id="cd-client-box">Client: <span id="cd-client">Brand</span></div>
+        <p class="cd-desc" id="cd-desc">Description...</p>
+        <div class="cd-meta-box"><div class="cd-label" data-i18n="mRoles">Roles</div><div class="cd-val" id="cd-roles">Director</div></div>
+        <div class="cd-meta-box"><div class="cd-label" data-i18n="mSkills">Skills</div><div class="cd-val" id="cd-tags">VFX</div></div>
     </div>
 </div>
 
 <section class="clients">
-    <div class="clients-inner section-title scroll-reveal" data-i18n="secClients">Selected Clients</div>
     <div class="marquee" id="clients-marquee"></div>
 </section>
 
 <section class="contact" id="contact">
-    <div class="section-title scroll-reveal" style="margin-bottom: 3rem;" data-i18n="secContact">Let's Create</div>
     <a href="mailto:hi@04080606.xyz" class="contact-mail hover-target scroll-reveal" id="contact-email-link">hi@04080606.xyz</a>
     <div class="socials scroll-reveal" id="social-links"></div>
 </section>
 
 <script>
 gsap.registerPlugin(ScrollTrigger);
-
-let currentLang = localStorage.getItem('site_lang') || 'zh';
-let allWorks = [];
-let siteSettings = {};
-
+let currentLang = localStorage.getItem('site_lang') || 'zh', allWorks = [];
 const dict = {
-    zh: {
-        navWork: '作品', navAbout: '关于', navContact: '联系',
-        secWorks: '精选作品 / SELECTED WORKS', catAll: '全部 ALL', catCom: '商业广告', catBrand: '品牌宣传', catDoc: '纪录片', catPer: '个人创作',
-        secClients: '合作品牌 / CLIENTS', secContact: '联系合作 / LETS CREATE',
-        metaRoles: '具体职责', metaTags: '核心技能', metaCat: '作品分类'
-    },
-    en: {
-        navWork: 'WORK', navAbout: 'ABOUT', navContact: 'CONTACT',
-        secWorks: 'SELECTED WORKS', catAll: 'ALL', catCom: 'COMMERCIAL', catBrand: 'BRAND FILM', catDoc: 'DOCUMENTARY', catPer: 'PERSONAL',
-        secClients: 'SELECTED CLIENTS', secContact: 'LET\'S CREATE',
-        metaRoles: 'ROLES', metaTags: 'TAGS', metaCat: 'CATEGORY'
-    }
+    zh: { navWork: '作品', navAbout: '关于', navContact: '联系', secWorks: '精选成片', catAll: '全部 ALL', catCom: '商业广告', catBrand: '品牌宣传', catDoc: '纪录访谈', catPer: '个人创作', mRoles: '具体职责', mSkills: '核心技能' },
+    en: { navWork: 'WORK', navAbout: 'ABOUT', navContact: 'CONTACT', secWorks: 'SELECTED WORKS', catAll: 'ALL', catCom: 'COMMERCIAL', catBrand: 'BRAND FILM', catDoc: 'DOCUMENTARY', catPer: 'PERSONAL', mRoles: 'ROLES', mSkills: 'SKILLS' }
 };
 
-function toggleLang() {
-    currentLang = currentLang === 'zh' ? 'en' : 'zh';
-    localStorage.setItem('site_lang', currentLang);
-    applyLang();
-}
-
-function applyLang() {
+function toggleLang() { currentLang = currentLang === 'zh' ? 'en' : 'zh'; localStorage.setItem('site_lang', currentLang); applyLang(); }
+function applyLang() { 
     document.getElementById('lang-btn').innerText = currentLang === 'zh' ? 'EN' : '中';
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (dict[currentLang][key]) el.innerText = dict[currentLang][key];
-    });
+    document.querySelectorAll('[data-i18n]').forEach(el => { el.innerText = dict[currentLang][el.getAttribute('data-i18n')]; });
 }
 
-// 游标跟随
+// 光标
 const cursor = document.querySelector('.cursor'), ring = document.querySelector('.cursor-ring');
 if (window.matchMedia('(min-width: 901px)').matches) {
     let mx = 0, my = 0, rx = 0, ry = 0;
     document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; gsap.to(cursor, { x: mx, y: my, duration: 0.05 }); });
     gsap.ticker.add(() => { rx += (mx - rx) * 0.15; ry += (my - ry) * 0.15; gsap.set(ring, { x: rx, y: ry }); });
-    document.addEventListener('mouseover', e => { if (e.target.closest('a, button, .hover-target, .work-card, .client-item')) { cursor.classList.add('is-hover'); ring.classList.add('is-hover'); } });
-    document.addEventListener('mouseout', e => { if (e.target.closest('a, button, .hover-target, .work-card, .client-item')) { cursor.classList.remove('is-hover'); ring.classList.remove('is-hover'); } });
+    document.addEventListener('mouseover', e => { if (e.target.closest('a, button, .hover-target, .work-card')) { cursor.classList.add('is-hover'); ring.classList.add('is-hover'); } });
+    document.addEventListener('mouseout', e => { if (e.target.closest('a, button, .hover-target, .work-card')) { cursor.classList.remove('is-hover'); ring.classList.remove('is-hover'); } });
 }
 
-function initScroll() {
-    gsap.utils.toArray('.scroll-reveal, .work-card').forEach(el => {
-        gsap.fromTo(el, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 85%' } });
-    });
-}
-
-function closeCinema() {
-    document.getElementById('cinema-modal').classList.remove('active');
-    setTimeout(() => document.getElementById('cinema-player-box').innerHTML = '', 400); // 延迟清空避免闪烁
-}
-
-window.openCinema = function(idx) {
+window.openCinema = (idx) => {
     const w = allWorks[idx];
-    document.getElementById('cd-title').innerText = w.title || '未命名';
-    
-    const clientBox = document.getElementById('cd-client-box');
-    if(w.client) { clientBox.style.display = 'block'; document.getElementById('cd-client').innerText = w.client; } else { clientBox.style.display = 'none'; }
-    
+    document.getElementById('cd-title').innerText = w.title;
+    document.getElementById('cd-client').innerText = w.client || 'N/A';
     document.getElementById('cd-desc').innerHTML = (w.desc || '').replace(/\n/g, '<br>');
-    
-    const rolesBox = document.getElementById('cd-roles-box');
-    if(w.roles) { rolesBox.style.display = 'block'; document.getElementById('cd-roles').innerText = w.roles; } else { rolesBox.style.display = 'none'; }
-    
-    const tagsBox = document.getElementById('cd-tags-box');
-    if(w.tags) { tagsBox.style.display = 'block'; document.getElementById('cd-tags').innerText = w.tags; } else { tagsBox.style.display = 'none'; }
-    
-    const catBox = document.getElementById('cd-cat-box');
-    if(w.category) { catBox.style.display = 'block'; document.getElementById('cd-cat').innerText = w.category; } else { catBox.style.display = 'none'; }
-
+    document.getElementById('cd-roles').innerText = w.roles || '-';
+    document.getElementById('cd-tags').innerText = w.tags || '-';
     document.getElementById('cinema-player-box').innerHTML = `<video src="${w.videoUrl}" controls autoplay playsinline></video>`;
     document.getElementById('cinema-modal').classList.add('active');
 };
 
+function closeCinema() { document.getElementById('cinema-modal').classList.remove('active'); setTimeout(() => document.getElementById('cinema-player-box').innerHTML = '', 400); }
+
 function renderWorks(filter = 'All') {
-    const grid = document.getElementById('works-grid');
-    grid.style.opacity = 0; // 平滑过渡动画
-    
+    const grid = document.getElementById('works-grid'); grid.style.opacity = 0;
     setTimeout(() => {
         const filtered = filter === 'All' ? allWorks : allWorks.filter(w => w.category === filter);
-        if(filtered.length === 0) {
-            grid.innerHTML = '<div style="grid-column: span 12; padding: 4rem; text-align: center; color: #555;">暂无该分类作品</div>';
-        } else {
-            grid.innerHTML = filtered.map((w) => {
-                // 找到它在 allWorks 中的原索引，以便弹窗获取正确数据
-                const origIdx = allWorks.indexOf(w);
-                return `
-                <div class="work-card hover-target" onclick="openCinema(${origIdx})">
-                    <video src="${w.videoUrl}" muted loop playsinline ${w.posterUrl ? `poster="${w.posterUrl}"` : ''}></video>
-                    <div class="work-info">
-                        <h3 class="work-title">${w.title}</h3>
-                        <div class="work-meta">
-                            ${w.client ? `<span>Client: ${w.client}</span>` : ''}
-                            ${w.tags ? `| ${w.tags}` : ''}
-                        </div>
-                    </div>
-                </div>`;
-            }).join('');
-
-            // 重新绑定Hover播放
-            document.querySelectorAll('.work-card').forEach(card => {
-                const vid = card.querySelector('video');
-                if(vid) {
-                    card.addEventListener('mouseenter', () => vid.play());
-                    card.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
-                }
-            });
-        }
-        grid.style.opacity = 1;
-        ScrollTrigger.refresh();
+        grid.innerHTML = filtered.map(w => {
+            const idx = allWorks.indexOf(w);
+            return `<div class="work-card hover-target" onclick="openCinema(${idx})">
+                <video src="${w.videoUrl}" muted loop playsinline ${w.posterUrl ? `poster="${w.posterUrl}"` : ''}></video>
+                <div class="work-info">
+                    <h3 class="work-title">${w.title}</h3>
+                    <div class="work-meta">${w.client ? `<span>${w.client}</span>` : ''} | ${w.tags || ''}</div>
+                </div>
+            </div>`;
+        }).join('');
+        document.querySelectorAll('.work-card video').forEach(v => { v.parentElement.onmouseenter = () => v.play(); v.parentElement.onmouseleave = () => { v.pause(); v.currentTime = 0; }; });
+        grid.style.opacity = 1; ScrollTrigger.refresh();
     }, 300);
 }
 
-// 绑定筛选按钮点击
-document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        e.target.classList.add('active');
-        renderWorks(e.target.dataset.filter);
-    });
-});
+document.querySelectorAll('.filter-btn').forEach(btn => btn.onclick = (e) => { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); e.target.classList.add('active'); renderWorks(e.target.dataset.filter); });
 
 async function loadData() {
     try {
         applyLang();
         const [wRes, sRes] = await Promise.all([fetch('/api/works'), fetch('/api/settings')]);
-        allWorks = await wRes.json();
-        const s = await sRes.json();
-        
+        allWorks = await wRes.json(); const s = await sRes.json(); console.log('Loaded Data:', s);
         renderWorks('All');
-
         if(s.heroVideo) document.getElementById('hero-media-container').innerHTML = `<video class="hero-video" autoplay muted loop playsinline src="${s.heroVideo}"></video>`;
         if(s.aboutBody) document.getElementById('about-text').innerHTML = s.aboutBody.replace(/\n/g, '<br>');
+        const mail = document.getElementById('contact-email-link'); mail.href = `mailto:${s.contactEmail}`; mail.innerText = s.contactEmail;
         
-        const mail = document.getElementById('contact-email-link');
-        mail.href = `mailto:${s.contactEmail}`;
-        mail.innerText = s.contactEmail || 'hi@04080606.xyz';
-
+        // 社交链接修复
         const socialData = [
-            {label: 'Instagram', url: s.insLink}, {label: '小红书', url: s.xhsLink},
-            {label: 'Behance', url: s.behanceLink}, {label: 'Vimeo', url: s.vimeoLink},
-            {label: 'YouTube', url: s.ytLink}, {label: '哔哩哔哩 (B站)', url: s.biliLink},
-            {label: 'X (推特)', url: s.xLink}, {label: '微博', url: s.weiboLink}
+            {label: 'Vimeo', url: s.vimeoLink}, {label: 'YouTube', url: s.ytLink}, {label: 'Instagram', url: s.insLink},
+            {label: '小红书', url: s.xhsLink}, {label: 'Behance', url: s.behanceLink}, {label: '哔哩哔哩', url: s.biliLink},
+            {label: 'X (Twitter)', url: s.xLink}, {label: '微博', url: s.weiboLink}
         ];
-        document.getElementById('social-links').innerHTML = socialData
-            .filter(d => d.url).map(d => `<a href="${d.url}" target="_blank" class="hover-target">${d.label}</a>`).join('');
+        document.getElementById('social-links').innerHTML = socialData.filter(d => d.url).map(d => `<a href="${d.url}" target="_blank" class="hover-target">${d.label}</a>`).join('');
 
         if(s.clients && s.clients.length > 0) {
-            const clientsHtml = s.clients.map(c => `
-                <div class="client-item hover-target">
-                    ${c.logoUrl ? `<img src="${c.logoUrl}" alt="${c.name}">` : `<span>${c.name}</span>`}
-                </div>
-            `).join('');
-            document.getElementById('clients-marquee').innerHTML = `
-                <div class="marquee-content">${clientsHtml}</div>
-                <div class="marquee-content">${clientsHtml}</div>
-            `;
-        } else {
-            document.querySelector('.clients').style.display = 'none';
+            const html = s.clients.map(c => `<div class="client-item hover-target">${c.logoUrl ? `<img src="${c.logoUrl}">` : `<span>${c.name}</span>`}</div>`).join('');
+            document.getElementById('clients-marquee').innerHTML = `<div class="marquee-content">${html}</div><div class="marquee-content">${html}</div>`;
         }
-
-        setTimeout(initScroll, 200);
-    } catch (e) { console.error('Load failed', e); }
+        setTimeout(() => gsap.utils.toArray('.scroll-reveal, .work-card').forEach(el => gsap.from(el, { y: 40, opacity: 0, scrollTrigger: { trigger: el, start: 'top 85%' } })), 200);
+    } catch (e) { console.error(e); }
 }
 loadData();
 </script>

@@ -393,8 +393,9 @@ section { padding: var(--section-pad) var(--gutter); }
     line-height: 1.2;
 }
 .section-title .em {
-    font-family: var(--font-display);
-    font-style: italic;
+    font-family: var(--font-serif-cn);
+    font-style: normal;
+    font-weight: 500;
 }
 
 /* ========================================================================
@@ -858,8 +859,9 @@ html[data-theme="light"] .client-item:hover img { filter: grayscale(1); }
     margin-right: auto;
 }
 .contact-title .em {
-    font-family: var(--font-display);
-    font-style: italic;
+    font-family: var(--font-serif-cn);
+    font-style: normal;
+    font-weight: 500;
 }
 .contact-mail {
     display: inline-flex;
@@ -1284,7 +1286,7 @@ function renderAboutPortrait() {
     }
 }
 
-// 自适应宽高比：根据 aspectRatio 决定 grid 占用
+// 自适应宽高比：根据 aspectRatio 决定卡片大小档位
 function aspectClass(w) {
     const ar = w.aspectRatio;
     if (!ar || ar <= 0) return 'ar-default';
@@ -1293,6 +1295,12 @@ function aspectClass(w) {
     if (ar < 1.55)   return 'ar-landscape';  // 4:3
     if (ar < 2.0)    return 'ar-wide';       // 16:9
     return 'ar-cinema';                      // 21:9 超宽
+}
+
+// 把比例转成 CSS aspect-ratio 字符串，用于行内 style
+function arStyle(ar) {
+    if (!ar || ar <= 0) return '4/5';
+    return ar.toFixed(4) + '/1';
 }
 
 function renderWorks() {
@@ -1310,16 +1318,18 @@ function renderWorks() {
         return;
     }
 
-    grid.innerHTML = list.map((w) => {
+grid.innerHTML = list.map((w) => {
         const cls = aspectClass(w);
         const idx = allWorks.indexOf(w);
+        // 关键：用 inline style 注入真实比例，让 CSS 的 aspect-ratio: var(--ar) 生效
+        const arStyleAttr = `style="--ar: ${arStyle(w.aspectRatio)}"`;
         const media = w.videoUrl
             ? `<video class="work-media" muted loop playsinline preload="metadata" data-idx="${idx}" ${w.posterUrl ? `poster="${escapeHtml(w.posterUrl)}"` : ''} src="${escapeHtml(w.videoUrl)}"></video>`
             : (w.posterUrl
-                ? `<img class="work-media" src="${escapeHtml(w.posterUrl)}" alt="${escapeHtml(w.title || '')}">`
+                ? `<img class="work-media" data-idx="${idx}" src="${escapeHtml(w.posterUrl)}" alt="${escapeHtml(w.title || '')}">`
                 : `<div class="work-media work-placeholder"></div>`);
         return `
-            <article class="work-card ${cls}" data-idx="${idx}">
+            <article class="work-card ${cls}" data-idx="${idx}" ${arStyleAttr}>
                 ${media}
                 <div class="work-info">
                     <div>
@@ -1334,25 +1344,45 @@ function renderWorks() {
         `;
     }).join('');
 
+// 工具：用真实比例更新某张卡的样式
+    function applyRealAR(card, idx, w, h) {
+        if (!w || !h) return;
+        const ar = w / h;
+        if (!isNaN(idx) && allWorks[idx]) {
+            if (!allWorks[idx].aspectRatio || allWorks[idx].aspectRatio <= 0) {
+                allWorks[idx].aspectRatio = ar;
+            }
+        }
+        // 立即更新这张卡：换 size 类、注入 --ar
+        const newCls = aspectClass({ aspectRatio: ar });
+        card.classList.remove('ar-portrait','ar-square','ar-landscape','ar-wide','ar-cinema','ar-default');
+        card.classList.add(newCls);
+        card.style.setProperty('--ar', arStyle(ar));
+    }
+
     grid.querySelectorAll('.work-card').forEach(card => {
+        const idx = parseInt(card.dataset.idx);
         const v = card.querySelector('video.work-media');
+        const img = card.querySelector('img.work-media');
+
         if (v) {
-            // 旧数据没有 aspectRatio 时，加载完元数据后回填
             v.addEventListener('loadedmetadata', () => {
-                const idx = parseInt(v.dataset.idx);
-                if (!isNaN(idx) && allWorks[idx] && (!allWorks[idx].aspectRatio || allWorks[idx].aspectRatio <= 0)) {
-                    if (v.videoWidth && v.videoHeight) {
-                        allWorks[idx].aspectRatio = v.videoWidth / v.videoHeight;
-                        const newCls = aspectClass(allWorks[idx]);
-                        card.classList.remove('ar-portrait','ar-square','ar-landscape','ar-wide','ar-cinema','ar-default');
-                        card.classList.add(newCls);
-                    }
-                }
+                applyRealAR(card, idx, v.videoWidth, v.videoHeight);
             });
             card.addEventListener('mouseenter', () => v.play().catch(()=>{}));
             card.addEventListener('mouseleave', () => { v.pause(); try { v.currentTime = 0; } catch {} });
         }
-        card.addEventListener('click', () => openCinema(parseInt(card.dataset.idx)));
+        if (img) {
+            // 关键：图片封面也要识别真实比例（解决你"3:4 图片显示成 9:16"的问题）
+            if (img.complete && img.naturalWidth) {
+                applyRealAR(card, idx, img.naturalWidth, img.naturalHeight);
+            } else {
+                img.addEventListener('load', () => {
+                    applyRealAR(card, idx, img.naturalWidth, img.naturalHeight);
+                });
+            }
+        }
+        card.addEventListener('click', () => openCinema(idx));
     });
 
     setupReveal();

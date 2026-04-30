@@ -281,9 +281,10 @@ html[data-theme="light"] .hero-bg::after {
     margin-bottom: 1.8rem;
 }
 .hero-title .em {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-weight: 300;
+    /* 去掉斜体，仅保留细微的视觉强调 */
+    font-family: var(--font-serif-cn);
+    font-style: normal;
+    font-weight: 400;
 }
 .hero-title .line {
     display: block;
@@ -428,8 +429,11 @@ section { padding: var(--section-pad) var(--gutter); }
     color: var(--ink);
 }
 .quote-text .em {
-    font-family: var(--font-display);
-    font-style: italic;
+    /* 中文宋体不强行斜体，改为加粗强调 */
+    font-family: var(--font-serif-cn);
+    font-style: normal;
+    font-weight: 500;
+    color: var(--ink);
 }
 @media (max-width: 800px) {
     .quote-content { grid-template-columns: 1fr; gap: 1rem; }
@@ -463,6 +467,13 @@ section { padding: var(--section-pad) var(--gutter); }
     grid-template-columns: repeat(12, 1fr);
     gap: clamp(1rem, 1.8vw, 1.5rem);
 }
+.works-grid {
+    /* CSS Grid 自动堆砌：每行根据宽度自适应放 1-3 张卡 */
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(1rem, 1.8vw, 1.4rem);
+    justify-content: center;
+}
 .work-card {
     position: relative;
     overflow: hidden;
@@ -470,15 +481,21 @@ section { padding: var(--section-pad) var(--gutter); }
     background: var(--paper-2);
     cursor: pointer;
     transition: transform 0.7s var(--ease-out), box-shadow 0.7s var(--ease-out);
+
+    /* 关键：每张卡用 aspect-ratio 自适应高度，宽度由内容流自然决定 */
+    flex-grow: 1;
+    flex-shrink: 0;
+    /* 用自定义属性接收每张卡的真实比例 */
+    aspect-ratio: var(--ar, 4/5);
 }
 
-/* 自适应规格（基于 aspect-ratio 数据动态分配 grid-column 和 aspect-ratio） */
-.work-card.ar-portrait    { grid-column: span 4; aspect-ratio: 9 / 16; }
-.work-card.ar-square      { grid-column: span 6; aspect-ratio: 1 / 1; }
-.work-card.ar-landscape   { grid-column: span 6; aspect-ratio: 4 / 3; }
-.work-card.ar-wide        { grid-column: span 8; aspect-ratio: 16 / 9; }
-.work-card.ar-cinema      { grid-column: span 12; aspect-ratio: 21 / 9; }
-.work-card.ar-default     { grid-column: span 6; aspect-ratio: 4 / 5; }
+/* 不同比例的卡，宽度策略不同：竖屏窄、横屏宽 */
+.work-card.ar-portrait  { flex-basis: 320px; max-width: 380px; }
+.work-card.ar-square    { flex-basis: 420px; max-width: 520px; }
+.work-card.ar-landscape { flex-basis: 480px; max-width: 620px; }
+.work-card.ar-wide      { flex-basis: 560px; max-width: 780px; }
+.work-card.ar-cinema    { flex-basis: 100%; max-width: 100%; }
+.work-card.ar-default   { flex-basis: 380px; max-width: 480px; }
 
 .work-card:hover {
     transform: translateY(-6px);
@@ -571,7 +588,10 @@ html[data-theme="light"] .work-card:hover {
     .work-card.ar-landscape,
     .work-card.ar-wide,
     .work-card.ar-cinema,
-    .work-card.ar-default { grid-column: span 12; }
+    .work-card.ar-default {
+        flex-basis: 100%;
+        max-width: 100%;
+    }
     .work-info {
         left: 0.7rem; right: 0.7rem; bottom: 0.7rem;
         padding: 0.7rem 0.9rem;
@@ -579,7 +599,7 @@ html[data-theme="light"] .work-card:hover {
     .work-name { font-size: 0.88rem; }
     .work-meta { font-size: 0.66rem; }
 }
-
+   
 /* ========================================================================
    电影院模式
    ======================================================================== */

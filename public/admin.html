@@ -7,7 +7,7 @@
 <title>Console — 于未氵</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..400&family=Inter:wght@300;400;500;600&family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
 :root {
@@ -22,6 +22,7 @@
     --line-2:       rgba(255, 255, 255, 0.16);
     --danger:       #F0726E;
     --success:      #6FBB95;
+    --warning:      #E8B86F;
 
     --glass-bg:         rgba(20, 20, 20, 0.62);
     --glass-bg-strong:  rgba(20, 20, 20, 0.85);
@@ -29,7 +30,6 @@
     --glass-shadow:     0 8px 32px rgba(0, 0, 0, 0.5);
     --glass-inset:      inset 0 0.5px 0 rgba(255, 255, 255, 0.08);
 
-    --font-display:     'Fraunces', 'Noto Serif SC', serif;
     --font-serif-cn:    'Noto Serif SC', serif;
     --font-sans:        'Inter', -apple-system, "PingFang SC", sans-serif;
     --ease:             cubic-bezier(0.25, 0.1, 0.25, 1);
@@ -47,6 +47,7 @@ html[data-theme="light"] {
     --line-2:       rgba(0, 0, 0, 0.16);
     --danger:       #C9514E;
     --success:      #4A8F6F;
+    --warning:      #B8923D;
 
     --glass-bg:         rgba(250, 250, 247, 0.62);
     --glass-bg-strong:  rgba(250, 250, 247, 0.88);
@@ -96,21 +97,16 @@ label {
     font-weight: 500;
 }
 
-/* 登录 */
 .login-screen {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 1.5rem;
-    background:
-        radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.04), transparent 60%),
-        var(--paper);
+    background: radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.04), transparent 60%), var(--paper);
 }
 html[data-theme="light"] .login-screen {
-    background:
-        radial-gradient(ellipse at 30% 20%, rgba(0,0,0,0.03), transparent 60%),
-        var(--paper);
+    background: radial-gradient(ellipse at 30% 20%, rgba(0,0,0,0.03), transparent 60%), var(--paper);
 }
 .login-card {
     width: 100%; max-width: 380px;
@@ -130,19 +126,18 @@ html[data-theme="light"] .login-screen {
     margin-bottom: 0.3rem;
     letter-spacing: 0.08em;
 }
-.login-brand .water { font-family: var(--font-display); font-style: italic; }
+.login-brand .water { font-family: var(--font-serif-cn); }
 .login-sub {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: 0.82rem;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 0.78rem;
     color: var(--gray);
     margin-bottom: 2.2rem;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
 }
 .login-card label { text-align: left; }
 
-/* 按钮 */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -163,10 +158,11 @@ html[data-theme="light"] .login-screen {
 .btn-ghost:hover { border-color: var(--ink); }
 .btn-danger { background: transparent; color: var(--danger); border: 0.5px solid currentColor; }
 .btn-danger:hover { background: var(--danger); color: var(--paper); border-color: var(--danger); }
+.btn-warning { background: transparent; color: var(--warning); border: 0.5px solid currentColor; }
+.btn-warning:hover { background: var(--warning); color: var(--paper); }
 .btn-block { width: 100%; }
 .btn-sm { padding: 0.4rem 0.85rem; font-size: 0.76rem; min-height: 32px; }
 
-/* 主布局 */
 .app {
     display: grid;
     grid-template-columns: 240px 1fr;
@@ -192,15 +188,16 @@ aside.sidebar {
     margin-bottom: 0.2rem;
     padding: 0 0.8rem;
 }
-.sidebar-brand .water { font-family: var(--font-display); font-style: italic; }
+.sidebar-brand .water { font-family: var(--font-serif-cn); }
 .sidebar-tag {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: 0.72rem;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 0.7rem;
     color: var(--gray);
     padding: 0 0.8rem;
     margin-bottom: 2.2rem;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
 }
 .sidebar-nav { flex: 1; display: flex; flex-direction: column; gap: 0.15rem; }
 .nav-item {
@@ -250,12 +247,13 @@ main.content {
 }
 .page-head { margin-bottom: 2rem; }
 .page-num {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: 0.78rem;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 0.74rem;
     color: var(--gray);
-    letter-spacing: 0.1em;
+    letter-spacing: 0.15em;
     margin-bottom: 0.4rem;
+    text-transform: uppercase;
 }
 .page-num::before { content: '— '; }
 .page-title {
@@ -292,44 +290,27 @@ main.content {
     margin-bottom: 1.4rem;
 }
 .card .sub-h {
-    font-size: 0.74rem;
+    font-size: 0.78rem;
     color: var(--gray);
     margin-top: -1rem;
     margin-bottom: 1.2rem;
-    font-family: var(--font-display);
-    font-style: italic;
 }
 
-.grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.1rem;
-}
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
 .grid .full { grid-column: 1 / -1; }
-.actions {
-    display: flex; gap: 0.7rem;
-    margin-top: 1.4rem;
-    flex-wrap: wrap;
-}
+.actions { display: flex; gap: 0.7rem; margin-top: 1.4rem; flex-wrap: wrap; }
 
-/* 双语字段（中英并列） */
-.bilingual {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.8rem;
-}
+.bilingual { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
 .bilingual > div { position: relative; }
 .bilingual .lang-tag {
     position: absolute;
     top: 0; right: 0;
     font-size: 0.62rem;
     color: var(--gray);
-    font-family: var(--font-display);
-    font-style: italic;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
 }
 
-/* 作品列表 */
 .work-row {
     display: grid;
     grid-template-columns: 90px 1fr auto;
@@ -373,10 +354,9 @@ main.content {
     white-space: nowrap;
 }
 .work-row-meta {
-    font-size: 0.74rem;
+    font-size: 0.76rem;
     color: var(--gray);
-    font-family: var(--font-display);
-    font-style: italic;
+    letter-spacing: 0.04em;
 }
 .work-row-meta .ar-badge {
     display: inline-block;
@@ -384,7 +364,6 @@ main.content {
     padding: 0.05rem 0.4rem;
     background: var(--line);
     border-radius: 4px;
-    font-style: normal;
     font-size: 0.66rem;
     letter-spacing: 0.05em;
 }
@@ -394,7 +373,6 @@ main.content {
     justify-content: flex-end;
 }
 
-/* 上传区 */
 .upload-zone {
     position: relative;
     border: 1.5px dashed var(--line-2);
@@ -411,17 +389,8 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
     background: var(--line);
 }
 .upload-zone input[type="file"] { display: none; }
-.upload-zone-text {
-    font-size: 0.86rem;
-    color: var(--gray);
-    margin-bottom: 0.3rem;
-}
-.upload-zone-hint {
-    font-size: 0.7rem;
-    color: var(--gray-2);
-    font-family: var(--font-display);
-    font-style: italic;
-}
+.upload-zone-text { font-size: 0.86rem; color: var(--gray); margin-bottom: 0.3rem; }
+.upload-zone-hint { font-size: 0.72rem; color: var(--gray-2); }
 .upload-filename {
     margin-top: 0.5rem;
     color: var(--ink);
@@ -444,23 +413,10 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
     width: 0%;
     transition: width 0.2s;
 }
-.upload-status {
-    font-size: 0.76rem;
-    color: var(--gray);
-    margin-top: 0.4rem;
-    font-family: var(--font-display);
-    font-style: italic;
-}
-.field-hint {
-    font-size: 0.7rem;
-    color: var(--gray);
-    margin-top: 0.4rem;
-    font-family: var(--font-display);
-    font-style: italic;
-}
+.upload-status { font-size: 0.78rem; color: var(--gray); margin-top: 0.4rem; }
+.field-hint { font-size: 0.74rem; color: var(--gray); margin-top: 0.4rem; }
 .field-hint strong { color: var(--ink); font-weight: 500; }
 
-/* 消息 */
 .msg {
     padding: 0.65rem 0.9rem;
     border-radius: 10px;
@@ -470,17 +426,66 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
 }
 .msg-error   { color: var(--danger);  background: rgba(240, 114, 110, 0.08); }
 .msg-success { color: var(--success); background: rgba(111, 187, 149, 0.08); }
+.msg-warning { color: var(--warning); background: rgba(232, 184, 111, 0.08); }
 
-/* 媒体库 */
+/* ========== 媒体库重做：按作品聚合的视图 ========== */
 .media-toolbar {
     display: flex;
     gap: 0.4rem;
-    margin-bottom: 1.2rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.media-toolbar .spacer { flex: 1; }
+
+.media-group {
+    margin-bottom: 2rem;
+}
+.media-group-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    margin-bottom: 0.9rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 0.5px solid var(--line);
     flex-wrap: wrap;
 }
+.media-group-title {
+    font-family: var(--font-serif-cn);
+    font-weight: 400;
+    font-size: 1.05rem;
+    color: var(--ink);
+}
+.media-group-cat {
+    font-size: 0.72rem;
+    color: var(--gray);
+    padding: 0.15rem 0.55rem;
+    background: var(--line);
+    border-radius: 999px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+.media-group-count {
+    font-size: 0.74rem;
+    color: var(--gray);
+    margin-left: auto;
+}
+.media-group.is-orphan .media-group-title { color: var(--warning); }
+.media-group.is-orphan .media-group-head {
+    border-bottom-color: rgba(232, 184, 111, 0.3);
+}
+.media-group-warning {
+    width: 100%;
+    font-size: 0.78rem;
+    color: var(--warning);
+    margin-top: 0.4rem;
+    line-height: 1.5;
+}
+
 .media-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
     gap: 0.9rem;
 }
 .media-card {
@@ -490,21 +495,63 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
     overflow: hidden;
     transition: transform 0.3s var(--ease-out);
     box-shadow: var(--glass-inset);
+    display: flex;
+    flex-direction: column;
 }
 .media-card:hover { transform: translateY(-2px); }
-.media-preview {
-    width: 100%; aspect-ratio: 16/10;
-    object-fit: cover;
-    background: var(--paper-3);
+.media-card.is-orphan {
+    border-color: rgba(232, 184, 111, 0.3);
 }
-.media-body { padding: 0.6rem 0.8rem; }
-.media-name { font-size: 0.74rem; word-break: break-all; margin-bottom: 0.25rem; }
+.media-preview-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/10;
+    background: var(--paper-3);
+    overflow: hidden;
+}
+.media-preview {
+    width: 100%; height: 100%;
+    object-fit: cover;
+}
+.media-role-tag {
+    position: absolute;
+    top: 0.5rem; left: 0.5rem;
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    font-size: 0.66rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 999px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+.media-role-tag.role-video   { background: rgba(40, 100, 180, 0.85); }
+.media-role-tag.role-poster  { background: rgba(150, 90, 50, 0.85); }
+.media-role-tag.role-hero    { background: rgba(80, 130, 80, 0.85); }
+.media-role-tag.role-portrait{ background: rgba(120, 70, 130, 0.85); }
+.media-role-tag.role-logo    { background: rgba(80, 90, 100, 0.85); }
+.media-role-tag.role-orphan  { background: rgba(232, 184, 111, 0.85); color: #1a1a1a; }
+.media-body {
+    padding: 0.6rem 0.8rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.media-name {
+    font-size: 0.74rem;
+    word-break: break-all;
+    margin-bottom: 0.25rem;
+    line-height: 1.4;
+    color: var(--gray-2);
+}
 .media-meta {
-    font-family: var(--font-display);
-    font-style: italic;
     font-size: 0.68rem;
     color: var(--gray);
-    margin-bottom: 0.45rem;
+    margin-bottom: 0.5rem;
+    margin-top: auto;
+    padding-top: 0.4rem;
 }
 .media-actions { display: flex; gap: 0.25rem; }
 .media-actions button {
@@ -518,6 +565,17 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
     min-height: 30px;
 }
 .media-actions button:hover { color: var(--ink); border-color: var(--ink); }
+.media-actions button.danger:hover { color: var(--danger); border-color: var(--danger); }
+
+.media-empty {
+    grid-column: 1/-1;
+    padding: 2rem 1rem;
+    text-align: center;
+    color: var(--gray);
+    font-size: 0.88rem;
+    border: 1px dashed var(--line-2);
+    border-radius: 14px;
+}
 
 .client-row {
     display: flex; align-items: center; gap: 0.9rem;
@@ -538,11 +596,8 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
 .client-row .logo-prev img { max-width: 100%; max-height: 100%; }
 .client-row-name { flex: 1; font-size: 0.88rem; }
 
-/* ========== 移动端适配（关键改进）========== */
 @media (max-width: 800px) {
-    .app {
-        grid-template-columns: 1fr;
-    }
+    .app { grid-template-columns: 1fr; }
     aside.sidebar {
         position: sticky;
         top: 0;
@@ -571,7 +626,6 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
         min-height: 36px;
         font-size: 0.78rem;
     }
-    .nav-item span:not(.icon) { display: inline; }
     .sidebar-foot {
         flex-direction: column;
         gap: 0.2rem;
@@ -582,10 +636,7 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
     }
     .sidebar-foot a { display: none; }
 
-    main.content {
-        padding: 1.5rem 1rem;
-        max-width: 100%;
-    }
+    main.content { padding: 1.5rem 1rem; max-width: 100%; }
     .page-title { font-size: 1.6rem; }
     .grid { grid-template-columns: 1fr; gap: 0.9rem; }
     .bilingual { grid-template-columns: 1fr; gap: 0.6rem; }
@@ -599,7 +650,6 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
 </head>
 <body>
 
-<!-- 登录 -->
 <div class="login-screen" id="login">
     <form class="login-card" id="login-form" autocomplete="on">
         <div class="login-brand">于未<span class="water">氵</span></div>
@@ -611,7 +661,6 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
     </form>
 </div>
 
-<!-- 主面板 -->
 <div class="app" id="app" style="display:none;">
     <aside class="sidebar">
         <div class="sidebar-brand">于未<span class="water">氵</span></div>
@@ -649,12 +698,11 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
 
     <main class="content">
 
-    <!-- 作品 -->
     <section class="section active" data-section="works">
         <div class="page-head">
-            <div class="page-num">01 / Works</div>
+            <div class="page-num">01 / WORKS</div>
             <h1 class="page-title">作品阵列</h1>
-            <p class="page-sub">添加、编辑、排序你的作品。视频上传后会自动检测宽高比，前台按比例显示。</p>
+            <p class="page-sub">添加、编辑、排序你的作品。视频和图片上传后会自动检测真实宽高比。</p>
         </div>
 
         <button class="btn btn-primary" id="add-work-btn">+ 添加新作品</button>
@@ -698,7 +746,7 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
                     <div class="upload-zone" data-target="video">
                         <input type="file" accept="video/*">
                         <div class="upload-zone-text">点击或拖拽视频到这里</div>
-                        <div class="upload-zone-hint">MP4 / H.264 推荐 · 任意分辨率与比例 · 系统自动识别横竖屏</div>
+                        <div class="upload-zone-hint">MP4 / H.264 推荐 · 任意分辨率与比例 · 系统自动识别尺寸</div>
                         <div class="upload-filename"></div>
                         <div class="upload-progress"><div class="upload-progress-bar"></div></div>
                         <div class="upload-status"></div>
@@ -711,7 +759,7 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
                     <div class="upload-zone" data-target="poster">
                         <input type="file" accept="image/*">
                         <div class="upload-zone-text">点击或拖拽图片到这里</div>
-                        <div class="upload-zone-hint">JPG / PNG / WebP · 用于视频加载时显示</div>
+                        <div class="upload-zone-hint">JPG / PNG / WebP · 用于视频加载时显示，也会用于识别比例</div>
                         <div class="upload-filename"></div>
                         <div class="upload-status"></div>
                     </div>
@@ -727,25 +775,27 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
         </div>
     </section>
 
-    <!-- 媒体库 -->
     <section class="section" data-section="media">
         <div class="page-head">
-            <div class="page-num">02 / Media Library</div>
+            <div class="page-num">02 / MEDIA LIBRARY</div>
             <h1 class="page-title">媒体库</h1>
-            <p class="page-sub">所有上传到 R2 的视频和图片。可按类型筛选，复制链接或删除。</p>
+            <p class="page-sub">所有上传到 R2 的视频和图片，按作品聚合显示。每个文件标注它的归属和角色。</p>
         </div>
+
         <div class="media-toolbar">
             <button class="btn btn-ghost btn-sm filter-btn active" data-filter="all">全部</button>
             <button class="btn btn-ghost btn-sm filter-btn" data-filter="video">视频</button>
             <button class="btn btn-ghost btn-sm filter-btn" data-filter="image">图片</button>
+            <div class="spacer"></div>
+            <button class="btn btn-warning btn-sm" id="cleanup-orphans-btn" style="display:none;">🗑 清理所有孤儿文件</button>
         </div>
-        <div class="media-grid" id="media-grid"></div>
+
+        <div id="media-content"></div>
     </section>
 
-    <!-- 品牌库 -->
     <section class="section" data-section="clients">
         <div class="page-head">
-            <div class="page-num">03 / Clients</div>
+            <div class="page-num">03 / CLIENTS</div>
             <h1 class="page-title">合作品牌</h1>
             <p class="page-sub">这些品牌将以跑马灯形式出现在首页。可以只填名称，也可以上传 logo。</p>
         </div>
@@ -775,15 +825,13 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
         </div>
     </section>
 
-    <!-- 设置 -->
     <section class="section" data-section="settings">
         <div class="page-head">
-            <div class="page-num">04 / Site Settings</div>
+            <div class="page-num">04 / SITE SETTINGS</div>
             <h1 class="page-title">网站设置</h1>
             <p class="page-sub">所有可在前台显示的文字与链接 · 中英双语字段并列填写</p>
         </div>
 
-        <!-- 首屏 -->
         <div class="card">
             <h3>首屏 Hero</h3>
 
@@ -810,7 +858,7 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
                     </div>
                     <div>
                         <span class="lang-tag">English</span>
-                        <textarea id="s-herotitle-en" rows="3" placeholder="In the seams of&#10;light & shadow,&#10;I seek the poetry..."></textarea>
+                        <textarea id="s-herotitle-en" rows="3" placeholder="In the seams of&#10;light & shadow,&#10;I seek..."></textarea>
                     </div>
                 </div>
             </div>
@@ -835,7 +883,6 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
             </div>
         </div>
 
-        <!-- 引言 -->
         <div class="card">
             <h3>哲学引言（首屏下方那句话）</h3>
             <p class="sub-h">就是"我让影像慢下来…"这一类作者性文字。可以和首屏副标题不同。</p>
@@ -851,7 +898,6 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
             </div>
         </div>
 
-        <!-- 关于 -->
         <div class="card">
             <h3>关于自己（每段一行）</h3>
             <div class="bilingual">
@@ -878,7 +924,6 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
             </div>
         </div>
 
-        <!-- 联系 -->
         <div class="card">
             <h3>联系方式与社交链接（留空则不显示）</h3>
             <div class="grid">
@@ -903,10 +948,9 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
         <div id="settings-msg"></div>
     </section>
 
-    <!-- 账号 -->
     <section class="section" data-section="account">
         <div class="page-head">
-            <div class="page-num">05 / Account</div>
+            <div class="page-num">05 / ACCOUNT</div>
             <h1 class="page-title">账号</h1>
             <p class="page-sub">修改密码或退出登录。</p>
         </div>
@@ -936,7 +980,6 @@ let token = sessionStorage.getItem('admin_token') || '';
 let allWorks = [];
 let allSettings = {};
 let editingIdx = -1;
-let pendingAspectRatio = 0; // 上传视频时存的临时比例
 let mediaFilter = 'all';
 let allMedia = [];
 let currentTheme = localStorage.getItem('admin_theme') || 'dark';
@@ -987,7 +1030,6 @@ function updateThemeIcon() {
     moon.style.display = currentTheme === 'light' ? '' : 'none';
 }
 
-// 登录
 document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const pwd = document.getElementById('pwd-input').value;
@@ -1022,7 +1064,6 @@ async function enterApp() {
     await loadAll();
 }
 
-// 主题
 document.getElementById('theme-btn').onclick = () => {
     currentTheme = currentTheme === 'light' ? 'dark' : 'light';
     localStorage.setItem('admin_theme', currentTheme);
@@ -1031,7 +1072,6 @@ document.getElementById('theme-btn').onclick = () => {
     updateThemeIcon();
 };
 
-// 导航
 document.querySelectorAll('.nav-item').forEach(btn => {
     btn.onclick = () => {
         const target = btn.dataset.section;
@@ -1043,7 +1083,6 @@ document.querySelectorAll('.nav-item').forEach(btn => {
     };
 });
 
-// 数据加载
 async function loadAll() {
     try {
         const [w, s] = await Promise.all([api('/admin/works'), api('/admin/settings')]);
@@ -1060,11 +1099,11 @@ async function loadAll() {
 
 function arLabel(ar) {
     if (!ar || ar <= 0) return '默认';
-    if (ar < 0.85) return '竖屏 9:16';
-    if (ar < 1.15) return '方形 1:1';
-    if (ar < 1.55) return '横屏 4:3';
-    if (ar < 2.0)  return '宽屏 16:9';
-    return '电影 21:9';
+    if (ar < 0.85) return '竖屏';
+    if (ar < 1.15) return '方形';
+    if (ar < 1.55) return '横屏';
+    if (ar < 2.0)  return '宽屏';
+    return '电影';
 }
 
 function renderWorksList() {
@@ -1077,7 +1116,7 @@ function renderWorksList() {
         const thumb = w.posterUrl
             ? `<img src="${escapeHtml(w.posterUrl)}" alt="">`
             : (w.videoUrl ? `<video src="${escapeHtml(w.videoUrl)}" muted preload="metadata"></video>` : '<div class="work-thumb-empty">无</div>');
-        const arBadge = w.aspectRatio ? `<span class="ar-badge">${arLabel(w.aspectRatio)}</span>` : '';
+        const arBadge = w.aspectRatio ? `<span class="ar-badge">${arLabel(w.aspectRatio)} · ${w.aspectRatio.toFixed(2)}</span>` : '';
         return `
             <div class="work-row">
                 <div class="work-thumb">${thumb}</div>
@@ -1110,7 +1149,7 @@ function renderWorksList() {
             } else if (act === 'edit') {
                 openWorkForm(i);
             } else if (act === 'del') {
-                if (!confirm(`删除"${allWorks[i].title}"？视频文件不会被删除。`)) return;
+                if (!confirm(`删除"${allWorks[i].title}"？视频文件不会被删除（会标为孤儿，可在媒体库清理）。`)) return;
                 allWorks.splice(i, 1);
                 try {
                     await api('/admin/works', { method: 'PUT', body: allWorks });
@@ -1143,8 +1182,7 @@ function openWorkForm(idx) {
     document.getElementById('f-poster').value = w.posterUrl || '';
     document.getElementById('f-video-status').textContent = w.videoUrl ? '已上传' : '未上传';
     document.getElementById('f-poster-status').textContent = w.posterUrl ? '已上传' : '未上传';
-    document.getElementById('f-ar-display').textContent = arLabel(w.aspectRatio);
-    pendingAspectRatio = w.aspectRatio || 0;
+    document.getElementById('f-ar-display').textContent = w.aspectRatio ? (arLabel(w.aspectRatio) + ' · ' + w.aspectRatio.toFixed(2)) : '--';
     document.querySelectorAll('#work-form .upload-filename').forEach(el => el.textContent = '');
     document.querySelectorAll('#work-form .upload-status').forEach(el => el.textContent = '');
     document.getElementById('work-form').style.display = 'block';
@@ -1179,7 +1217,7 @@ document.getElementById('save-work-btn').onclick = async () => {
     }
 };
 
-// 上传 — 视频上传时检测宽高比
+// 上传：视频和图片都识别真实宽高比
 function setupUploads() {
     document.querySelectorAll('.upload-zone').forEach(zone => {
         const input = zone.querySelector('input[type="file"]');
@@ -1204,12 +1242,11 @@ function setupUploads() {
             if (progressEl) { progressEl.classList.add('active'); barEl.style.width = '0%'; }
             if (statusEl) statusEl.textContent = '上传中…';
 
-// 在浏览器端读取宽高比（视频或封面图都识别）
+            // 在浏览器端读取真实宽高比（视频或封面图）
             let detectedAR = 0;
             if (file.type.startsWith('video/') && (target === 'video' || target === 'hero')) {
                 try { detectedAR = await detectVideoAspectRatio(file); } catch (err) {}
             } else if (file.type.startsWith('image/') && target === 'poster') {
-                // 封面图也识别比例 — 解决"图片封面无法识别尺寸"的问题
                 try { detectedAR = await detectImageAspectRatio(file); } catch (err) {}
             }
 
@@ -1219,7 +1256,7 @@ function setupUploads() {
                 });
                 onUploadDone(target, url, detectedAR);
                 if (statusEl) {
-                    statusEl.textContent = '✓ 完成' + (detectedAR ? ' · 比例 ' + arLabel(detectedAR) : '');
+                    statusEl.textContent = '✓ 完成' + (detectedAR ? ' · 比例 ' + arLabel(detectedAR) + ' (' + detectedAR.toFixed(2) + ')' : '');
                 }
             } catch (err) {
                 if (statusEl) statusEl.textContent = '✗ 失败：' + err.message;
@@ -1245,11 +1282,11 @@ function detectVideoAspectRatio(file) {
             if (w && h) resolve(w / h); else reject(new Error('无法读取视频元数据'));
         };
         v.onerror = () => { cleanup(); reject(new Error('视频读取失败')); };
-        // 5s 超时
         setTimeout(() => { cleanup(); reject(new Error('元数据读取超时')); }, 5000);
     });
 }
-    function detectImageAspectRatio(file) {
+
+function detectImageAspectRatio(file) {
     return new Promise((resolve, reject) => {
         const img = new Image();
         const url = URL.createObjectURL(file);
@@ -1270,19 +1307,16 @@ function onUploadDone(target, url, detectedAR) {
         document.getElementById('f-video-status').textContent = '✓ 新视频已上传';
         if (detectedAR > 0) {
             document.getElementById('f-aspectRatio').value = detectedAR;
-            document.getElementById('f-ar-display').textContent = arLabel(detectedAR);
-            pendingAspectRatio = detectedAR;
+            document.getElementById('f-ar-display').textContent = arLabel(detectedAR) + ' · ' + detectedAR.toFixed(2);
         }
     } else if (target === 'poster') {
         document.getElementById('f-poster').value = url;
         document.getElementById('f-poster-status').textContent = '✓ 新封面已上传';
-        // 关键：如果还没设过比例，用封面图的比例（解决纯图片作品无法识别尺寸的问题）
         if (detectedAR > 0) {
             const currentAR = parseFloat(document.getElementById('f-aspectRatio').value) || 0;
             if (currentAR <= 0) {
                 document.getElementById('f-aspectRatio').value = detectedAR;
-                document.getElementById('f-ar-display').textContent = arLabel(detectedAR);
-                pendingAspectRatio = detectedAR;
+                document.getElementById('f-ar-display').textContent = arLabel(detectedAR) + ' · ' + detectedAR.toFixed(2);
             }
         }
     } else if (target === 'hero') {
@@ -1323,7 +1357,7 @@ function uploadFile(file, onProgress) {
     });
 }
 
-// 设置表单
+// ========== 设置 ==========
 function renderSettingsForm() {
     const s = allSettings;
     const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
@@ -1335,7 +1369,6 @@ function renderSettingsForm() {
     document.getElementById('s-portrait-status').textContent = s.portraitUrl ? '已上传' : '未上传';
 
     set('s-meta', s.heroMetaLeft);
-
     set('s-herotitle-zh', s.heroTitle_zh || s.heroTitle || '');
     set('s-herotitle-en', s.heroTitle_en || '');
     set('s-herosub-zh',   s.heroSub_zh   || s.heroSub || '');
@@ -1389,7 +1422,7 @@ document.getElementById('save-settings-btn').onclick = async () => {
     }
 };
 
-// 品牌
+// ========== 品牌 ==========
 function renderClientsList() {
     const list = allSettings.clients || [];
     const el = document.getElementById('clients-list');
@@ -1435,54 +1468,261 @@ document.getElementById('add-client-btn').onclick = async () => {
     }
 };
 
-// 媒体库（带类型筛选）
+// ========================================================================
+// 媒体库 — 按作品聚合视图
+// ========================================================================
 async function loadMedia() {
-    const grid = document.getElementById('media-grid');
-    grid.innerHTML = '<p style="color:var(--gray); grid-column:1/-1;">加载中…</p>';
+    const content = document.getElementById('media-content');
+    content.innerHTML = '<p style="color:var(--gray);">加载中…</p>';
     try {
-        allMedia = await api('/admin/media');
+        // 同时刷新作品和设置列表（确保归属判断准确）
+        const [media, works, settings] = await Promise.all([
+            api('/admin/media'),
+            api('/admin/works'),
+            api('/admin/settings')
+        ]);
+        allMedia = Array.isArray(media) ? media : [];
+        allWorks = Array.isArray(works) ? works : [];
+        allSettings = settings && typeof settings === 'object' ? settings : {};
         renderMedia();
     } catch (e) {
-        grid.innerHTML = `<p style="color:var(--danger); grid-column:1/-1;">加载失败：${escapeHtml(e.message)}</p>`;
+        content.innerHTML = `<p style="color:var(--danger);">加载失败：${escapeHtml(e.message)}</p>`;
     }
 }
 
-function renderMedia() {
-    const grid = document.getElementById('media-grid');
-    const list = (allMedia || []).filter(m => {
-        if (mediaFilter === 'all') return true;
-        const isVideo = /\.(mp4|webm|mov|m4v|avi)$/i.test(m.key);
-        return mediaFilter === 'video' ? isVideo : !isVideo;
+// 从完整 URL 提取文件 key（最后一段）
+function urlToKey(url) {
+    if (!url) return '';
+    try {
+        const u = new URL(url);
+        return decodeURIComponent(u.pathname.split('/').pop() || '');
+    } catch {
+        return url.split('/').pop() || '';
+    }
+}
+
+// 构建一个查找表：key → { ownerType, ownerId, ownerLabel, role }
+function buildOwnershipMap() {
+    const map = new Map();
+
+    // 作品的视频/封面
+    allWorks.forEach((w, idx) => {
+        if (w.videoUrl) {
+            map.set(urlToKey(w.videoUrl), {
+                ownerType: 'work', ownerId: idx,
+                ownerLabel: w.title || '未命名',
+                ownerCategory: w.category || '',
+                role: 'video', roleLabel: '视频'
+            });
+        }
+        if (w.posterUrl) {
+            map.set(urlToKey(w.posterUrl), {
+                ownerType: 'work', ownerId: idx,
+                ownerLabel: w.title || '未命名',
+                ownerCategory: w.category || '',
+                role: 'poster', roleLabel: '封面'
+            });
+        }
     });
-    if (!list.length) {
-        grid.innerHTML = '<p style="color:var(--gray); grid-column:1/-1;">该分类下没有文件。</p>';
+
+    // 站点设置中的资源
+    if (allSettings.heroVideo) {
+        map.set(urlToKey(allSettings.heroVideo), {
+            ownerType: 'site', ownerId: 'hero',
+            ownerLabel: '首屏背景视频',
+            role: 'hero', roleLabel: 'HERO'
+        });
+    }
+    if (allSettings.portraitUrl) {
+        map.set(urlToKey(allSettings.portraitUrl), {
+            ownerType: 'site', ownerId: 'portrait',
+            ownerLabel: '关于我 · 个人肖像',
+            role: 'portrait', roleLabel: '肖像'
+        });
+    }
+    // 品牌 logos
+    (allSettings.clients || []).forEach((c, i) => {
+        if (c.logoUrl) {
+            map.set(urlToKey(c.logoUrl), {
+                ownerType: 'site', ownerId: 'client_' + i,
+                ownerLabel: '合作品牌：' + (c.name || ''),
+                role: 'logo', roleLabel: 'LOGO'
+            });
+        }
+    });
+
+    return map;
+}
+
+function renderMedia() {
+    const content = document.getElementById('media-content');
+    const cleanupBtn = document.getElementById('cleanup-orphans-btn');
+
+    if (!allMedia.length) {
+        content.innerHTML = '<p style="color:var(--gray);">还没有上传任何文件。</p>';
+        cleanupBtn.style.display = 'none';
         return;
     }
-    grid.innerHTML = list.map(m => {
+
+    const ownership = buildOwnershipMap();
+
+    // 给每个媒体打标签
+    const enriched = allMedia.map(m => {
+        const own = ownership.get(m.key);
         const isVideo = /\.(mp4|webm|mov|m4v|avi)$/i.test(m.key);
-        const preview = isVideo
-            ? `<video class="media-preview" src="${escapeHtml(m.url)}" muted preload="metadata"></video>`
-            : `<img class="media-preview" src="${escapeHtml(m.url)}" alt="">`;
+        return {
+            ...m,
+            isVideo,
+            owner: own || null,
+            isOrphan: !own
+        };
+    });
+
+    // 按筛选器过滤
+    const filtered = enriched.filter(m => {
+        if (mediaFilter === 'all') return true;
+        return mediaFilter === 'video' ? m.isVideo : !m.isVideo;
+    });
+
+    if (!filtered.length) {
+        content.innerHTML = '<div class="media-empty">该分类下没有文件。</div>';
+        cleanupBtn.style.display = 'none';
+        return;
+    }
+
+    // 分组：作品 → 站点资源 → 孤儿
+    const groups = {
+        commercial: { title: '商业作品', cat: 'COMMERCIAL', items: [], type: 'work' },
+        personal:   { title: '个人作品', cat: 'PERSONAL',   items: [], type: 'work' },
+        site:       { title: '站点资源', cat: 'SITE',       items: [], type: 'site' },
+        orphan:     { title: '孤儿文件', cat: 'ORPHAN',     items: [], type: 'orphan' },
+    };
+
+    // 作品分类：把同一作品的视频和封面放一起
+    const workGroups = new Map(); // ownerId → { work, items: [] }
+
+    filtered.forEach(m => {
+        if (m.isOrphan) {
+            groups.orphan.items.push(m);
+        } else if (m.owner.ownerType === 'work') {
+            const wid = m.owner.ownerId;
+            if (!workGroups.has(wid)) {
+                workGroups.set(wid, { ownerLabel: m.owner.ownerLabel, ownerCategory: m.owner.ownerCategory, items: [] });
+            }
+            workGroups.get(wid).items.push(m);
+        } else if (m.owner.ownerType === 'site') {
+            groups.site.items.push(m);
+        }
+    });
+
+    // 把作品按分类塞进 commercial / personal
+    workGroups.forEach((wg, wid) => {
+        const cat = (wg.ownerCategory || '').toLowerCase();
+        const target = (cat === 'commercial') ? groups.commercial : groups.personal;
+        target.items.push({ workTitle: wg.ownerLabel, items: wg.items, workId: wid });
+    });
+
+    // 渲染
+    let html = '';
+
+    const renderCard = (m) => {
+        const previewSrc = escapeHtml(m.url);
+        const preview = m.isVideo
+            ? `<video class="media-preview" src="${previewSrc}" muted preload="metadata"></video>`
+            : `<img class="media-preview" src="${previewSrc}" alt="">`;
+        const role = m.isOrphan ? 'orphan' : (m.owner ? m.owner.role : 'orphan');
+        const roleLabel = m.isOrphan ? '孤儿' : (m.owner ? m.owner.roleLabel : '孤儿');
+        const ownerInfo = m.isOrphan
+            ? `<span style="color:var(--warning);">未关联任何作品</span>`
+            : escapeHtml(m.owner.ownerLabel);
         return `
-            <div class="media-card">
-                ${preview}
+            <div class="media-card ${m.isOrphan ? 'is-orphan' : ''}">
+                <div class="media-preview-wrap">
+                    ${preview}
+                    <span class="media-role-tag role-${role}">${roleLabel}</span>
+                </div>
                 <div class="media-body">
-                    <div class="media-name">${escapeHtml(m.key)}</div>
-                    <div class="media-meta">${(m.size / 1024 / 1024).toFixed(2)} MB · ${isVideo ? '视频' : '图片'}</div>
+                    <div class="media-name" title="${escapeHtml(m.key)}">${escapeHtml(m.key)}</div>
+                    <div class="media-meta">${(m.size / 1024 / 1024).toFixed(2)} MB · ${ownerInfo}</div>
                     <div class="media-actions">
-                        <button data-act="copy" data-url="${escapeHtml(m.url)}">复制链接</button>
-                        <button data-act="del" data-key="${escapeHtml(m.key)}">删除</button>
+                        <button data-act="copy" data-url="${previewSrc}">复制链接</button>
+                        <button class="danger" data-act="del" data-key="${escapeHtml(m.key)}" data-orphan="${m.isOrphan ? 1 : 0}">删除</button>
                     </div>
                 </div>
             </div>
         `;
-    }).join('');
-    grid.querySelectorAll('button[data-act]').forEach(b => {
+    };
+
+    // 商业作品组
+    if (groups.commercial.items.length) {
+        html += `<div class="media-group"><div class="media-group-head">
+            <div class="media-group-title">商业作品</div>
+            <span class="media-group-cat">COMMERCIAL</span>
+            <span class="media-group-count">${groups.commercial.items.length} 个作品</span>
+        </div>`;
+        groups.commercial.items.forEach(workEntry => {
+            html += `<div style="margin-bottom:1.2rem;">
+                <div style="font-family: var(--font-serif-cn); font-weight: 500; font-size: 0.92rem; margin-bottom: 0.6rem; color: var(--ink-2);">— ${escapeHtml(workEntry.workTitle)}</div>
+                <div class="media-grid">${workEntry.items.map(renderCard).join('')}</div>
+            </div>`;
+        });
+        html += `</div>`;
+    }
+
+    // 个人作品组
+    if (groups.personal.items.length) {
+        html += `<div class="media-group"><div class="media-group-head">
+            <div class="media-group-title">个人作品</div>
+            <span class="media-group-cat">PERSONAL</span>
+            <span class="media-group-count">${groups.personal.items.length} 个作品</span>
+        </div>`;
+        groups.personal.items.forEach(workEntry => {
+            html += `<div style="margin-bottom:1.2rem;">
+                <div style="font-family: var(--font-serif-cn); font-weight: 500; font-size: 0.92rem; margin-bottom: 0.6rem; color: var(--ink-2);">— ${escapeHtml(workEntry.workTitle)}</div>
+                <div class="media-grid">${workEntry.items.map(renderCard).join('')}</div>
+            </div>`;
+        });
+        html += `</div>`;
+    }
+
+    // 站点资源
+    if (groups.site.items.length) {
+        html += `<div class="media-group"><div class="media-group-head">
+            <div class="media-group-title">站点资源</div>
+            <span class="media-group-cat">SITE</span>
+            <span class="media-group-count">${groups.site.items.length} 个文件</span>
+        </div><div class="media-grid">${groups.site.items.map(renderCard).join('')}</div></div>`;
+    }
+
+    // 孤儿文件
+    if (groups.orphan.items.length) {
+        const totalMB = groups.orphan.items.reduce((sum, m) => sum + m.size, 0) / 1024 / 1024;
+        html += `<div class="media-group is-orphan"><div class="media-group-head">
+            <div class="media-group-title">孤儿文件</div>
+            <span class="media-group-cat" style="background: rgba(232,184,111,0.2); color: var(--warning);">ORPHAN</span>
+            <span class="media-group-count">${groups.orphan.items.length} 个文件 · ${totalMB.toFixed(2)} MB</span>
+            <div class="media-group-warning">⚠ 这些文件没有任何作品或站点设置在引用，可能是你之前重新上传后留下的旧版本。可以单独删除，或点上方"清理所有孤儿文件"一键删除。</div>
+        </div><div class="media-grid">${groups.orphan.items.map(renderCard).join('')}</div></div>`;
+        cleanupBtn.style.display = '';
+    } else {
+        cleanupBtn.style.display = 'none';
+    }
+
+    if (!html) {
+        html = '<div class="media-empty">该分类下没有文件。</div>';
+    }
+
+    content.innerHTML = html;
+
+    // 绑定事件
+    content.querySelectorAll('button[data-act]').forEach(b => {
         b.onclick = async () => {
             if (b.dataset.act === 'copy') {
                 try { await navigator.clipboard.writeText(b.dataset.url); b.textContent = '✓ 已复制'; setTimeout(() => b.textContent = '复制链接', 1500); } catch { alert('复制失败，请手动复制'); }
             } else if (b.dataset.act === 'del') {
-                if (!confirm('删除这个文件？正在用它的作品会显示空白。')) return;
+                const isOrphan = b.dataset.orphan === '1';
+                const msg = isOrphan ? '删除这个孤儿文件？' : '⚠ 警告：这个文件正被某个作品/设置引用，删除后前台会显示空白。确定继续？';
+                if (!confirm(msg)) return;
                 try { await api('/admin/media/' + encodeURIComponent(b.dataset.key), { method: 'DELETE' }); loadMedia(); }
                 catch (e) { alert('失败：' + e.message); }
             }
@@ -1490,7 +1730,7 @@ function renderMedia() {
     });
 }
 
-// 媒体筛选
+// 媒体筛选器
 document.querySelectorAll('.media-toolbar .filter-btn').forEach(b => {
     b.onclick = () => {
         document.querySelectorAll('.media-toolbar .filter-btn').forEach(x => x.classList.remove('active'));
@@ -1500,7 +1740,33 @@ document.querySelectorAll('.media-toolbar .filter-btn').forEach(b => {
     };
 });
 
-// 账号
+// 一键清理所有孤儿
+document.getElementById('cleanup-orphans-btn').onclick = async () => {
+    const ownership = buildOwnershipMap();
+    const orphans = allMedia.filter(m => !ownership.has(m.key));
+    if (!orphans.length) { alert('没有孤儿文件可清理'); return; }
+
+    const totalMB = orphans.reduce((sum, m) => sum + m.size, 0) / 1024 / 1024;
+    if (!confirm(`确定要删除 ${orphans.length} 个孤儿文件（共 ${totalMB.toFixed(2)} MB）？此操作不可撤销。`)) return;
+
+    const btn = document.getElementById('cleanup-orphans-btn');
+    btn.disabled = true;
+    let deleted = 0, failed = 0;
+    for (const m of orphans) {
+        try {
+            await api('/admin/media/' + encodeURIComponent(m.key), { method: 'DELETE' });
+            deleted++;
+        } catch (e) {
+            failed++;
+            console.error('Delete failed:', m.key, e);
+        }
+    }
+    btn.disabled = false;
+    alert(`完成：成功删除 ${deleted} 个文件${failed ? '，失败 ' + failed + ' 个' : ''}`);
+    await loadMedia();
+};
+
+// ========== 账号 ==========
 document.getElementById('change-pwd-btn').onclick = async () => {
     const np = document.getElementById('new-pwd').value;
     if (np.length < 8) { showMsg('account-msg', '密码至少 8 位', false); return; }

@@ -29,12 +29,15 @@
     --line:         rgba(255, 255, 255, 0.08);
     --line-2:       rgba(255, 255, 255, 0.16);
 
-    /* 玻璃：48px 模糊 + 200% 饱和度 + 顶部白光 */
     --glass-bg:         rgba(20, 20, 20, 0.55);
+    --glass-bg-soft:    rgba(255, 255, 255, 0.055);
     --glass-bg-strong:  rgba(20, 20, 20, 0.80);
-    --glass-border:     rgba(255, 255, 255, 0.10);
-    --glass-shadow:     0 8px 32px rgba(0, 0, 0, 0.5);
-    --glass-inset:      inset 0 0.5px 0 rgba(255, 255, 255, 0.08);
+    --glass-border:     rgba(255, 255, 255, 0.14);
+    --glass-highlight:  rgba(255, 255, 255, 0.34);
+    --glass-shadow:     0 18px 60px rgba(0, 0, 0, 0.28);
+    --glass-inset:      inset 0 0.5px 0 rgba(255, 255, 255, 0.24), inset 0 -1px 0 rgba(255, 255, 255, 0.055);
+    --accent-cool:      rgba(126, 164, 214, 0.18);
+    --accent-warm:      rgba(226, 188, 137, 0.11);
 
     --font-display:     'Fraunces', 'Noto Serif SC', "Songti SC", serif;
     --font-serif-cn:    'Noto Serif SC', "Songti SC", serif;
@@ -61,16 +64,23 @@ html[data-theme="light"] {
     --line-2:       rgba(0, 0, 0, 0.16);
 
     --glass-bg:         rgba(250, 250, 247, 0.55);
+    --glass-bg-soft:    rgba(255, 255, 255, 0.62);
     --glass-bg-strong:  rgba(250, 250, 247, 0.85);
-    --glass-border:     rgba(0, 0, 0, 0.06);
-    --glass-shadow:     0 8px 32px rgba(0, 0, 0, 0.06);
+    --glass-border:     rgba(255, 255, 255, 0.78);
+    --glass-highlight:  rgba(255, 255, 255, 0.92);
+    --glass-shadow:     0 18px 56px rgba(0, 0, 0, 0.08);
     --glass-inset:      inset 0 0.5px 0 rgba(255, 255, 255, 0.6);
+    --accent-cool:      rgba(93, 132, 188, 0.12);
+    --accent-warm:      rgba(188, 142, 86, 0.10);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html { scroll-behavior: smooth; }
 body {
-    background: var(--paper);
+    background:
+        linear-gradient(125deg, var(--accent-cool) 0%, transparent 34%),
+        linear-gradient(245deg, var(--accent-warm) 0%, transparent 38%),
+        linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 52%, var(--paper) 100%);
     color: var(--ink);
     font-family: var(--font-sans);
     font-weight: 300;
@@ -79,6 +89,21 @@ body {
     transition: background 0.6s var(--ease), color 0.6s var(--ease);
     -webkit-font-smoothing: antialiased;
 }
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255,255,255,0.014) 1px, transparent 1px);
+    background-size: 84px 84px;
+    mask-image: linear-gradient(180deg, transparent 0%, #000 20%, #000 72%, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 20%, #000 72%, transparent 100%);
+    opacity: 0.34;
+}
+html[data-theme="light"] body::before { opacity: 0.22; }
 img, video { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
 button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
@@ -95,14 +120,31 @@ nav.top {
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    padding: 0.5rem 0.5rem 0.5rem 1.3rem;
+    padding: 0.5rem 0.55rem 0.5rem 1.25rem;
     background: var(--glass-bg);
-    backdrop-filter: saturate(200%) blur(48px);
-    -webkit-backdrop-filter: saturate(200%) blur(48px);
+    backdrop-filter: saturate(210%) blur(54px);
+    -webkit-backdrop-filter: saturate(210%) blur(54px);
     border: 0.5px solid var(--glass-border);
     border-radius: 999px;
     box-shadow: var(--glass-shadow), var(--glass-inset);
     max-width: calc(100vw - 1.6rem);
+    transition: top 0.45s var(--ease-out), padding 0.45s var(--ease-out), background 0.45s var(--ease), box-shadow 0.45s var(--ease);
+}
+nav.top::before {
+    content: '';
+    position: absolute;
+    inset: 1px 10px auto 10px;
+    height: 1px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
+    pointer-events: none;
+}
+nav.top.is-compact {
+    top: 0.55rem;
+    padding-top: 0.36rem;
+    padding-bottom: 0.36rem;
+    background: var(--glass-bg-strong);
+    box-shadow: 0 12px 44px rgba(0, 0, 0, 0.22), var(--glass-inset);
 }
 .brand {
     font-family: var(--font-serif-cn);
@@ -115,7 +157,9 @@ nav.top {
     padding-right: 0.9rem;
     border-right: 0.5px solid var(--line-2);
     white-space: nowrap;
+    transition: font-size 0.45s var(--ease-out);
 }
+nav.top.is-compact .brand { font-size: 0.92rem; }
 .brand .water {
     font-family: var(--font-display);
     font-style: italic;
@@ -135,7 +179,7 @@ nav.top {
     color: var(--gray);
     border-radius: 999px;
     transition: color 0.3s, background 0.3s;
-    letter-spacing: 0.02em;
+    letter-spacing: 0;
     white-space: nowrap;
 }
 .menu a:hover { color: var(--ink); background: var(--line); }
@@ -157,6 +201,7 @@ nav.top {
     font-weight: 500;
     transition: color 0.3s, background 0.3s;
 }
+nav.top.is-compact .nav-btn { width: 30px; height: 30px; }
 .nav-btn:hover { color: var(--ink); background: var(--line); }
 .nav-btn svg { width: 15px; height: 15px; }
 
@@ -186,7 +231,7 @@ nav.top {
         backdrop-filter: saturate(200%) blur(48px);
         -webkit-backdrop-filter: saturate(200%) blur(48px);
         border: 0.5px solid var(--glass-border);
-        border-radius: 18px;
+        border-radius: 8px;
         padding: 0.5rem;
         box-shadow: var(--glass-shadow), var(--glass-inset);
         gap: 0.1rem;
@@ -207,8 +252,8 @@ nav.top {
    ======================================================================== */
 .hero {
     position: relative;
-    min-height: 100vh;
-    min-height: 100svh;
+    min-height: 92vh;
+    min-height: 92svh;
     display: flex;
     align-items: center;
     /* 让内容偏中略上，避免导航下方留白过大被误以为加载未完成 */
@@ -222,32 +267,42 @@ nav.top {
     overflow: hidden;
     background: #0A0A0A;
 }
+.hero-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+        linear-gradient(90deg, rgba(0,0,0,0.86) 0%, rgba(0,0,0,0.62) 34%, rgba(0,0,0,0.34) 66%, rgba(0,0,0,0.58) 100%),
+        linear-gradient(180deg, rgba(0,0,0,0.56) 0%, rgba(0,0,0,0.18) 34%, rgba(0,0,0,0.78) 100%);
+    pointer-events: none;
+}
 .hero-bg::after {
     content: '';
     position: absolute; inset: 0;
+    z-index: 2;
     /* 三层叠加：
        1. 左下角深色 → 标题与 sub 永远在更暗的底子上；
        2. 整体径向暗角；
        3. 底部溶解到 paper 色。 */
     background:
-        radial-gradient(ellipse 80% 90% at 18% 75%, rgba(10,10,10,0.7) 0%, rgba(10,10,10,0.35) 45%, transparent 75%),
-        radial-gradient(ellipse at 60% 40%, transparent 0%, rgba(10,10,10,0.5) 75%),
-        linear-gradient(180deg, rgba(10,10,10,0) 25%, var(--paper) 100%);
+        radial-gradient(ellipse 72% 92% at 16% 70%, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.52) 46%, rgba(10,10,10,0.18) 76%),
+        linear-gradient(180deg, rgba(10,10,10,0) 34%, var(--paper) 100%);
     pointer-events: none;
     transition: background 0.6s var(--ease);
 }
 html[data-theme="light"] .hero-bg::after {
     /* 亮色模式时，hero 视频底部要溶解到月白；左下角的暗仍保留以保护文字对比 */
     background:
-        radial-gradient(ellipse 80% 90% at 18% 75%, rgba(10,10,10,0.55) 0%, rgba(10,10,10,0.25) 45%, transparent 75%),
-        radial-gradient(ellipse at 60% 40%, transparent 0%, rgba(0,0,0,0.3) 75%),
-        linear-gradient(180deg, rgba(10,10,10,0) 25%, var(--paper) 100%);
+        radial-gradient(ellipse 72% 92% at 16% 70%, rgba(10,10,10,0.74) 0%, rgba(10,10,10,0.38) 46%, rgba(10,10,10,0.12) 76%),
+        linear-gradient(180deg, rgba(10,10,10,0) 34%, var(--paper) 100%);
 }
 .hero-bg video, .hero-bg .placeholder {
     width: 100%; height: 100%;
     object-fit: cover;
     /* 适度压暗、保留对比，避免视频里的高光与文字争抢注意力 */
-    filter: brightness(0.82) contrast(1.04) saturate(0.95);
+    filter: blur(4px) brightness(0.40) contrast(0.92) saturate(0.56);
+    transform: scale(1.045);
 }
 .hero-bg .placeholder {
     background:
@@ -258,7 +313,7 @@ html[data-theme="light"] .hero-bg::after {
     position: relative;
     z-index: 2;
     width: 100%;
-    max-width: 1300px;
+    max-width: 1180px;
     margin: 0 auto;
     color: #FAFAF7;  /* 永远月白，因为是叠在视频上 */
     /* 内容整体上提，缩小导航到主标题之间的留白 */
@@ -286,10 +341,10 @@ html[data-theme="light"] .hero-bg::after {
 .hero-title {
     font-family: var(--font-serif-cn);
     font-weight: 300;
-    font-size: clamp(2.2rem, 6.5vw, 6rem);
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    max-width: 18ch;
+    font-size: clamp(2.45rem, 5.4vw, 5.55rem);
+    line-height: 1.18;
+    letter-spacing: 0;
+    max-width: 12.5ch;
     margin-bottom: 1.8rem;
 }
 .hero-title .em {
@@ -312,13 +367,14 @@ html[data-theme="light"] .hero-bg::after {
 .hero-title .line:nth-child(3) > span { animation-delay: 0.8s; }
 
 .hero-sub {
-    max-width: 36rem;
+    max-width: min(32rem, 100%);
     font-size: clamp(0.9rem, 1.3vw, 1.05rem);
     line-height: 1.85;
-    color: rgba(255, 255, 255, 0.78);
+    color: rgba(255, 255, 255, 0.84);
     opacity: 0;
     animation: fadeUp 1.2s 1.4s var(--ease-out) forwards;
     font-weight: 300;
+    overflow-wrap: anywhere;
 }
 
 .hero-meta {
@@ -364,6 +420,7 @@ html[data-theme="light"] .hero-bg::after {
 
 @media (max-width: 720px) {
     .hero-content { padding-top: 3.5rem; }
+    .hero-title { max-width: 11.5ch; }
 
     /* 移动端 hero-meta 重布局：去掉 space-between 三列横排，改为左对齐两行 */
     .hero-meta {
@@ -390,7 +447,12 @@ html[data-theme="light"] .hero-bg::after {
 
     .hero-eyebrow { font-size: 0.78rem; margin-bottom: 1rem; }
     .hero-eyebrow::before { width: 20px; }
-    .hero-sub { font-size: 0.92rem; line-height: 1.75; }
+    .hero-sub {
+        width: calc(100vw - (var(--gutter) * 2));
+        max-width: 21rem;
+        font-size: 0.9rem;
+        line-height: 1.75;
+    }
 }
 
 @keyframes scrollPulseH {
@@ -424,7 +486,7 @@ section { padding: var(--section-pad) var(--gutter); }
     font-family: var(--font-serif-cn);
     font-weight: 300;
     font-size: clamp(1.4rem, 2.4vw, 2rem);
-    letter-spacing: -0.01em;
+    letter-spacing: 0;
     line-height: 1.2;
 }
 .section-title .em {
@@ -461,7 +523,7 @@ section { padding: var(--section-pad) var(--gutter); }
     font-weight: 300;
     font-size: clamp(1.25rem, 2.4vw, 2rem);
     line-height: 1.55;
-    letter-spacing: -0.005em;
+    letter-spacing: 0;
     color: var(--ink);
 }
 .quote-text .em {
@@ -513,7 +575,7 @@ section { padding: var(--section-pad) var(--gutter); }
 .work-card {
     position: relative;
     overflow: hidden;
-    border-radius: clamp(14px, 1.8vw, 22px);
+    border-radius: 8px;
     background: var(--paper-2);
     cursor: pointer;
     transition: transform 0.7s var(--ease-out), box-shadow 0.7s var(--ease-out);
@@ -645,7 +707,7 @@ html[data-theme="light"] .work-card:hover {
     padding: 4rem 1.5rem;
     text-align: center;
     border: 1px dashed var(--line-2);
-    border-radius: 22px;
+    border-radius: 8px;
     color: var(--gray);
     font-family: var(--font-display);
     font-style: italic;
@@ -668,6 +730,183 @@ html[data-theme="light"] .work-card:hover {
     }
     .work-name { font-size: 0.88rem; }
     .work-meta { font-size: 0.66rem; }
+}
+
+/* VisionOS gallery layer: curated spatial windows instead of a plain thumbnail grid. */
+.works-filter {
+    padding: 0.28rem;
+    border: 0.5px solid var(--glass-border);
+    border-radius: 999px;
+    background: var(--glass-bg-soft);
+    backdrop-filter: saturate(180%) blur(28px);
+    -webkit-backdrop-filter: saturate(180%) blur(28px);
+}
+.filter-btn {
+    letter-spacing: 0;
+    border: 0.5px solid transparent;
+}
+.filter-btn.active {
+    color: var(--ink);
+    background: var(--glass-bg-strong);
+    border-color: var(--glass-border);
+    box-shadow: var(--glass-inset);
+}
+.works-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.65rem);
+    align-items: start;
+}
+.works-grid.is-curated { padding-top: clamp(0.5rem, 2vw, 1.4rem); }
+.work-card,
+.work-card.ar-portrait,
+.work-card.ar-square,
+.work-card.ar-landscape,
+.work-card.ar-wide,
+.work-card.ar-cinema,
+.work-card.ar-default {
+    grid-column: span 4;
+    min-height: clamp(360px, 38vw, 560px);
+    max-width: none;
+    flex: initial;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.045);
+    border: 0.5px solid var(--glass-border);
+    box-shadow: 0 22px 70px rgba(0,0,0,0.24), var(--glass-inset);
+    aspect-ratio: auto;
+}
+html[data-theme="light"] .work-card { background: rgba(255,255,255,0.54); }
+.work-card.featured-large {
+    grid-column: span 7;
+    min-height: clamp(520px, 58vw, 740px);
+}
+.work-card.featured-side {
+    grid-column: span 5;
+    min-height: clamp(380px, 34vw, 540px);
+    margin-top: clamp(2.8rem, 7vw, 7rem);
+}
+.work-card.feature-wide {
+    grid-column: span 8;
+    min-height: clamp(420px, 40vw, 620px);
+}
+.work-card.feature-standard { grid-column: span 4; }
+.work-card::before {
+    background:
+        linear-gradient(120deg, rgba(255,255,255,0.13), transparent 28%),
+        linear-gradient(180deg, transparent 42%, rgba(0,0,0,0.56));
+    opacity: 1;
+}
+.work-card.has-media::before { opacity: 1; }
+.work-card::after {
+    box-shadow:
+        inset 0 0 0 0.5px rgba(255,255,255,0.12),
+        inset 0 -80px 110px -70px rgba(0,0,0,0.78);
+}
+html[data-theme="light"] .work-card::after {
+    box-shadow:
+        inset 0 0 0 0.5px rgba(255,255,255,0.76),
+        inset 0 -80px 110px -70px rgba(0,0,0,0.18);
+}
+.work-media {
+    filter: saturate(0.9) contrast(0.98);
+}
+.work-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 34px 90px rgba(0,0,0,0.32), var(--glass-inset);
+}
+.work-placeholder {
+    display: grid;
+    place-items: center;
+    padding: clamp(1rem, 3vw, 2.4rem);
+    text-align: center;
+    background:
+        linear-gradient(135deg, rgba(126,164,214,0.18), transparent 36%),
+        linear-gradient(315deg, rgba(226,188,137,0.12), transparent 34%),
+        rgba(255,255,255,0.035);
+}
+.poster-pending {
+    display: grid;
+    gap: 0.45rem;
+    color: var(--gray);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.8rem;
+    letter-spacing: 0;
+}
+.poster-pending small {
+    display: block;
+    max-width: 18rem;
+    color: var(--gray-2);
+    font-family: var(--font-sans);
+    font-style: normal;
+    font-size: 0.72rem;
+    line-height: 1.55;
+}
+.poster-pending strong {
+    display: block;
+    color: var(--ink);
+    font-family: var(--font-serif-cn);
+    font-style: normal;
+    font-weight: 300;
+    font-size: clamp(1.15rem, 2vw, 1.8rem);
+}
+.work-status {
+    display: inline-flex;
+    margin-left: 0.45rem;
+    padding: 0.1rem 0.38rem;
+    border-radius: 999px;
+    border: 0.5px solid var(--glass-border);
+    color: var(--gray);
+    font-family: var(--font-sans);
+    font-style: normal;
+    font-size: 0.62rem;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+.work-info {
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    border-radius: 8px;
+    background: var(--glass-bg);
+    backdrop-filter: saturate(210%) blur(44px);
+    -webkit-backdrop-filter: saturate(210%) blur(44px);
+    box-shadow: var(--glass-inset);
+}
+.work-name { letter-spacing: 0; }
+.work-meta { letter-spacing: 0; }
+.work-arrow {
+    width: 32px;
+    height: 32px;
+    background: rgba(255,255,255,0.12);
+    color: var(--ink);
+    border: 0.5px solid var(--glass-border);
+}
+.works-empty {
+    grid-column: 1 / -1;
+    border-radius: 8px;
+    background: var(--glass-bg-soft);
+    backdrop-filter: saturate(160%) blur(24px);
+    -webkit-backdrop-filter: saturate(160%) blur(24px);
+}
+@media (max-width: 980px) {
+    .work-card,
+    .work-card.ar-portrait,
+    .work-card.ar-square,
+    .work-card.ar-landscape,
+    .work-card.ar-wide,
+    .work-card.ar-cinema,
+    .work-card.ar-default,
+    .work-card.featured-large,
+    .work-card.featured-side,
+    .work-card.feature-wide,
+    .work-card.feature-standard {
+        grid-column: 1 / -1;
+        margin-top: 0;
+        min-height: min(118vw, 560px);
+    }
+    .work-card.ar-portrait { min-height: min(128vw, 640px); }
+    .works-filter { width: 100%; justify-content: flex-start; }
 }
    
 /* ========================================================================
@@ -784,6 +1023,26 @@ html[data-theme="light"] .work-card:hover {
         width: 40px; height: 40px;
     }
 }
+.cinema {
+    background: rgba(8, 8, 10, 0.78);
+}
+.cinema-video-box {
+    border-radius: 8px;
+    border: 0.5px solid rgba(255,255,255,0.12);
+    box-shadow: 0 28px 90px rgba(0,0,0,0.45), inset 0 0.5px 0 rgba(255,255,255,0.18);
+}
+.cinema-info {
+    padding: clamp(1rem, 2.4vw, 2rem);
+    border-radius: 8px;
+    border: 0.5px solid rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.075);
+    backdrop-filter: saturate(190%) blur(42px);
+    -webkit-backdrop-filter: saturate(190%) blur(42px);
+    box-shadow: inset 0 0.5px 0 rgba(255,255,255,0.18);
+}
+@media (max-width: 1000px) {
+    .cinema-info { padding: 1rem; }
+}
 
 /* ========================================================================
    合作品牌跑马灯
@@ -856,7 +1115,7 @@ html[data-theme="light"] .client-item:hover img { filter: grayscale(1); }
     position: relative;
     aspect-ratio: 3/4;
     background: var(--paper-2);
-    border-radius: 18px;
+    border-radius: 8px;
     overflow: hidden;
 }
 .about-portrait::before {
@@ -921,7 +1180,7 @@ html[data-theme="light"] .client-item:hover img { filter: grayscale(1); }
     font-weight: 300;
     font-size: clamp(2rem, 5.5vw, 5rem);
     line-height: 1.1;
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
     margin-bottom: 2.5rem;
     max-width: 18ch;
     margin-left: auto;
@@ -1002,6 +1261,87 @@ html[data-theme="light"] .client-item:hover img { filter: grayscale(1); }
 }
 .socials a:hover::before { transform: translateY(0); }
 
+/* Softer trust strip, text-led about section, and final glass CTA panel. */
+.clients {
+    padding: clamp(1.8rem, 3.5vw, 3rem) 0;
+    background: rgba(255,255,255,0.018);
+}
+.clients-label {
+    margin-bottom: 1.4rem;
+    letter-spacing: 0.08em;
+}
+.clients-track {
+    gap: clamp(2rem, 4vw, 4rem);
+    animation-duration: 70s;
+}
+.client-item {
+    height: 22px;
+    font-size: 0.88rem;
+    opacity: 0.42;
+}
+.about-grid {
+    max-width: 920px;
+}
+.about-grid.no-portrait {
+    grid-template-columns: minmax(0, 760px);
+    max-width: 820px;
+}
+.about-grid.no-portrait .about-portrait { display: none; }
+.about-portrait {
+    border-radius: 8px;
+    background: var(--glass-bg-soft);
+    border: 0.5px solid var(--glass-border);
+    box-shadow: var(--glass-shadow), var(--glass-inset);
+    backdrop-filter: saturate(180%) blur(30px);
+    -webkit-backdrop-filter: saturate(180%) blur(30px);
+}
+.about-body {
+    padding-top: 0.2rem;
+}
+.about-body p {
+    max-width: 62ch;
+}
+.contact .reveal {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: clamp(2rem, 5vw, 4.2rem) clamp(1.1rem, 4vw, 4rem);
+    border-radius: 8px;
+    border: 0.5px solid var(--glass-border);
+    background:
+        linear-gradient(135deg, rgba(255,255,255,0.10), transparent 30%),
+        var(--glass-bg-soft);
+    box-shadow: var(--glass-shadow), var(--glass-inset);
+    backdrop-filter: saturate(210%) blur(48px);
+    -webkit-backdrop-filter: saturate(210%) blur(48px);
+}
+.contact-title {
+    font-size: clamp(1.85rem, 4.8vw, 4.4rem);
+    margin-bottom: 2rem;
+}
+.contact-mail {
+    background: var(--glass-bg);
+    backdrop-filter: saturate(180%) blur(28px);
+    -webkit-backdrop-filter: saturate(180%) blur(28px);
+    box-shadow: var(--glass-inset);
+}
+.socials {
+    margin-top: 1.4rem;
+}
+.socials a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 38px;
+    background: rgba(255,255,255,0.045);
+    backdrop-filter: saturate(160%) blur(20px);
+    -webkit-backdrop-filter: saturate(160%) blur(20px);
+    letter-spacing: 0;
+}
+@media (max-width: 720px) {
+    .contact .reveal { padding: 1.6rem 0.9rem; }
+    .contact-mail { width: 100%; justify-content: center; font-size: 1rem; }
+    .socials a { flex: 1 1 calc(50% - 0.5rem); justify-content: center; }
+}
+
 /* ========================================================================
    页脚
    ======================================================================== */
@@ -1050,7 +1390,7 @@ footer {
         <li><a href="#contact" data-i18n="nav_contact">联系</a></li>
     </ul>
     <div class="nav-actions">
-        <button class="nav-btn menu-toggle" id="menu-toggle" aria-label="菜单">
+        <button class="nav-btn menu-toggle" id="menu-toggle" aria-label="菜单" aria-expanded="false">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg>
         </button>
         <button class="nav-btn" id="lang-btn" aria-label="语言">EN</button>
@@ -1113,7 +1453,7 @@ footer {
 </section>
 
 <div class="clients" id="clients-section" style="display:none;">
-    <div class="clients-label" data-i18n="clients_label">合作品牌 — Trusted by</div>
+    <div class="clients-label" data-i18n="clients_label">Selected Clients / Tools / Platforms</div>
     <div class="clients-track" id="clients-track"></div>
 </div>
 
@@ -1125,7 +1465,7 @@ footer {
                 <h2 class="section-title" data-i18n-html="about_title">关于<span class="em">我。</span></h2>
             </div>
         </div>
-        <div class="about-grid">
+        <div class="about-grid" id="about-grid">
             <div class="about-portrait reveal" id="about-portrait"></div>
             <div class="about-body reveal" id="about-body" data-i18n-html="about_body">
                 <p>我相信图像是一种缓慢的语言。在很多年里我一直试图回答一个简单的问题：当一段视觉变成液体，它会以什么样的姿态流向观者？</p>
@@ -1200,7 +1540,7 @@ const DICT = {
         filter_all: '全部', filter_commercial: '商业', filter_personal: '个人',
         works_loading: '作品加载中…',
         works_empty: '作品暂未发布',
-        clients_label: '合作品牌 — TRUSTED BY',
+        clients_label: '精选合作 / 工具 / 平台',
         about_title: '关于<span class="em">我。</span>',
         about_body: '<p>我相信图像是一种缓慢的语言。在很多年里我一直试图回答一个简单的问题：当一段视觉变成液体，它会以什么样的姿态流向观者？</p><p>我的工作游走在生成艺术、流体模拟、空间装置与品牌动态视觉之间。</p><p>目前在北京独立工作，接受合作委托。</p>',
         contact_eyebrow: '让水流动起来',
@@ -1222,7 +1562,7 @@ const DICT = {
         filter_all: 'All', filter_commercial: 'Commercial', filter_personal: 'Personal',
         works_loading: 'Loading…',
         works_empty: 'Coming soon',
-        clients_label: 'TRUSTED BY',
+        clients_label: 'SELECTED CLIENTS / TOOLS / PLATFORMS',
         about_title: 'About <em class="em">me.</em>',
         about_body: '<p>I believe image is a slow language. For many years I have tried to answer one simple question: when a visual becomes liquid, how does it flow toward its viewer?</p><p>My work moves between generative art, fluid simulation, spatial installations, and motion identity.</p><p>Based in Beijing. Open to commissions.</p>',
         contact_eyebrow: 'LET WATER FLOW',
@@ -1309,14 +1649,29 @@ document.getElementById('theme-btn').onclick = () => {
 // 移动端菜单切换
 const menuToggle = document.getElementById('menu-toggle');
 const menu = document.getElementById('menu');
+const topNav = document.querySelector('nav.top');
+function closeMenu() {
+    if (!menu) return;
+    menu.classList.remove('is-open');
+    if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+}
 if (menuToggle) {
     menuToggle.onclick = (e) => {
         e.stopPropagation();
-        menu.classList.toggle('is-open');
+        const open = !menu.classList.contains('is-open');
+        menu.classList.toggle('is-open', open);
+        menuToggle.setAttribute('aria-expanded', String(open));
     };
-    document.addEventListener('click', () => menu.classList.remove('is-open'));
-    menu.addEventListener('click', () => setTimeout(() => menu.classList.remove('is-open'), 50));
+    document.addEventListener('click', closeMenu);
+    menu.addEventListener('click', () => setTimeout(closeMenu, 50));
 }
+let lastScrollY = window.scrollY;
+window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (topNav) topNav.classList.toggle('is-compact', y > 28);
+    if (menu && menu.classList.contains('is-open') && Math.abs(y - lastScrollY) > 6) closeMenu();
+    lastScrollY = y;
+}, { passive: true });
 
 // =============== 数据加载 ===============
 async function loadData() {
@@ -1349,9 +1704,14 @@ function renderHero() {
 }
 
 function renderAboutPortrait() {
+    const grid = document.getElementById('about-grid');
+    const el = document.getElementById('about-portrait');
     if (siteSettings.portraitUrl) {
-        const el = document.getElementById('about-portrait');
+        if (grid) grid.classList.remove('no-portrait');
         el.innerHTML = `<img src="${escapeHtml(siteSettings.portraitUrl)}" alt="于未氵">`;
+    } else {
+        if (grid) grid.classList.add('no-portrait');
+        if (el) el.innerHTML = '';
     }
 }
 
@@ -1372,9 +1732,27 @@ function arStyle(ar) {
     return ar.toFixed(4) + '/1';
 }
 
+function featureClass(w, pos, total) {
+    const size = String(w.featuredSize || '').toLowerCase();
+    if (size === 'large') return 'featured-large';
+    if (size === 'side') return 'featured-side';
+    if (size === 'wide') return 'feature-wide';
+    if (total <= 2) return pos === 0 ? 'featured-large' : 'featured-side';
+    if (pos === 0 && total > 3) return 'feature-wide';
+    return 'feature-standard';
+}
+
+function pendingPosterMarkup(w) {
+    const title = escapeHtml(w.title || (currentLang === 'zh' ? '未命名' : 'Untitled'));
+    const line = currentLang === 'zh' ? '待补封面' : 'Poster pending';
+    const sub = currentLang === 'zh' ? '后台保存不受影响，前台先以低调占位呈现。' : 'Saved in admin; shown here as a quiet placeholder.';
+    return `<div class="work-media work-placeholder"><span class="poster-pending"><strong>${title}</strong><span>${line}</span><small>${sub}</small></span></div>`;
+}
+
 function renderWorks() {
     const grid = document.getElementById('works-grid');
     if (!allWorks || !allWorks.length) {
+        grid.classList.remove('is-curated');
         grid.innerHTML = `<div class="works-empty">${DICT[currentLang].works_empty}</div>`;
         return;
     }
@@ -1383,27 +1761,29 @@ function renderWorks() {
         list = allWorks.filter(w => (w.category || '').toLowerCase() === activeFilter.toLowerCase());
     }
     if (!list.length) {
+        grid.classList.remove('is-curated');
         grid.innerHTML = `<div class="works-empty">${DICT[currentLang].works_empty}</div>`;
         return;
     }
 
-grid.innerHTML = list.map((w) => {
+    grid.classList.toggle('is-curated', list.length <= 2);
+    grid.innerHTML = list.map((w, pos) => {
         const cls = aspectClass(w);
+        const featured = featureClass(w, pos, list.length);
         const idx = allWorks.indexOf(w);
-        // 关键：用 inline style 注入真实比例，让 CSS 的 aspect-ratio: var(--ar) 生效
         const arStyleAttr = `style="--ar: ${arStyle(w.aspectRatio)}"`;
-        const media = w.videoUrl
-            ? `<video class="work-media" muted loop playsinline preload="${w.posterUrl ? 'metadata' : 'auto'}" data-idx="${idx}" ${w.posterUrl ? `poster="${escapeHtml(w.posterUrl)}"` : ''} src="${escapeHtml(w.videoUrl)}"></video>`
-            : (w.posterUrl
-                ? `<img class="work-media" data-idx="${idx}" src="${escapeHtml(w.posterUrl)}" alt="${escapeHtml(w.title || '')}">`
-                : `<div class="work-media work-placeholder"></div>`);
+        const hasPoster = !!(w.posterUrl && String(w.posterUrl).trim());
+        const media = hasPoster
+            ? `<img class="work-media" data-idx="${idx}" src="${escapeHtml(w.posterUrl)}" alt="${escapeHtml(w.title || '')}" loading="lazy">`
+            : pendingPosterMarkup(w);
+        const status = hasPoster ? '' : `<span class="work-status">${currentLang === 'zh' ? '待补封面' : 'Poster pending'}</span>`;
         return `
-            <article class="work-card ${cls}" data-idx="${idx}" ${arStyleAttr}>
+            <article class="work-card ${cls} ${featured} ${hasPoster ? 'has-media' : 'no-poster'}" data-idx="${idx}" ${arStyleAttr}>
                 ${media}
                 <div class="work-info">
                     <div>
                         <div class="work-name">${escapeHtml(w.title || (currentLang === 'zh' ? '未命名' : 'Untitled'))}</div>
-                        <div class="work-meta">${escapeHtml((w.category || '') + (w.year ? ' · ' + w.year : ''))}</div>
+                        <div class="work-meta">${escapeHtml((w.category || '') + (w.year ? ' · ' + w.year : ''))}${status}</div>
                     </div>
                     <div class="work-arrow">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
@@ -1413,7 +1793,7 @@ grid.innerHTML = list.map((w) => {
         `;
     }).join('');
 
-// 工具：用真实比例更新某张卡的样式
+    // 工具：用真实比例更新某张卡的样式
     function applyRealAR(card, idx, w, h) {
         if (!w || !h) return;
         const ar = w / h;
@@ -1431,32 +1811,7 @@ grid.innerHTML = list.map((w) => {
 
     grid.querySelectorAll('.work-card').forEach(card => {
         const idx = parseInt(card.dataset.idx);
-        const v = card.querySelector('video.work-media');
         const img = card.querySelector('img.work-media');
-
-        if (v) {
-            v.addEventListener('loadedmetadata', () => {
-                applyRealAR(card, idx, v.videoWidth, v.videoHeight);
-            });
-            // 首帧加载后才认为媒体就位（淡出占位底）；
-            // 同时如果当前 video 没有 poster，主动截首帧填上，避免大块纯黑被误以为加载失败。
-            v.addEventListener('loadeddata', () => {
-                card.classList.add('has-media');
-                if (!v.getAttribute('poster') && v.videoWidth && v.videoHeight) {
-                    try {
-                        const c = document.createElement('canvas');
-                        c.width = v.videoWidth;
-                        c.height = v.videoHeight;
-                        c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
-                        v.setAttribute('poster', c.toDataURL('image/jpeg', 0.72));
-                    } catch (_) {
-                        /* 跨域视频不能截图，忽略；占位底已经是有质感的渐变。 */
-                    }
-                }
-            });
-            card.addEventListener('mouseenter', () => v.play().catch(()=>{}));
-            card.addEventListener('mouseleave', () => { v.pause(); try { v.currentTime = 0; } catch {} });
-        }
         if (img) {
             // 关键：图片封面也要识别真实比例（解决你"3:4 图片显示成 9:16"的问题）
             const onReady = () => {

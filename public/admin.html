@@ -676,7 +676,7 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
             </button>
             <button class="nav-item" data-section="clients">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                <span>品牌</span>
+                <span>列表</span>
             </button>
             <button class="nav-item" data-section="settings">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -759,7 +759,7 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
                     <div class="upload-zone" data-target="poster">
                         <input type="file" accept="image/*">
                         <div class="upload-zone-text">点击或拖拽图片到这里</div>
-                        <div class="upload-zone-hint">JPG / PNG / WebP · 视频未播放前作品区将显示这张封面。强烈建议上传，否则首屏会看到一块深色占位，影响整体质感。</div>
+                        <div class="upload-zone-hint">JPG / PNG / WebP · 前台作品卡、后台缩略图、影院弹窗会统一使用这张封面。没有封面也能保存，但前台会显示“待补封面”占位。</div>
                         <div class="upload-filename"></div>
                         <div class="upload-status"></div>
                     </div>
@@ -796,16 +796,16 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
     <section class="section" data-section="clients">
         <div class="page-head">
             <div class="page-num">03 / CLIENTS</div>
-            <h1 class="page-title">合作品牌</h1>
-            <p class="page-sub">这些品牌将以跑马灯形式出现在首页。可以只填名称，也可以上传 logo。</p>
+            <h1 class="page-title">合作 / 工具 / 平台</h1>
+            <p class="page-sub">只保留真实合作对象；如果是工具或平台，请用准确名称录入。首页会弱化展示为 Selected Clients / Tools / Platforms。</p>
         </div>
         <div id="clients-list"></div>
         <div class="card">
-            <h3>+ 添加品牌</h3>
+            <h3>+ 添加条目</h3>
             <div class="grid">
                 <div>
-                    <label>品牌名称</label>
-                    <input type="text" id="c-name" placeholder="文字（与 logo 二选一）">
+                    <label>名称</label>
+                    <input type="text" id="c-name" placeholder="客户、工具或平台名称">
                 </div>
                 <div>
                     <label>Logo 图（可选）</label>
@@ -819,7 +819,7 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
                 </div>
             </div>
             <div class="actions">
-                <button class="btn btn-primary" id="add-client-btn">+ 加入品牌墙</button>
+                <button class="btn btn-primary" id="add-client-btn">+ 加入列表</button>
             </div>
             <div id="clients-msg"></div>
         </div>
@@ -840,7 +840,7 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
                 <div class="upload-zone" data-target="hero">
                     <input type="file" accept="video/*">
                     <div class="upload-zone-text">点击或拖拽视频到这里</div>
-                    <div class="upload-zone-hint">建议横屏 16:9 · ≤ 30MB · 自动静音循环</div>
+                    <div class="upload-zone-hint">建议横屏 16:9 · ≤ 30MB · 无字幕、无交易盘、无可读 UI，偏安静影像背景</div>
                     <div class="upload-filename"></div>
                     <div class="upload-progress"><div class="upload-progress-bar"></div></div>
                     <div class="upload-status"></div>
@@ -911,11 +911,11 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
                 </div>
             </div>
             <div style="margin-top: 1.2rem;">
-                <label>个人肖像（可选，不上传则显示"于未氵"水印）</label>
+                <label>个人肖像 / 工作照（可选）</label>
                 <div class="upload-zone" data-target="portrait">
                     <input type="file" accept="image/*">
                     <div class="upload-zone-text">点击上传肖像</div>
-                    <div class="upload-zone-hint">建议 3:4 竖图 · JPG / PNG</div>
+                    <div class="upload-zone-hint">建议 3:4 竖图 · JPG / PNG。没有真实照片时保持为空，前台会转为文字主导。</div>
                     <div class="upload-filename"></div>
                     <div class="upload-status"></div>
                 </div>
@@ -1427,7 +1427,7 @@ function renderClientsList() {
     const list = allSettings.clients || [];
     const el = document.getElementById('clients-list');
     if (!list.length) {
-        el.innerHTML = '<p style="color:var(--gray); margin-bottom: 1.2rem; font-size: 0.9rem;">还没有品牌。下方添加。</p>';
+        el.innerHTML = '<p style="color:var(--gray); margin-bottom: 1.2rem; font-size: 0.9rem;">还没有客户、工具或平台条目。下方添加。</p>';
         return;
     }
     el.innerHTML = list.map((c, i) => `
@@ -1545,7 +1545,7 @@ function buildOwnershipMap() {
         if (c.logoUrl) {
             map.set(urlToKey(c.logoUrl), {
                 ownerType: 'site', ownerId: 'client_' + i,
-                ownerLabel: '合作品牌：' + (c.name || ''),
+                ownerLabel: '合作 / 工具 / 平台：' + (c.name || ''),
                 role: 'logo', roleLabel: 'LOGO'
             });
         }

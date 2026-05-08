@@ -160,16 +160,20 @@ nav.top {
 .nav-btn:hover { color: var(--ink); background: var(--line); }
 .nav-btn svg { width: 15px; height: 15px; }
 
+/* 默认在桌面端隐藏汉堡按钮；移动端再用媒体查询打开。
+   注意：这条必须放在 @media 之前，否则会覆盖移动端的 display: inline-flex。 */
+.menu-toggle { display: none; }
+
 /* 移动端导航 */
 @media (max-width: 720px) {
     nav.top {
         top: 0.7rem;
-        gap: 0.3rem;
-        padding: 0.4rem 0.4rem 0.4rem 1rem;
+        gap: 0.25rem;
+        padding: 0.4rem 0.4rem 0.4rem 0.9rem;
     }
     .brand {
-        font-size: 0.92rem;
-        padding-right: 0.6rem;
+        font-size: 0.9rem;
+        padding-right: 0.55rem;
     }
     .menu { display: none; }
     .menu.is-open {
@@ -188,18 +192,15 @@ nav.top {
         gap: 0.1rem;
     }
     .menu.is-open a {
-        padding: 0.7rem 1rem;
+        padding: 0.75rem 1rem;
         font-size: 0.95rem;
         text-align: left;
         color: var(--ink);
     }
-    .nav-actions { padding-left: 0.4rem; gap: 0.1rem; }
-    .nav-btn { width: 36px; height: 36px; }
-    .menu-toggle {
-        display: inline-flex;
-    }
+    .nav-actions { padding-left: 0.35rem; gap: 0.1rem; }
+    .nav-btn { width: 34px; height: 34px; font-size: 0.7rem; }
+    .menu-toggle { display: inline-flex; }
 }
-.menu-toggle { display: none; }
 
 /* ========================================================================
    Hero — 全屏视频背景
@@ -210,6 +211,8 @@ nav.top {
     min-height: 100svh;
     display: flex;
     align-items: center;
+    /* 让内容偏中略上，避免导航下方留白过大被误以为加载未完成 */
+    align-items: safe center;
     padding: 0 var(--gutter);
     overflow: hidden;
 }
@@ -222,21 +225,29 @@ nav.top {
 .hero-bg::after {
     content: '';
     position: absolute; inset: 0;
+    /* 三层叠加：
+       1. 左下角深色 → 标题与 sub 永远在更暗的底子上；
+       2. 整体径向暗角；
+       3. 底部溶解到 paper 色。 */
     background:
-        radial-gradient(ellipse at 30% 30%, transparent 0%, rgba(10,10,10,0.55) 70%),
-        linear-gradient(180deg, rgba(10,10,10,0) 30%, var(--paper) 100%);
+        radial-gradient(ellipse 80% 90% at 18% 75%, rgba(10,10,10,0.7) 0%, rgba(10,10,10,0.35) 45%, transparent 75%),
+        radial-gradient(ellipse at 60% 40%, transparent 0%, rgba(10,10,10,0.5) 75%),
+        linear-gradient(180deg, rgba(10,10,10,0) 25%, var(--paper) 100%);
     pointer-events: none;
     transition: background 0.6s var(--ease);
 }
 html[data-theme="light"] .hero-bg::after {
-    /* 亮色模式时，hero 视频底部要溶解到月白 */
+    /* 亮色模式时，hero 视频底部要溶解到月白；左下角的暗仍保留以保护文字对比 */
     background:
-        radial-gradient(ellipse at 30% 30%, transparent 0%, rgba(0,0,0,0.35) 70%),
-        linear-gradient(180deg, rgba(10,10,10,0) 30%, var(--paper) 100%);
+        radial-gradient(ellipse 80% 90% at 18% 75%, rgba(10,10,10,0.55) 0%, rgba(10,10,10,0.25) 45%, transparent 75%),
+        radial-gradient(ellipse at 60% 40%, transparent 0%, rgba(0,0,0,0.3) 75%),
+        linear-gradient(180deg, rgba(10,10,10,0) 25%, var(--paper) 100%);
 }
 .hero-bg video, .hero-bg .placeholder {
     width: 100%; height: 100%;
     object-fit: cover;
+    /* 适度压暗、保留对比，避免视频里的高光与文字争抢注意力 */
+    filter: brightness(0.82) contrast(1.04) saturate(0.95);
 }
 .hero-bg .placeholder {
     background:
@@ -250,7 +261,8 @@ html[data-theme="light"] .hero-bg::after {
     max-width: 1300px;
     margin: 0 auto;
     color: #FAFAF7;  /* 永远月白，因为是叠在视频上 */
-    padding-top: 4rem;
+    /* 内容整体上提，缩小导航到主标题之间的留白 */
+    padding-top: 1.5rem;
 }
 .hero-eyebrow {
     font-family: var(--font-display);
@@ -351,16 +363,39 @@ html[data-theme="light"] .hero-bg::after {
 }
 
 @media (max-width: 720px) {
-    .hero-content { padding-top: 5rem; }
+    .hero-content { padding-top: 3.5rem; }
+
+    /* 移动端 hero-meta 重布局：去掉 space-between 三列横排，改为左对齐两行 */
     .hero-meta {
-        bottom: 1.2rem;
+        bottom: 1rem;
         font-size: 0.62rem;
         letter-spacing: 0.1em;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.7rem;
     }
-    .hero-meta .scroll-line { height: 24px; }
+    /* 隐藏右侧 meta（VOL.II），它在窄屏没有信息价值且容易被截断 */
+    .hero-meta > span:last-child { display: none; }
+
+    /* SCROLL 指示器在移动端改为水平方向，省纵向空间 */
+    .hero-meta .scroll-indicator {
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+    .hero-meta .scroll-line {
+        width: 24px; height: 1px;
+        animation: scrollPulseH 2.4s var(--ease) infinite;
+        transform-origin: left;
+    }
+
     .hero-eyebrow { font-size: 0.78rem; margin-bottom: 1rem; }
     .hero-eyebrow::before { width: 20px; }
     .hero-sub { font-size: 0.92rem; line-height: 1.75; }
+}
+
+@keyframes scrollPulseH {
+    0%, 100% { transform: scaleX(1); }
+    50%      { transform: scaleX(0.3); }
 }
 
 /* ========================================================================
@@ -488,6 +523,40 @@ section { padding: var(--section-pad) var(--gutter); }
     flex-shrink: 0;
     /* 用自定义属性接收每张卡的真实比例 */
     aspect-ratio: var(--ar, 4/5);
+}
+
+/* 给没有 poster 的视频卡一个有质感的占位底，避免纯黑被误认为加载失败 */
+.work-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse at 30% 25%, rgba(255,255,255,0.06) 0%, transparent 55%),
+        radial-gradient(ellipse at 70% 80%, rgba(255,255,255,0.03) 0%, transparent 50%);
+    opacity: 1;
+    transition: opacity 0.4s;
+}
+.work-card.has-media::before { opacity: 0; } /* 视频帧或图片就位后淡出占位 */
+html[data-theme="light"] .work-card::before {
+    background:
+        radial-gradient(ellipse at 30% 25%, rgba(0,0,0,0.04) 0%, transparent 55%),
+        radial-gradient(ellipse at 70% 80%, rgba(0,0,0,0.02) 0%, transparent 50%);
+}
+
+/* 卡片整体细节：内阴影边光，让深色卡也有立体感 */
+.work-card::after {
+    content: '';
+    position: absolute; inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 0.5px rgba(255,255,255,0.06),
+                inset 0 -40px 80px -40px rgba(0,0,0,0.45);
+    z-index: 1;
+}
+html[data-theme="light"] .work-card::after {
+    box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.05),
+                inset 0 -40px 80px -40px rgba(0,0,0,0.10);
 }
 
 /* 不同比例的卡，宽度策略不同：竖屏窄、横屏宽 */
@@ -1324,7 +1393,7 @@ grid.innerHTML = list.map((w) => {
         // 关键：用 inline style 注入真实比例，让 CSS 的 aspect-ratio: var(--ar) 生效
         const arStyleAttr = `style="--ar: ${arStyle(w.aspectRatio)}"`;
         const media = w.videoUrl
-            ? `<video class="work-media" muted loop playsinline preload="metadata" data-idx="${idx}" ${w.posterUrl ? `poster="${escapeHtml(w.posterUrl)}"` : ''} src="${escapeHtml(w.videoUrl)}"></video>`
+            ? `<video class="work-media" muted loop playsinline preload="${w.posterUrl ? 'metadata' : 'auto'}" data-idx="${idx}" ${w.posterUrl ? `poster="${escapeHtml(w.posterUrl)}"` : ''} src="${escapeHtml(w.videoUrl)}"></video>`
             : (w.posterUrl
                 ? `<img class="work-media" data-idx="${idx}" src="${escapeHtml(w.posterUrl)}" alt="${escapeHtml(w.title || '')}">`
                 : `<div class="work-media work-placeholder"></div>`);
@@ -1369,17 +1438,35 @@ grid.innerHTML = list.map((w) => {
             v.addEventListener('loadedmetadata', () => {
                 applyRealAR(card, idx, v.videoWidth, v.videoHeight);
             });
+            // 首帧加载后才认为媒体就位（淡出占位底）；
+            // 同时如果当前 video 没有 poster，主动截首帧填上，避免大块纯黑被误以为加载失败。
+            v.addEventListener('loadeddata', () => {
+                card.classList.add('has-media');
+                if (!v.getAttribute('poster') && v.videoWidth && v.videoHeight) {
+                    try {
+                        const c = document.createElement('canvas');
+                        c.width = v.videoWidth;
+                        c.height = v.videoHeight;
+                        c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
+                        v.setAttribute('poster', c.toDataURL('image/jpeg', 0.72));
+                    } catch (_) {
+                        /* 跨域视频不能截图，忽略；占位底已经是有质感的渐变。 */
+                    }
+                }
+            });
             card.addEventListener('mouseenter', () => v.play().catch(()=>{}));
             card.addEventListener('mouseleave', () => { v.pause(); try { v.currentTime = 0; } catch {} });
         }
         if (img) {
             // 关键：图片封面也要识别真实比例（解决你"3:4 图片显示成 9:16"的问题）
-            if (img.complete && img.naturalWidth) {
+            const onReady = () => {
                 applyRealAR(card, idx, img.naturalWidth, img.naturalHeight);
+                card.classList.add('has-media');
+            };
+            if (img.complete && img.naturalWidth) {
+                onReady();
             } else {
-                img.addEventListener('load', () => {
-                    applyRealAR(card, idx, img.naturalWidth, img.naturalHeight);
-                });
+                img.addEventListener('load', onReady);
             }
         }
         card.addEventListener('click', () => openCinema(idx));

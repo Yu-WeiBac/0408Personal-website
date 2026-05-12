@@ -35,25 +35,26 @@
     --ease:             cubic-bezier(0.25, 0.1, 0.25, 1);
     --ease-out:         cubic-bezier(0.16, 1, 0.3, 1);
 }
+/* 亮色：与前台对齐的暖月白米底 */
 html[data-theme="light"] {
-    --paper:        #FAFAF7;
-    --paper-2:      #F2F0EA;
-    --paper-3:      #E8E4D8;
+    --paper:        #EAE6DD;
+    --paper-2:      #DCD8CE;
+    --paper-3:      #C8C4B8;
     --ink:          #0A0A0A;
     --ink-2:        #1F1F1F;
     --gray:         #86868B;
     --gray-2:       #A1A1A6;
-    --line:         rgba(0, 0, 0, 0.08);
-    --line-2:       rgba(0, 0, 0, 0.16);
+    --line:         rgba(0, 0, 0, 0.10);
+    --line-2:       rgba(0, 0, 0, 0.18);
     --danger:       #C9514E;
     --success:      #4A8F6F;
     --warning:      #B8923D;
 
-    --glass-bg:         rgba(250, 250, 247, 0.62);
-    --glass-bg-strong:  rgba(250, 250, 247, 0.88);
-    --glass-border:     rgba(0, 0, 0, 0.06);
-    --glass-shadow:     0 8px 32px rgba(0, 0, 0, 0.06);
-    --glass-inset:      inset 0 0.5px 0 rgba(255, 255, 255, 0.6);
+    --glass-bg:         rgba(252, 252, 250, 0.62);
+    --glass-bg-strong:  rgba(252, 252, 250, 0.88);
+    --glass-border:     rgba(255, 255, 255, 0.55);
+    --glass-shadow:     0 8px 32px rgba(60, 50, 40, 0.10);
+    --glass-inset:      inset 0 0.5px 0 rgba(255, 255, 255, 0.95);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -106,7 +107,7 @@ label {
     background: radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.04), transparent 60%), var(--paper);
 }
 html[data-theme="light"] .login-screen {
-    background: radial-gradient(ellipse at 30% 20%, rgba(0,0,0,0.03), transparent 60%), var(--paper);
+    background: radial-gradient(ellipse at 30% 20%, rgba(60,50,40,0.06), transparent 60%), var(--paper);
 }
 .login-card {
     width: 100%; max-width: 380px;
@@ -428,7 +429,7 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
 .msg-success { color: var(--success); background: rgba(111, 187, 149, 0.08); }
 .msg-warning { color: var(--warning); background: rgba(232, 184, 111, 0.08); }
 
-/* ========== 媒体库重做：按作品聚合的视图 ========== */
+/* ========== 媒体库 ========== */
 .media-toolbar {
     display: flex;
     gap: 0.4rem;
@@ -742,7 +743,7 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
                     <textarea id="f-desc" rows="3" placeholder="一段描述这个作品的文字"></textarea>
                 </div>
                 <div class="full">
-                    <label>视频文件 *</label>
+                    <label>视频文件</label>
                     <div class="upload-zone" data-target="video">
                         <input type="file" accept="video/*">
                         <div class="upload-zone-text">点击或拖拽视频到这里</div>
@@ -755,11 +756,11 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
                     <div class="field-hint">已保存：<strong id="f-video-status">未上传</strong> · 比例：<strong id="f-ar-display">--</strong></div>
                 </div>
                 <div class="full">
-                    <label>封面图 Poster（强烈建议上传）</label>
+                    <label>封面图 Poster（可选）</label>
                     <div class="upload-zone" data-target="poster">
                         <input type="file" accept="image/*">
                         <div class="upload-zone-text">点击或拖拽图片到这里</div>
-                        <div class="upload-zone-hint">JPG / PNG / WebP · 前台作品卡、后台缩略图、影院弹窗会统一使用这张封面。没有封面也能保存，但前台会显示“待补封面”占位。</div>
+                        <div class="upload-zone-hint">JPG / PNG / WebP · 不上传也没关系：如果有视频，前台会自动用视频首帧作为封面；只有视频和封面都没上传时才会显示"待补封面"占位。</div>
                         <div class="upload-filename"></div>
                         <div class="upload-status"></div>
                     </div>
@@ -1068,7 +1069,7 @@ document.getElementById('theme-btn').onclick = () => {
     currentTheme = currentTheme === 'light' ? 'dark' : 'light';
     localStorage.setItem('admin_theme', currentTheme);
     document.documentElement.setAttribute('data-theme', currentTheme);
-    document.querySelector('meta[name="theme-color"]').setAttribute('content', currentTheme === 'dark' ? '#0A0A0A' : '#FAFAF7');
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', currentTheme === 'dark' ? '#0A0A0A' : '#EAE6DD');
     updateThemeIcon();
 };
 
@@ -1217,7 +1218,6 @@ document.getElementById('save-work-btn').onclick = async () => {
     }
 };
 
-// 上传：视频和图片都识别真实宽高比
 function setupUploads() {
     document.querySelectorAll('.upload-zone').forEach(zone => {
         const input = zone.querySelector('input[type="file"]');
@@ -1242,7 +1242,6 @@ function setupUploads() {
             if (progressEl) { progressEl.classList.add('active'); barEl.style.width = '0%'; }
             if (statusEl) statusEl.textContent = '上传中…';
 
-            // 在浏览器端读取真实宽高比（视频或封面图）
             let detectedAR = 0;
             if (file.type.startsWith('video/') && (target === 'video' || target === 'hero')) {
                 try { detectedAR = await detectVideoAspectRatio(file); } catch (err) {}
@@ -1357,7 +1356,6 @@ function uploadFile(file, onProgress) {
     });
 }
 
-// ========== 设置 ==========
 function renderSettingsForm() {
     const s = allSettings;
     const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
@@ -1422,7 +1420,6 @@ document.getElementById('save-settings-btn').onclick = async () => {
     }
 };
 
-// ========== 品牌 ==========
 function renderClientsList() {
     const list = allSettings.clients || [];
     const el = document.getElementById('clients-list');
@@ -1468,14 +1465,10 @@ document.getElementById('add-client-btn').onclick = async () => {
     }
 };
 
-// ========================================================================
-// 媒体库 — 按作品聚合视图
-// ========================================================================
 async function loadMedia() {
     const content = document.getElementById('media-content');
     content.innerHTML = '<p style="color:var(--gray);">加载中…</p>';
     try {
-        // 同时刷新作品和设置列表（确保归属判断准确）
         const [media, works, settings] = await Promise.all([
             api('/admin/media'),
             api('/admin/works'),
@@ -1490,7 +1483,6 @@ async function loadMedia() {
     }
 }
 
-// 从完整 URL 提取文件 key（最后一段）
 function urlToKey(url) {
     if (!url) return '';
     try {
@@ -1501,11 +1493,9 @@ function urlToKey(url) {
     }
 }
 
-// 构建一个查找表：key → { ownerType, ownerId, ownerLabel, role }
 function buildOwnershipMap() {
     const map = new Map();
 
-    // 作品的视频/封面
     allWorks.forEach((w, idx) => {
         if (w.videoUrl) {
             map.set(urlToKey(w.videoUrl), {
@@ -1525,7 +1515,6 @@ function buildOwnershipMap() {
         }
     });
 
-    // 站点设置中的资源
     if (allSettings.heroVideo) {
         map.set(urlToKey(allSettings.heroVideo), {
             ownerType: 'site', ownerId: 'hero',
@@ -1540,7 +1529,6 @@ function buildOwnershipMap() {
             role: 'portrait', roleLabel: '肖像'
         });
     }
-    // 品牌 logos
     (allSettings.clients || []).forEach((c, i) => {
         if (c.logoUrl) {
             map.set(urlToKey(c.logoUrl), {
@@ -1566,7 +1554,6 @@ function renderMedia() {
 
     const ownership = buildOwnershipMap();
 
-    // 给每个媒体打标签
     const enriched = allMedia.map(m => {
         const own = ownership.get(m.key);
         const isVideo = /\.(mp4|webm|mov|m4v|avi)$/i.test(m.key);
@@ -1578,7 +1565,6 @@ function renderMedia() {
         };
     });
 
-    // 按筛选器过滤
     const filtered = enriched.filter(m => {
         if (mediaFilter === 'all') return true;
         return mediaFilter === 'video' ? m.isVideo : !m.isVideo;
@@ -1590,7 +1576,6 @@ function renderMedia() {
         return;
     }
 
-    // 分组：作品 → 站点资源 → 孤儿
     const groups = {
         commercial: { title: '商业作品', cat: 'COMMERCIAL', items: [], type: 'work' },
         personal:   { title: '个人作品', cat: 'PERSONAL',   items: [], type: 'work' },
@@ -1598,8 +1583,7 @@ function renderMedia() {
         orphan:     { title: '孤儿文件', cat: 'ORPHAN',     items: [], type: 'orphan' },
     };
 
-    // 作品分类：把同一作品的视频和封面放一起
-    const workGroups = new Map(); // ownerId → { work, items: [] }
+    const workGroups = new Map();
 
     filtered.forEach(m => {
         if (m.isOrphan) {
@@ -1615,14 +1599,12 @@ function renderMedia() {
         }
     });
 
-    // 把作品按分类塞进 commercial / personal
     workGroups.forEach((wg, wid) => {
         const cat = (wg.ownerCategory || '').toLowerCase();
         const target = (cat === 'commercial') ? groups.commercial : groups.personal;
         target.items.push({ workTitle: wg.ownerLabel, items: wg.items, workId: wid });
     });
 
-    // 渲染
     let html = '';
 
     const renderCard = (m) => {
@@ -1653,7 +1635,6 @@ function renderMedia() {
         `;
     };
 
-    // 商业作品组
     if (groups.commercial.items.length) {
         html += `<div class="media-group"><div class="media-group-head">
             <div class="media-group-title">商业作品</div>
@@ -1669,7 +1650,6 @@ function renderMedia() {
         html += `</div>`;
     }
 
-    // 个人作品组
     if (groups.personal.items.length) {
         html += `<div class="media-group"><div class="media-group-head">
             <div class="media-group-title">个人作品</div>
@@ -1685,7 +1665,6 @@ function renderMedia() {
         html += `</div>`;
     }
 
-    // 站点资源
     if (groups.site.items.length) {
         html += `<div class="media-group"><div class="media-group-head">
             <div class="media-group-title">站点资源</div>
@@ -1694,7 +1673,6 @@ function renderMedia() {
         </div><div class="media-grid">${groups.site.items.map(renderCard).join('')}</div></div>`;
     }
 
-    // 孤儿文件
     if (groups.orphan.items.length) {
         const totalMB = groups.orphan.items.reduce((sum, m) => sum + m.size, 0) / 1024 / 1024;
         html += `<div class="media-group is-orphan"><div class="media-group-head">
@@ -1714,7 +1692,6 @@ function renderMedia() {
 
     content.innerHTML = html;
 
-    // 绑定事件
     content.querySelectorAll('button[data-act]').forEach(b => {
         b.onclick = async () => {
             if (b.dataset.act === 'copy') {
@@ -1730,7 +1707,6 @@ function renderMedia() {
     });
 }
 
-// 媒体筛选器
 document.querySelectorAll('.media-toolbar .filter-btn').forEach(b => {
     b.onclick = () => {
         document.querySelectorAll('.media-toolbar .filter-btn').forEach(x => x.classList.remove('active'));
@@ -1740,7 +1716,6 @@ document.querySelectorAll('.media-toolbar .filter-btn').forEach(b => {
     };
 });
 
-// 一键清理所有孤儿
 document.getElementById('cleanup-orphans-btn').onclick = async () => {
     const ownership = buildOwnershipMap();
     const orphans = allMedia.filter(m => !ownership.has(m.key));
@@ -1766,7 +1741,6 @@ document.getElementById('cleanup-orphans-btn').onclick = async () => {
     await loadMedia();
 };
 
-// ========== 账号 ==========
 document.getElementById('change-pwd-btn').onclick = async () => {
     const np = document.getElementById('new-pwd').value;
     if (np.length < 8) { showMsg('account-msg', '密码至少 8 位', false); return; }

@@ -4,6 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0A0A0A">
+
+<!-- 防止明暗主题首屏闪烁:渲染前先应用本地偏好 -->
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('admin_theme') || 'dark';
+    var r = document.documentElement;
+    r.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'light' ? '#EAE6DD' : '#0A0A0A');
+  } catch(e){}
+})();
+</script>
+
 <title>Console — 于未氵</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -113,8 +127,8 @@ html[data-theme="light"] .login-screen {
     width: 100%; max-width: 380px;
     padding: 3rem 2.5rem;
     background: var(--glass-bg-strong);
-    backdrop-filter: saturate(200%) blur(48px);
-    -webkit-backdrop-filter: saturate(200%) blur(48px);
+    backdrop-filter: saturate(200%) blur(24px);
+    -webkit-backdrop-filter: saturate(200%) blur(24px);
     border: 0.5px solid var(--glass-border);
     border-radius: 24px;
     box-shadow: var(--glass-shadow), var(--glass-inset);
@@ -171,8 +185,8 @@ html[data-theme="light"] .login-screen {
 }
 aside.sidebar {
     background: var(--glass-bg);
-    backdrop-filter: saturate(200%) blur(48px);
-    -webkit-backdrop-filter: saturate(200%) blur(48px);
+    backdrop-filter: saturate(200%) blur(24px);
+    -webkit-backdrop-filter: saturate(200%) blur(24px);
     border-right: 0.5px solid var(--glass-border);
     padding: 2rem 1.2rem;
     position: sticky;
@@ -276,8 +290,8 @@ main.content {
 
 .card {
     background: var(--glass-bg-strong);
-    backdrop-filter: saturate(200%) blur(48px);
-    -webkit-backdrop-filter: saturate(200%) blur(48px);
+    backdrop-filter: saturate(200%) blur(24px);
+    -webkit-backdrop-filter: saturate(200%) blur(24px);
     border: 0.5px solid var(--glass-border);
     border-radius: 18px;
     padding: 1.6rem;
@@ -368,6 +382,16 @@ main.content {
     font-size: 0.66rem;
     letter-spacing: 0.05em;
 }
+.work-row-meta .cover-badge {
+    display: inline-block;
+    margin-left: 0.4rem;
+    padding: 0.05rem 0.4rem;
+    background: rgba(111, 187, 149, 0.18);
+    color: var(--success);
+    border-radius: 4px;
+    font-size: 0.66rem;
+    letter-spacing: 0.05em;
+}
 .work-row-actions {
     display: flex; gap: 0.4rem;
     flex-wrap: wrap;
@@ -417,6 +441,44 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
 .upload-status { font-size: 0.78rem; color: var(--gray); margin-top: 0.4rem; }
 .field-hint { font-size: 0.74rem; color: var(--gray); margin-top: 0.4rem; }
 .field-hint strong { color: var(--ink); font-weight: 500; }
+
+/* ========== 视频定格生成封面 ========== */
+.cover-grab-box {
+    border: 0.5px solid var(--line-2);
+    border-radius: 14px;
+    padding: 0.9rem;
+    background: rgba(255,255,255,0.01);
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 1rem;
+    align-items: center;
+}
+html[data-theme="light"] .cover-grab-box { background: rgba(0,0,0,0.015); }
+.cover-grab-stage {
+    width: 100%;
+    aspect-ratio: 16/10;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #000;
+    border: 0.5px solid var(--line);
+}
+.cover-grab-stage video { width: 100%; height: 100%; object-fit: contain; background: #000; }
+.cover-grab-controls { display: flex; flex-direction: column; gap: 0.7rem; }
+.cover-grab-row { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; flex-wrap: wrap; }
+.cover-grab-btns { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.cover-time { font-size: 0.8rem; color: var(--gray); font-variant-numeric: tabular-nums; }
+input[type="range"]#cover-scrub {
+    width: 100%;
+    padding: 0;
+    background: transparent;
+    border: none;
+    accent-color: var(--ink);
+    cursor: pointer;
+}
+input[type="range"]#cover-scrub:focus { box-shadow: none; }
+@media (max-width: 800px) {
+    .cover-grab-box { grid-template-columns: 1fr; }
+}
 
 .msg {
     padding: 0.65rem 0.9rem;
@@ -703,7 +765,7 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
         <div class="page-head">
             <div class="page-num">01 / WORKS</div>
             <h1 class="page-title">作品阵列</h1>
-            <p class="page-sub">添加、编辑、排序你的作品。视频和图片上传后会自动检测真实宽高比。</p>
+            <p class="page-sub">添加、编辑、排序你的作品。视频和图片上传后会自动检测真实宽高比，并可从视频里定格一帧作为封面。</p>
         </div>
 
         <button class="btn btn-primary" id="add-work-btn">+ 添加新作品</button>
@@ -714,6 +776,7 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
             <h3 id="work-form-title">添加作品</h3>
             <input type="hidden" id="f-idx" value="-1">
             <input type="hidden" id="f-aspectRatio" value="0">
+            <input type="hidden" id="f-coverTime" value="">
             <div class="grid">
                 <div class="full">
                     <label>标题 *</label>
@@ -755,12 +818,31 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
                     <input type="hidden" id="f-video">
                     <div class="field-hint">已保存：<strong id="f-video-status">未上传</strong> · 比例：<strong id="f-ar-display">--</strong></div>
                 </div>
+                <div class="full" id="cover-grab" style="display:none;">
+                    <label>从视频里定格封面（推荐）</label>
+                    <div class="cover-grab-box">
+                        <div class="cover-grab-stage">
+                            <video id="cover-video" muted playsinline preload="auto"></video>
+                        </div>
+                        <div class="cover-grab-controls">
+                            <input type="range" id="cover-scrub" min="0" max="100" value="25" step="0.1" aria-label="选择封面时间点">
+                            <div class="cover-grab-row">
+                                <span class="cover-time" id="cover-time">0.0s</span>
+                                <div class="cover-grab-btns">
+                                    <button type="button" class="btn btn-ghost btn-sm" id="cover-auto">自动取帧 (25%)</button>
+                                    <button type="button" class="btn btn-primary btn-sm" id="cover-capture">截取当前帧作封面</button>
+                                </div>
+                            </div>
+                            <div class="field-hint" id="cover-grab-hint">拖动进度条选一帧，点"截取"会生成一张封面图并自动设为 Poster（也可作分享缩略图）。截不下来时（多为视频跨域）会自动改为记录时间点，前台据此定位。</div>
+                        </div>
+                    </div>
+                </div>
                 <div class="full">
                     <label>封面图 Poster（可选）</label>
                     <div class="upload-zone" data-target="poster">
                         <input type="file" accept="image/*">
                         <div class="upload-zone-text">点击或拖拽图片到这里</div>
-                        <div class="upload-zone-hint">JPG / PNG / WebP · 不上传也没关系：如果有视频，前台会自动用视频首帧作为封面；只有视频和封面都没上传时才会显示"待补封面"占位。</div>
+                        <div class="upload-zone-hint">JPG / PNG / WebP · 优先级最高。也可用上方"定格封面"从视频截取；若都没有，前台会用视频帧兜底，再没有才显示"待补封面"占位。</div>
                         <div class="upload-filename"></div>
                         <div class="upload-status"></div>
                     </div>
@@ -959,8 +1041,9 @@ html[data-theme="light"] .upload-zone { background: rgba(0,0,0,0.01); }
             <h3>修改密码</h3>
             <div class="grid">
                 <div class="full">
-                    <label>新密码（至少 8 位）</label>
+                    <label>新密码（建议 12 位以上，混合大小写、数字与符号）</label>
                     <input type="password" id="new-pwd" autocomplete="new-password">
+                    <div class="field-hint">后台是唯一的写入入口，密码越强越好。真正的暴力破解防护需在 Worker 端做登录限流（见交付说明）。</div>
                 </div>
             </div>
             <div class="actions">
@@ -984,6 +1067,10 @@ let editingIdx = -1;
 let mediaFilter = 'all';
 let allMedia = [];
 let currentTheme = localStorage.getItem('admin_theme') || 'dark';
+
+// 视频定格生成封面：本地文件 / 对象 URL 状态
+let coverVideoURL = null;
+
 document.documentElement.setAttribute('data-theme', currentTheme);
 updateThemeIcon();
 
@@ -1118,12 +1205,14 @@ function renderWorksList() {
             ? `<img src="${escapeHtml(w.posterUrl)}" alt="">`
             : (w.videoUrl ? `<video src="${escapeHtml(w.videoUrl)}" muted preload="metadata"></video>` : '<div class="work-thumb-empty">无</div>');
         const arBadge = w.aspectRatio ? `<span class="ar-badge">${arLabel(w.aspectRatio)} · ${w.aspectRatio.toFixed(2)}</span>` : '';
+        const coverBadge = (!w.posterUrl && w.videoUrl && w.coverTime != null && isFinite(parseFloat(w.coverTime)))
+            ? `<span class="cover-badge">封面 ${parseFloat(w.coverTime).toFixed(1)}s</span>` : '';
         return `
             <div class="work-row">
                 <div class="work-thumb">${thumb}</div>
                 <div class="work-row-info">
                     <h4>${escapeHtml(w.title || '未命名')}</h4>
-                    <div class="work-row-meta">${escapeHtml(w.category || 'Work')}${w.year ? ' · ' + escapeHtml(w.year) : ''}${arBadge}</div>
+                    <div class="work-row-meta">${escapeHtml(w.category || 'Work')}${w.year ? ' · ' + escapeHtml(w.year) : ''}${arBadge}${coverBadge}</div>
                 </div>
                 <div class="work-row-actions">
                     ${i > 0 ? `<button class="btn btn-ghost btn-sm" data-act="up" data-i="${i}">↑</button>` : ''}
@@ -1164,6 +1253,7 @@ function renderWorksList() {
 document.getElementById('add-work-btn').onclick = () => openWorkForm(-1);
 document.getElementById('cancel-work-btn').onclick = () => {
     document.getElementById('work-form').style.display = 'none';
+    teardownCoverGrab();
 };
 
 function openWorkForm(idx) {
@@ -1173,6 +1263,7 @@ function openWorkForm(idx) {
     document.getElementById('work-form-title').textContent = isEdit ? '编辑作品' : '添加作品';
     document.getElementById('f-idx').value = idx;
     document.getElementById('f-aspectRatio').value = w.aspectRatio || 0;
+    document.getElementById('f-coverTime').value = (w.coverTime != null && isFinite(parseFloat(w.coverTime))) ? w.coverTime : '';
     document.getElementById('f-title').value = w.title || '';
     document.getElementById('f-category').value = w.category || 'Commercial';
     document.getElementById('f-year').value = w.year || '';
@@ -1186,11 +1277,17 @@ function openWorkForm(idx) {
     document.getElementById('f-ar-display').textContent = w.aspectRatio ? (arLabel(w.aspectRatio) + ' · ' + w.aspectRatio.toFixed(2)) : '--';
     document.querySelectorAll('#work-form .upload-filename').forEach(el => el.textContent = '');
     document.querySelectorAll('#work-form .upload-status').forEach(el => el.textContent = '');
+
+    // 已有视频则启用"定格封面"（从远程地址加载预览；本地新上传会替换）
+    if (w.videoUrl) setupCoverGrab({ url: w.videoUrl });
+    else teardownCoverGrab();
+
     document.getElementById('work-form').style.display = 'block';
     document.getElementById('work-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 document.getElementById('save-work-btn').onclick = async () => {
+    const coverTimeVal = parseFloat(document.getElementById('f-coverTime').value);
     const w = {
         title: document.getElementById('f-title').value.trim(),
         category: document.getElementById('f-category').value,
@@ -1202,6 +1299,7 @@ document.getElementById('save-work-btn').onclick = async () => {
         posterUrl: document.getElementById('f-poster').value.trim(),
         aspectRatio: parseFloat(document.getElementById('f-aspectRatio').value) || 0,
     };
+    if (isFinite(coverTimeVal) && coverTimeVal >= 0) w.coverTime = coverTimeVal;
     if (!w.title) { showMsg('work-form-msg', '请填写标题', false); return; }
     if (!w.videoUrl && !w.posterUrl) { showMsg('work-form-msg', '请至少上传视频或封面图', false); return; }
 
@@ -1212,11 +1310,111 @@ document.getElementById('save-work-btn').onclick = async () => {
     try {
         await api('/admin/works', { method: 'PUT', body: allWorks });
         document.getElementById('work-form').style.display = 'none';
+        teardownCoverGrab();
         renderWorksList();
     } catch (e) {
         showMsg('work-form-msg', '保存失败：' + e.message, false);
     }
 };
+
+/* ========== 视频定格生成封面 ========== */
+function teardownCoverGrab() {
+    const wrap = document.getElementById('cover-grab');
+    const cv = document.getElementById('cover-video');
+    if (coverVideoURL) { try { URL.revokeObjectURL(coverVideoURL); } catch (_) {} coverVideoURL = null; }
+    if (cv) { try { cv.pause(); } catch (_) {} cv.removeAttribute('src'); cv.load && cv.load(); }
+    if (wrap) wrap.style.display = 'none';
+}
+
+function setupCoverGrab(opts) {
+    const wrap = document.getElementById('cover-grab');
+    const cv = document.getElementById('cover-video');
+    const scrub = document.getElementById('cover-scrub');
+    if (!wrap || !cv) return;
+
+    if (coverVideoURL) { try { URL.revokeObjectURL(coverVideoURL); } catch (_) {} coverVideoURL = null; }
+
+    if (opts && opts.file) {
+        // 本地文件:blob 同源,canvas 可直接截帧 → 生成真实封面图
+        coverVideoURL = URL.createObjectURL(opts.file);
+        cv.removeAttribute('crossorigin');
+        cv.src = coverVideoURL;
+    } else if (opts && opts.url) {
+        // 已有的远程视频:预览/拖动正常;能否截图取决于是否同源
+        cv.removeAttribute('crossorigin');
+        cv.src = opts.url;
+    } else {
+        wrap.style.display = 'none';
+        return;
+    }
+
+    wrap.style.display = '';
+    if (scrub) scrub.value = scrub.value || 25;
+    cv.addEventListener('loadedmetadata', () => {
+        seekCover(parseFloat(document.getElementById('cover-scrub').value) || 25);
+    }, { once: true });
+    try { cv.load(); } catch (_) {}
+}
+
+function seekCover(pct) {
+    const cv = document.getElementById('cover-video');
+    const timeEl = document.getElementById('cover-time');
+    if (!cv) return;
+    const d = cv.duration;
+    if (!d || !isFinite(d)) return;
+    const t = Math.max(0, Math.min(d, d * (pct / 100)));
+    try { cv.currentTime = t; } catch (_) {}
+    if (timeEl) timeEl.textContent = t.toFixed(1) + 's';
+}
+
+async function captureCover() {
+    const cv = document.getElementById('cover-video');
+    const hint = document.getElementById('cover-grab-hint');
+    const btn = document.getElementById('cover-capture');
+    const setHint = (m) => { if (hint) hint.textContent = m; };
+    if (!cv || !cv.videoWidth) { setHint('视频还没加载好，稍等一下再试。'); return; }
+
+    const t = cv.currentTime || 0;
+    btn.disabled = true;
+    setHint('正在生成封面…');
+
+    // 先把时间点记到 coverTime —— 即便截图失败,前台也能据此定位到这一帧
+    document.getElementById('f-coverTime').value = String(t);
+
+    try {
+        const canvas = document.createElement('canvas');
+        canvas.width = cv.videoWidth;
+        canvas.height = cv.videoHeight;
+        canvas.getContext('2d').drawImage(cv, 0, 0, canvas.width, canvas.height);
+
+        const blob = await new Promise((resolve, reject) => {
+            try { canvas.toBlob(b => b ? resolve(b) : reject(new Error('toBlob 返回空')), 'image/jpeg', 0.9); }
+            catch (err) { reject(err); }
+        });
+
+        const base = (document.getElementById('f-title').value.trim() || 'cover').replace(/[^\w.\-]/g, '_').slice(0, 40);
+        const file = new File([blob], base + '_cover.jpg', { type: 'image/jpeg' });
+
+        const url = await uploadFile(file, () => {});
+        document.getElementById('f-poster').value = url;
+        document.getElementById('f-poster-status').textContent = '✓ 已用视频第 ' + t.toFixed(1) + 's 帧生成封面';
+        setHint('封面已生成并设为 Poster（保存作品后生效）。如想换一帧，拖动后再点一次即可。');
+    } catch (err) {
+        // 多为视频跨域导致 canvas 被污染:退回到仅记录时间点
+        setHint('无法直接截图（通常是视频跨域）。已改为记录时间点 ' + t.toFixed(1) + 's，前台会自动定位到这一帧；如需真实封面图，可在下方手动上传一张。');
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+(function initCoverGrab() {
+    const scrub = document.getElementById('cover-scrub');
+    const auto = document.getElementById('cover-auto');
+    const capture = document.getElementById('cover-capture');
+    if (scrub) scrub.addEventListener('input', () => seekCover(parseFloat(scrub.value) || 0));
+    if (auto) auto.onclick = () => { if (scrub) scrub.value = 25; seekCover(25); };
+    if (capture) capture.onclick = captureCover;
+})();
 
 function setupUploads() {
     document.querySelectorAll('.upload-zone').forEach(zone => {
@@ -1241,6 +1439,11 @@ function setupUploads() {
             if (filenameEl) filenameEl.textContent = file.name + ' (' + (file.size/1024/1024).toFixed(1) + ' MB)';
             if (progressEl) { progressEl.classList.add('active'); barEl.style.width = '0%'; }
             if (statusEl) statusEl.textContent = '上传中…';
+
+            // 作品视频:立即用本地文件初始化"定格封面"(无需等上传完成,也避开跨域)
+            if (target === 'video' && file.type.startsWith('video/')) {
+                setupCoverGrab({ file });
+            }
 
             let detectedAR = 0;
             if (file.type.startsWith('video/') && (target === 'video' || target === 'hero')) {

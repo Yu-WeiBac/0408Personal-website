@@ -720,10 +720,10 @@ section { padding: var(--section-pad) var(--gutter); }
 }
 
 .works-grid {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: clamp(1rem, 2vw, 1.65rem);
-    align-items: start;
+    align-items: flex-start;
 }
 .works-grid.is-curated { padding-top: clamp(0.5rem, 2vw, 1.4rem); }
 
@@ -733,8 +733,8 @@ section { padding: var(--section-pad) var(--gutter); }
     border-radius: 8px;
     cursor: pointer;
     transition: transform 0.7s var(--ease-out), box-shadow 0.7s var(--ease-out);
-    grid-column: span 4;
-    aspect-ratio: 4 / 5;
+    width: clamp(300px, 34vw, 440px);
+    aspect-ratio: 1 / 1;
     min-height: 0;
     background: rgba(255,255,255,0.045);
     border: 0.5px solid var(--glass-border);
@@ -749,17 +749,9 @@ html[data-theme="light"] .work-card {
         0 8px 20px -6px rgba(60, 50, 40, 0.12),
         var(--glass-inset);
 }
-.work-card.featured-large {
-    grid-column: span 7;
-}
-.work-card.featured-side {
-    grid-column: span 5;
-    margin-top: clamp(2.8rem, 7vw, 7rem);
-}
-.work-card.feature-wide {
-    grid-column: span 8;
-}
-.work-card.feature-standard { grid-column: span 4; }
+.work-card.is-landscape { width: clamp(320px, 46vw, 600px); aspect-ratio: 16 / 9; }
+.work-card.is-square    { width: clamp(300px, 34vw, 440px); aspect-ratio: 1 / 1; }
+.work-card.is-portrait  { width: clamp(240px, 24vw, 380px); aspect-ratio: 3 / 4; }
 
 .work-card::before {
     content: '';
@@ -948,11 +940,10 @@ html[data-theme="light"] .work-placeholder {
 
 @media (max-width: 980px) {
     .work-card,
-    .work-card.featured-large,
-    .work-card.featured-side,
-    .work-card.feature-wide,
-    .work-card.feature-standard {
-        grid-column: 1 / -1;
+    .work-card.is-landscape,
+    .work-card.is-square,
+    .work-card.is-portrait {
+        width: 100%;
         margin-top: 0;
         min-height: 0;
     }
@@ -1777,7 +1768,6 @@ function renderWorks() {
 
     grid.classList.toggle('is-curated', list.length <= 2);
     grid.innerHTML = list.map((w, pos) => {
-        const featured = featureClass(w, pos, list.length);
         const idx = allWorks.indexOf(w);
         const hasPoster = !!(w.posterUrl && String(w.posterUrl).trim());
         const hasVideo  = !!(w.videoUrl  && String(w.videoUrl).trim());
@@ -1804,10 +1794,12 @@ function renderWorks() {
         const hasMediaClass = (hasPoster || hasVideo) ? 'has-media' : 'no-poster';
         const aria = escapeHtml((w.title || (currentLang === 'zh' ? '未命名' : 'Untitled')) + ' — ' + (currentLang === 'zh' ? '查看作品' : 'View work'));
         const arVal = parseFloat(w.aspectRatio);
-        const arStyle = (isFinite(arVal) && arVal > 0) ? ` style="aspect-ratio:${arVal};"` : '';
+        const hasAR = isFinite(arVal) && arVal > 0;
+        const orientClass = hasAR ? (arVal >= 1.2 ? 'is-landscape' : (arVal <= 0.85 ? 'is-portrait' : 'is-square')) : 'is-square';
+        const arStyle = hasAR ? ` style="aspect-ratio:${arVal};"` : '';
 
         return `
-            <article class="work-card ${featured} ${hasMediaClass}" data-idx="${idx}" tabindex="0" role="button" aria-label="${aria}"${arStyle}>
+            <article class="work-card ${orientClass} ${hasMediaClass}" data-idx="${idx}" tabindex="0" role="button" aria-label="${aria}"${arStyle}>
                 ${media}
                 <div class="work-info">
                     <div>
@@ -1859,7 +1851,13 @@ function renderWorks() {
         const img = card.querySelector('img.work-media');
         const v   = card.querySelector('video.work-media');
 
-        const applyAR = (wd, ht) => { if (wd && ht) card.style.aspectRatio = (wd / ht).toFixed(4); };
+        const applyAR = (wd, ht) => {
+            if (!wd || !ht) return;
+            const r = wd / ht;
+            card.style.aspectRatio = r.toFixed(4);
+            card.classList.remove('is-landscape', 'is-square', 'is-portrait');
+            card.classList.add(r >= 1.2 ? 'is-landscape' : (r <= 0.85 ? 'is-portrait' : 'is-square'));
+        };
         if (img) {
             const onReady = () => { card.classList.add('has-media'); applyAR(img.naturalWidth, img.naturalHeight); };
             if (img.complete && img.naturalWidth) onReady();

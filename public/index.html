@@ -734,7 +734,8 @@ section { padding: var(--section-pad) var(--gutter); }
     cursor: pointer;
     transition: transform 0.7s var(--ease-out), box-shadow 0.7s var(--ease-out);
     grid-column: span 4;
-    min-height: clamp(360px, 38vw, 560px);
+    aspect-ratio: 4 / 5;
+    min-height: 0;
     background: rgba(255,255,255,0.045);
     border: 0.5px solid var(--glass-border);
     box-shadow: 0 22px 70px rgba(0,0,0,0.24), var(--glass-inset);
@@ -750,16 +751,13 @@ html[data-theme="light"] .work-card {
 }
 .work-card.featured-large {
     grid-column: span 7;
-    min-height: clamp(520px, 58vw, 740px);
 }
 .work-card.featured-side {
     grid-column: span 5;
-    min-height: clamp(380px, 34vw, 540px);
     margin-top: clamp(2.8rem, 7vw, 7rem);
 }
 .work-card.feature-wide {
     grid-column: span 8;
-    min-height: clamp(420px, 40vw, 620px);
 }
 .work-card.feature-standard { grid-column: span 4; }
 
@@ -956,7 +954,7 @@ html[data-theme="light"] .work-placeholder {
     .work-card.feature-standard {
         grid-column: 1 / -1;
         margin-top: 0;
-        min-height: min(118vw, 560px);
+        min-height: 0;
     }
     .works-filter { width: 100%; justify-content: flex-start; }
     .work-info {
@@ -1805,9 +1803,11 @@ function renderWorks() {
 
         const hasMediaClass = (hasPoster || hasVideo) ? 'has-media' : 'no-poster';
         const aria = escapeHtml((w.title || (currentLang === 'zh' ? '未命名' : 'Untitled')) + ' — ' + (currentLang === 'zh' ? '查看作品' : 'View work'));
+        const arVal = parseFloat(w.aspectRatio);
+        const arStyle = (isFinite(arVal) && arVal > 0) ? ` style="aspect-ratio:${arVal};"` : '';
 
         return `
-            <article class="work-card ${featured} ${hasMediaClass}" data-idx="${idx}" tabindex="0" role="button" aria-label="${aria}">
+            <article class="work-card ${featured} ${hasMediaClass}" data-idx="${idx}" tabindex="0" role="button" aria-label="${aria}"${arStyle}>
                 ${media}
                 <div class="work-info">
                     <div>
@@ -1859,13 +1859,16 @@ function renderWorks() {
         const img = card.querySelector('img.work-media');
         const v   = card.querySelector('video.work-media');
 
+        const applyAR = (wd, ht) => { if (wd && ht) card.style.aspectRatio = (wd / ht).toFixed(4); };
         if (img) {
-            const onReady = () => card.classList.add('has-media');
+            const onReady = () => { card.classList.add('has-media'); applyAR(img.naturalWidth, img.naturalHeight); };
             if (img.complete && img.naturalWidth) onReady();
             else img.addEventListener('load', onReady);
         }
         if (v) {
-            // hover 时连续播放，光标移开回到封面帧
+            // 用视频真实尺寸校正卡片长宽比（自适应异形比例），再处理 hover 播放/回到封面帧
+            v.addEventListener('loadedmetadata', () => applyAR(v.videoWidth, v.videoHeight), { once: true });
+            if (v.readyState >= 1 && v.videoWidth) applyAR(v.videoWidth, v.videoHeight);
             card.addEventListener('mouseenter', () => v.play().catch(() => {}));
             card.addEventListener('mouseleave', () => {
                 v.pause();

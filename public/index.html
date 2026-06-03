@@ -4,12 +4,64 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0A0A0A">
-<title>于未氵 — Visual Artist</title>
-<meta name="description" content="数字创作者于未氵的作品集">
+
+<!-- 防止明暗主题 / 语言首屏闪烁(FOUC):在首帧渲染前就应用本地偏好 -->
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('theme') || 'dark';
+    var l = localStorage.getItem('lang') || 'zh';
+    var r = document.documentElement;
+    r.setAttribute('data-theme', t);
+    r.setAttribute('lang', l === 'zh' ? 'zh-CN' : 'en');
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'light' ? '#EAE6DD' : '#0A0A0A');
+  } catch(e){}
+})();
+</script>
+
+<title>于未氵 — Visual Artist | 数字影像作品集</title>
+<meta name="description" content="数字创作者于未氵的作品集:游走在生成艺术、流体模拟、空间装置与品牌动态视觉之间。Visual artist based in Beijing, open to commissions.">
+<link rel="canonical" href="https://04080606.xyz/">
+
+<!-- favicon:内联 SVG 水滴(现代浏览器即时生效),保留 .ico / apple-touch 兜底 -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='24'%20fill='%230A0A0A'/%3E%3Cpath%20d='M50%2022C50%2022%2074%2050%2074%2064a24%2024%200%201%201-48%200C26%2050%2050%2022%2050%2022Z'%20fill='%23FAFAF7'/%3E%3C/svg%3E">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<!-- Open Graph / 分享卡 -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="于未氵 · Visual Artist">
+<meta property="og:title" content="于未氵 — Visual Artist">
+<meta property="og:description" content="数字创作者于未氵的作品集:生成艺术、流体模拟、空间装置与品牌动态视觉。">
+<meta property="og:url" content="https://04080606.xyz/">
+<meta property="og:image" content="https://04080606.xyz/og-cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="于未氵 — Visual Artist">
+<meta name="twitter:description" content="数字创作者于未氵的作品集:生成艺术、流体模拟、空间装置与品牌动态视觉。">
+<meta name="twitter:image" content="https://04080606.xyz/og-cover.jpg">
+
+<!-- 结构化数据 -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "于未氵",
+  "alternateName": "Visual Artist",
+  "url": "https://04080606.xyz/",
+  "jobTitle": "Visual Artist",
+  "email": "hi@04080606.xyz",
+  "address": { "@type": "PostalAddress", "addressLocality": "Beijing", "addressCountry": "CN" }
+}
+</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..400&family=Inter:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..400&family=Inter:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
 :root {
@@ -19,7 +71,7 @@
     --ink:          #FAFAF7;
     --ink-2:        #E8E4D8;
     --gray:         #86868B;
-    --gray-2:       #6E6E73;
+    --gray-2:       #8A8A8F;
     --gray-3:       #48484A;
     --line:         rgba(255, 255, 255, 0.08);
     --line-2:       rgba(255, 255, 255, 0.16);
@@ -53,7 +105,7 @@ html[data-theme="light"] {
     --ink:          #0A0A0A;
     --ink-2:        #1F1F1F;
     --gray:         #86868B;
-    --gray-2:       #A1A1A6;
+    --gray-2:       #6E6E73;
     --gray-3:       #C7C7CC;
     --line:         rgba(0, 0, 0, 0.10);
     --line-2:       rgba(0, 0, 0, 0.18);
@@ -238,8 +290,8 @@ nav.top {
     gap: 0.6rem;
     padding: 0.5rem 0.55rem 0.5rem 1.25rem;
     background: var(--glass-bg);
-    backdrop-filter: saturate(210%) blur(54px);
-    -webkit-backdrop-filter: saturate(210%) blur(54px);
+    backdrop-filter: saturate(210%) blur(24px);
+    -webkit-backdrop-filter: saturate(210%) blur(24px);
     border: 0.5px solid var(--glass-border);
     border-radius: 999px;
     box-shadow: var(--glass-shadow), var(--glass-inset);
@@ -341,8 +393,8 @@ nav.top.is-compact .nav-btn { width: 30px; height: 30px; }
         left: 0; right: 0;
         flex-direction: column;
         background: var(--glass-bg-strong);
-        backdrop-filter: saturate(200%) blur(48px);
-        -webkit-backdrop-filter: saturate(200%) blur(48px);
+        backdrop-filter: saturate(200%) blur(24px);
+        -webkit-backdrop-filter: saturate(200%) blur(24px);
         border: 0.5px solid var(--glass-border);
         border-radius: 8px;
         padding: 0.5rem;
@@ -646,8 +698,8 @@ section { padding: var(--section-pad) var(--gutter); }
     border: 0.5px solid var(--glass-border);
     border-radius: 999px;
     background: var(--glass-bg-soft);
-    backdrop-filter: saturate(180%) blur(28px);
-    -webkit-backdrop-filter: saturate(180%) blur(28px);
+    backdrop-filter: saturate(180%) blur(18px);
+    -webkit-backdrop-filter: saturate(180%) blur(18px);
 }
 .filter-btn {
     padding: 0.4rem 0.95rem;
@@ -686,8 +738,8 @@ section { padding: var(--section-pad) var(--gutter); }
     background: rgba(255,255,255,0.045);
     border: 0.5px solid var(--glass-border);
     box-shadow: 0 22px 70px rgba(0,0,0,0.24), var(--glass-inset);
-    backdrop-filter: saturate(180%) blur(28px);
-    -webkit-backdrop-filter: saturate(180%) blur(28px);
+    backdrop-filter: saturate(180%) blur(16px);
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
 }
 html[data-theme="light"] .work-card {
     background: rgba(252, 252, 250, 0.78);
@@ -758,6 +810,11 @@ html[data-theme="light"] .work-card:hover {
         0 34px 90px -14px rgba(60, 50, 40, 0.28),
         0 12px 28px -8px rgba(60, 50, 40, 0.16),
         var(--glass-inset);
+}
+/* 键盘可访问性：可聚焦卡片的焦点框 */
+.work-card:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
 }
 
 .work-media {
@@ -833,8 +890,8 @@ html[data-theme="light"] .work-placeholder {
     left: 0.75rem; right: 0.75rem; bottom: 0.75rem;
     padding: 0.85rem 1.1rem;
     background: var(--glass-bg);
-    backdrop-filter: saturate(210%) blur(44px);
-    -webkit-backdrop-filter: saturate(210%) blur(44px);
+    backdrop-filter: saturate(210%) blur(22px);
+    -webkit-backdrop-filter: saturate(210%) blur(22px);
     border: 0.5px solid var(--glass-border);
     border-radius: 8px;
     display: flex;
@@ -887,8 +944,8 @@ html[data-theme="light"] .work-placeholder {
     font-family: var(--font-display);
     font-style: italic;
     background: var(--glass-bg-soft);
-    backdrop-filter: saturate(160%) blur(24px);
-    -webkit-backdrop-filter: saturate(160%) blur(24px);
+    backdrop-filter: saturate(160%) blur(16px);
+    -webkit-backdrop-filter: saturate(160%) blur(16px);
 }
 
 @media (max-width: 980px) {
@@ -916,8 +973,8 @@ html[data-theme="light"] .work-placeholder {
 .cinema {
     position: fixed; inset: 0;
     background: rgba(8, 8, 10, 0.78);
-    backdrop-filter: saturate(200%) blur(48px);
-    -webkit-backdrop-filter: saturate(200%) blur(48px);
+    backdrop-filter: saturate(200%) blur(24px);
+    -webkit-backdrop-filter: saturate(200%) blur(24px);
     display: none;
     opacity: 0;
     transition: opacity 0.4s var(--ease);
@@ -937,6 +994,7 @@ html[data-theme="light"] .work-placeholder {
     transition: background 0.3s;
 }
 .cinema-close:hover { background: rgba(255,255,255,0.16); }
+.cinema-close:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 .cinema-close svg { width: 18px; height: 18px; }
 
 .cinema-inner {
@@ -970,8 +1028,8 @@ html[data-theme="light"] .work-placeholder {
     border-radius: 8px;
     border: 0.5px solid rgba(255,255,255,0.14);
     background: rgba(255,255,255,0.075);
-    backdrop-filter: saturate(190%) blur(42px);
-    -webkit-backdrop-filter: saturate(190%) blur(42px);
+    backdrop-filter: saturate(190%) blur(22px);
+    -webkit-backdrop-filter: saturate(190%) blur(22px);
     box-shadow: inset 0 0.5px 0 rgba(255,255,255,0.18);
 }
 .cinema-info::-webkit-scrollbar { width: 4px; }
@@ -1113,8 +1171,8 @@ html[data-theme="light"] .client-item:hover img { filter: grayscale(1); }
     background: var(--glass-bg-soft);
     border: 0.5px solid var(--glass-border);
     box-shadow: var(--glass-shadow), var(--glass-inset);
-    backdrop-filter: saturate(180%) blur(30px);
-    -webkit-backdrop-filter: saturate(180%) blur(30px);
+    backdrop-filter: saturate(180%) blur(18px);
+    -webkit-backdrop-filter: saturate(180%) blur(18px);
 }
 .about-portrait::before {
     content: '于未氵';
@@ -1176,8 +1234,8 @@ html[data-theme="light"] .client-item:hover img { filter: grayscale(1); }
         linear-gradient(135deg, rgba(255,255,255,0.10), transparent 30%),
         var(--glass-bg-soft);
     box-shadow: var(--glass-shadow), var(--glass-inset);
-    backdrop-filter: saturate(210%) blur(48px);
-    -webkit-backdrop-filter: saturate(210%) blur(48px);
+    backdrop-filter: saturate(210%) blur(24px);
+    -webkit-backdrop-filter: saturate(210%) blur(24px);
 }
 .contact .reveal::after {
     content: '';
@@ -1237,8 +1295,8 @@ html[data-theme="light"] .contact .reveal::after {
     position: relative;
     overflow: hidden;
     background: var(--glass-bg);
-    backdrop-filter: saturate(180%) blur(28px);
-    -webkit-backdrop-filter: saturate(180%) blur(28px);
+    backdrop-filter: saturate(180%) blur(18px);
+    -webkit-backdrop-filter: saturate(180%) blur(18px);
     box-shadow: var(--glass-inset);
 }
 .contact-mail::before {
@@ -1279,8 +1337,8 @@ html[data-theme="light"] .contact .reveal::after {
     border: 0.5px solid var(--line-2);
     border-radius: 999px;
     background: rgba(255,255,255,0.045);
-    backdrop-filter: saturate(160%) blur(20px);
-    -webkit-backdrop-filter: saturate(160%) blur(20px);
+    backdrop-filter: saturate(160%) blur(14px);
+    -webkit-backdrop-filter: saturate(160%) blur(14px);
     transition: color 0.4s var(--ease), border-color 0.4s var(--ease), transform 0.4s var(--ease-out);
     letter-spacing: 0;
     z-index: 1;
@@ -1469,7 +1527,7 @@ footer {
     <span data-i18n="footer_r">CRAFTED WITH CARE</span>
 </footer>
 
-<div class="cinema" id="cinema" role="dialog" aria-modal="true" aria-hidden="true">
+<div class="cinema" id="cinema" role="dialog" aria-modal="true" aria-hidden="true" aria-label="作品详情">
     <button class="cinema-close" id="cinema-close" aria-label="Close">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 6L18 18M6 18L18 6"/></svg>
     </button>
@@ -1550,6 +1608,7 @@ let currentTheme = localStorage.getItem('theme') || 'dark';
 let allWorks = [];
 let siteSettings = {};
 let activeFilter = 'all';
+let cinemaLastFocus = null;
 
 document.documentElement.setAttribute('lang', currentLang === 'zh' ? 'zh-CN' : 'en');
 document.documentElement.setAttribute('data-theme', currentTheme);
@@ -1727,13 +1786,14 @@ function renderWorks() {
 
         // 媒体优先级：
         //   1. 有封面图 → <img>
-        //   2. 没封面但有视频 → <video>，进入视口后自动解码首帧作为封面
+        //   2. 没封面但有视频 → <video>，进入视口后 seek 到代表性帧(片长 25%/最多 2s)作为封面
         //   3. 都没有 → 文字占位
         let media;
         if (hasPoster) {
             media = `<img class="work-media" data-idx="${idx}" src="${escapeHtml(w.posterUrl)}" alt="${escapeHtml(w.title || '')}" loading="lazy">`;
         } else if (hasVideo) {
-            media = `<video class="work-media" data-idx="${idx}" src="${escapeHtml(w.videoUrl)}" muted loop playsinline preload="auto"></video>`;
+            const coverAttr = (w.coverTime != null && isFinite(parseFloat(w.coverTime))) ? ` data-cover="${parseFloat(w.coverTime)}"` : '';
+            media = `<video class="work-media" data-idx="${idx}"${coverAttr} src="${escapeHtml(w.videoUrl)}" muted loop playsinline preload="auto"></video>`;
         } else {
             media = pendingPosterMarkup(w);
         }
@@ -1744,9 +1804,10 @@ function renderWorks() {
             : '';
 
         const hasMediaClass = (hasPoster || hasVideo) ? 'has-media' : 'no-poster';
+        const aria = escapeHtml((w.title || (currentLang === 'zh' ? '未命名' : 'Untitled')) + ' — ' + (currentLang === 'zh' ? '查看作品' : 'View work'));
 
         return `
-            <article class="work-card ${featured} ${hasMediaClass}" data-idx="${idx}">
+            <article class="work-card ${featured} ${hasMediaClass}" data-idx="${idx}" tabindex="0" role="button" aria-label="${aria}">
                 ${media}
                 <div class="work-info">
                     <div>
@@ -1761,27 +1822,31 @@ function renderWorks() {
         `;
     }).join('');
 
-    // 视频首帧解码：进入视口时 play()→pause()，让浏览器把第一帧画到 video 上当作封面。
+    // 视频封面：取片长 25% 处(最多第 2 秒)的帧作为静止封面，避开常见的黑场/纯色开场帧。
+    // 若作品数据里带了 coverTime(秒)，则以它为准——为后续"后台手动定格"预留接口。
+    const COVER_RATIO = 0.25;
+    const COVER_MAX = 2;
+    const coverTimeOf = (v) => {
+        const explicit = parseFloat(v.dataset.cover);
+        if (isFinite(explicit) && explicit >= 0) return explicit;
+        const d = v.duration;
+        return (d && isFinite(d) && d > 0) ? Math.min(d * COVER_RATIO, COVER_MAX) : 1;
+    };
     const videoCards = grid.querySelectorAll('video.work-media');
     if (videoCards.length && 'IntersectionObserver' in window) {
-        const showFirstFrame = (v) => {
-            const trigger = () => {
-                try {
-                    const p = v.play();
-                    if (p && typeof p.then === 'function') {
-                        p.then(() => v.pause()).catch(() => {});
-                    } else {
-                        v.pause();
-                    }
-                } catch (_) {}
+        const seekToCover = (v) => {
+            const doSeek = () => {
+                const t = coverTimeOf(v);
+                v.dataset.coverTime = String(t);
+                try { v.currentTime = t; } catch (_) {}
             };
-            if (v.readyState >= 2) trigger();
-            else v.addEventListener('loadeddata', trigger, { once: true });
+            if (v.readyState >= 1) doSeek();
+            else v.addEventListener('loadedmetadata', doSeek, { once: true });
         };
         const io = new IntersectionObserver((entries) => {
             entries.forEach(e => {
                 if (e.isIntersecting) {
-                    showFirstFrame(e.target);
+                    seekToCover(e.target);
                     io.unobserve(e.target);
                 }
             });
@@ -1800,14 +1865,17 @@ function renderWorks() {
             else img.addEventListener('load', onReady);
         }
         if (v) {
-            // hover 时连续播放，光标移开回到首帧
+            // hover 时连续播放，光标移开回到封面帧
             card.addEventListener('mouseenter', () => v.play().catch(() => {}));
             card.addEventListener('mouseleave', () => {
                 v.pause();
-                try { v.currentTime = 0; } catch {}
+                try { v.currentTime = parseFloat(v.dataset.coverTime) || 0; } catch {}
             });
         }
         card.addEventListener('click', () => openCinema(idx));
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCinema(idx); }
+        });
     });
 
     setupReveal();
@@ -1864,6 +1932,7 @@ document.getElementById('works-filter').addEventListener('click', (e) => {
 function openCinema(idx) {
     const w = allWorks[idx];
     if (!w) return;
+    cinemaLastFocus = document.activeElement;
     const cin = document.getElementById('cinema');
     document.getElementById('cin-cat').textContent = (w.category || (currentLang === 'zh' ? '作品' : 'Work')).toUpperCase();
     document.getElementById('cin-title').textContent = w.title || '';
@@ -1888,6 +1957,8 @@ function openCinema(idx) {
     cin.classList.add('is-open');
     cin.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
+    const cbtn = document.getElementById('cinema-close');
+    if (cbtn) cbtn.focus();
 }
 function closeCinema() {
     const cin = document.getElementById('cinema');
@@ -1895,10 +1966,25 @@ function closeCinema() {
     cin.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
     document.getElementById('cinema-box').innerHTML = '';
+    if (cinemaLastFocus && typeof cinemaLastFocus.focus === 'function') cinemaLastFocus.focus();
+    cinemaLastFocus = null;
 }
 document.getElementById('cinema-close').onclick = closeCinema;
 document.getElementById('cinema').addEventListener('click', e => { if (e.target.id === 'cinema') closeCinema(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCinema(); });
+
+// 弹窗打开时把 Tab 焦点锁在弹窗内
+document.getElementById('cinema').addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
+    const cin = document.getElementById('cinema');
+    if (!cin.classList.contains('is-open')) return;
+    const nodes = cin.querySelectorAll('button, a[href], video, [tabindex]:not([tabindex="-1"])');
+    const list = Array.prototype.filter.call(nodes, el => el.offsetParent !== null);
+    if (!list.length) return;
+    const first = list[0], last = list[list.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+});
 
 function setupReveal() {
     const items = document.querySelectorAll('.reveal:not(.is-visible)');

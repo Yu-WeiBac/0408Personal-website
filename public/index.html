@@ -720,22 +720,16 @@ section { padding: var(--section-pad) var(--gutter); }
 }
 
 .works-grid {
+    overflow: hidden;
+    padding: 1.5rem 0 2.5rem;
+}
+.works-track {
     display: flex;
     flex-wrap: nowrap;
-    gap: clamp(1rem, 2vw, 1.6rem);
     align-items: stretch;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding: 1.5rem 0.25rem 2.5rem;
-    scroll-snap-type: x proximity;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-    scrollbar-color: var(--line-2) transparent;
+    width: max-content;
+    will-change: transform;
 }
-.works-grid::-webkit-scrollbar { height: 6px; }
-.works-grid::-webkit-scrollbar-track { background: transparent; }
-.works-grid::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 999px; }
-.works-grid::-webkit-scrollbar-thumb:hover { background: var(--gray); }
 .works-grid.is-curated { padding-top: clamp(0.5rem, 2vw, 1.4rem); }
 
 .work-card {
@@ -748,13 +742,11 @@ section { padding: var(--section-pad) var(--gutter); }
     height: clamp(340px, 48vh, 500px);
     width: auto;
     aspect-ratio: 4 / 3;
-    scroll-snap-align: start;
+    margin-right: clamp(1rem, 2vw, 1.6rem);
     min-height: 0;
     background: rgba(255,255,255,0.045);
     border: 0.5px solid var(--glass-border);
     box-shadow: 0 12px 34px rgba(0,0,0,0.30), var(--glass-inset);
-    backdrop-filter: saturate(180%) blur(16px);
-    -webkit-backdrop-filter: saturate(180%) blur(16px);
 }
 html[data-theme="light"] .work-card {
     background: rgba(252, 252, 250, 0.78);
@@ -894,8 +886,6 @@ html[data-theme="light"] .work-placeholder {
     left: 0.75rem; right: 0.75rem; bottom: 0.75rem;
     padding: 0.85rem 1.1rem;
     background: var(--glass-bg);
-    backdrop-filter: saturate(210%) blur(22px);
-    -webkit-backdrop-filter: saturate(210%) blur(22px);
     border: 0.5px solid var(--glass-border);
     border-radius: 8px;
     display: flex;
@@ -1612,6 +1602,7 @@ let allWorks = [];
 let siteSettings = {};
 let activeFilter = 'all';
 let cinemaLastFocus = null;
+let worksScrollOffset = 0;
 
 document.documentElement.setAttribute('lang', currentLang === 'zh' ? 'zh-CN' : 'en');
 document.documentElement.setAttribute('data-theme', currentTheme);
@@ -1781,21 +1772,21 @@ function renderWorks() {
     }
 
     grid.classList.toggle('is-curated', list.length <= 2);
-    grid.innerHTML = list.map((w, pos) => {
+    const cardsHTML = list.map((w) => {
         const idx = allWorks.indexOf(w);
         const hasPoster = !!(w.posterUrl && String(w.posterUrl).trim());
         const hasVideo  = !!(w.videoUrl  && String(w.videoUrl).trim());
 
         // 媒体优先级：
-        //   1. 有封面图 → <img>
-        //   2. 没封面但有视频 → <video>，进入视口后 seek 到代表性帧(片长 25%/最多 2s)作为封面
+        //   1. 有视频 → <video>（封面图作 poster 静帧，hover 播放，行为统一）
+        //   2. 只有图片 → <img>
         //   3. 都没有 → 文字占位
         let media;
-        if (hasPoster) {
+        if (hasVideo) {
+            const posterAttr = hasPoster ? ` poster="${escapeHtml(w.posterUrl)}"` : '';
+            media = `<video class="work-media" data-idx="${idx}"${posterAttr} src="${escapeHtml(w.videoUrl)}" muted loop playsinline preload="metadata"></video>`;
+        } else if (hasPoster) {
             media = `<img class="work-media" data-idx="${idx}" src="${escapeHtml(w.posterUrl)}" alt="${escapeHtml(w.title || '')}" loading="lazy">`;
-        } else if (hasVideo) {
-            const coverAttr = (w.coverTime != null && isFinite(parseFloat(w.coverTime))) ? ` data-cover="${parseFloat(w.coverTime)}"` : '';
-            media = `<video class="work-media" data-idx="${idx}"${coverAttr} src="${escapeHtml(w.videoUrl)}" muted loop playsinline preload="auto"></video>`;
         } else {
             media = pendingPosterMarkup(w);
         }
@@ -1828,37 +1819,11 @@ function renderWorks() {
         `;
     }).join('');
 
-    // 视频封面：取片长 25% 处(最多第 2 秒)的帧作为静止封面，避开常见的黑场/纯色开场帧。
-    // 若作品数据里带了 coverTime(秒)，则以它为准——为后续"后台手动定格"预留接口。
-    const COVER_RATIO = 0.25;
-    const COVER_MAX = 2;
-    const coverTimeOf = (v) => {
-        const explicit = parseFloat(v.dataset.cover);
-        if (isFinite(explicit) && explicit >= 0) return explicit;
-        const d = v.duration;
-        return (d && isFinite(d) && d > 0) ? Math.min(d * COVER_RATIO, COVER_MAX) : 1;
-    };
-    const videoCards = grid.querySelectorAll('video.work-media');
-    if (videoCards.length && 'IntersectionObserver' in window) {
-        const seekToCover = (v) => {
-            const doSeek = () => {
-                const t = coverTimeOf(v);
-                v.dataset.coverTime = String(t);
-                try { v.currentTime = t; } catch (_) {}
-            };
-            if (v.readyState >= 1) doSeek();
-            else v.addEventListener('loadedmetadata', doSeek, { once: true });
-        };
-        const io = new IntersectionObserver((entries) => {
-            entries.forEach(e => {
-                if (e.isIntersecting) {
-                    seekToCover(e.target);
-                    io.unobserve(e.target);
-                }
-            });
-        }, { rootMargin: '200px 0px' });
-        videoCards.forEach(v => io.observe(v));
-    }
+    // 复制一份用于无缝循环（胶片条自动滚动）
+    grid.innerHTML = `<div class="works-track">${cardsHTML}${cardsHTML}</div>`;
+    worksScrollOffset = 0;
+    const _track = grid.querySelector('.works-track');
+    if (_track) _track.style.transform = 'translateX(0)';
 
     grid.querySelectorAll('.work-card').forEach(card => {
         const idx = parseInt(card.dataset.idx);
@@ -2015,18 +1980,34 @@ function setupReveal() {
     items.forEach(el => io.observe(el));
 }
 
-// 作品胶片条：把竖向滚轮转成横向滚动，滚到两端时交还给页面正常上下滚
+// 作品胶片条：自动横向滚动；鼠标移入则整条暂停（停在当前作品，其视频开始播放），移开续滚
 (function () {
-    const strip = document.getElementById('works-grid');
-    if (!strip) return;
-    strip.addEventListener('wheel', (e) => {
-        if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
-        const atStart = strip.scrollLeft <= 0;
-        const atEnd = strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 1;
-        if ((e.deltaY < 0 && atStart) || (e.deltaY > 0 && atEnd)) return;
-        e.preventDefault();
-        strip.scrollLeft += e.deltaY;
-    }, { passive: false });
+    const grid = document.getElementById('works-grid');
+    if (!grid) return;
+    // 无障碍：用户偏好减少动态时，不自动滚动，改为可手动横向滚动
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        grid.style.overflowX = 'auto';
+        return;
+    }
+    let paused = false;
+    grid.addEventListener('mouseenter', () => { paused = true; });
+    grid.addEventListener('mouseleave', () => { paused = false; });
+    const SPEED = 45; // px/s，数值越大滚动越快
+    let last = null;
+    function tick(ts) {
+        if (last == null) last = ts;
+        const dt = Math.min((ts - last) / 1000, 0.05);
+        last = ts;
+        const track = grid.querySelector('.works-track');
+        if (track && !paused) {
+            const half = track.scrollWidth / 2;
+            worksScrollOffset += SPEED * dt;
+            if (half > 0 && worksScrollOffset >= half) worksScrollOffset -= half;
+            track.style.transform = `translateX(${-worksScrollOffset}px)`;
+        }
+        requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
 })();
 
 loadData();

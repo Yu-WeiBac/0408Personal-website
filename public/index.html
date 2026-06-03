@@ -721,10 +721,21 @@ section { padding: var(--section-pad) var(--gutter); }
 
 .works-grid {
     display: flex;
-    flex-wrap: wrap;
-    gap: clamp(1rem, 2vw, 1.65rem);
-    align-items: flex-start;
+    flex-wrap: nowrap;
+    gap: clamp(1rem, 2vw, 1.6rem);
+    align-items: stretch;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 1.5rem 0.25rem 2.5rem;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--line-2) transparent;
 }
+.works-grid::-webkit-scrollbar { height: 6px; }
+.works-grid::-webkit-scrollbar-track { background: transparent; }
+.works-grid::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 999px; }
+.works-grid::-webkit-scrollbar-thumb:hover { background: var(--gray); }
 .works-grid.is-curated { padding-top: clamp(0.5rem, 2vw, 1.4rem); }
 
 .work-card {
@@ -733,12 +744,15 @@ section { padding: var(--section-pad) var(--gutter); }
     border-radius: 8px;
     cursor: pointer;
     transition: transform 0.7s var(--ease-out), box-shadow 0.7s var(--ease-out);
-    width: clamp(300px, 34vw, 440px);
-    aspect-ratio: 1 / 1;
+    flex: 0 0 auto;
+    height: clamp(340px, 48vh, 500px);
+    width: auto;
+    aspect-ratio: 4 / 3;
+    scroll-snap-align: start;
     min-height: 0;
     background: rgba(255,255,255,0.045);
     border: 0.5px solid var(--glass-border);
-    box-shadow: 0 22px 70px rgba(0,0,0,0.24), var(--glass-inset);
+    box-shadow: 0 12px 34px rgba(0,0,0,0.30), var(--glass-inset);
     backdrop-filter: saturate(180%) blur(16px);
     -webkit-backdrop-filter: saturate(180%) blur(16px);
 }
@@ -749,9 +763,9 @@ html[data-theme="light"] .work-card {
         0 8px 20px -6px rgba(60, 50, 40, 0.12),
         var(--glass-inset);
 }
-.work-card.is-landscape { width: clamp(320px, 46vw, 600px); aspect-ratio: 16 / 9; }
-.work-card.is-square    { width: clamp(300px, 34vw, 440px); aspect-ratio: 1 / 1; }
-.work-card.is-portrait  { width: clamp(240px, 24vw, 380px); aspect-ratio: 3 / 4; }
+.work-card.is-landscape { aspect-ratio: 16 / 9; }
+.work-card.is-square    { aspect-ratio: 1 / 1; }
+.work-card.is-portrait  { aspect-ratio: 3 / 4; }
 
 .work-card::before {
     content: '';
@@ -792,8 +806,8 @@ html[data-theme="light"] .work-card::after {
 }
 
 .work-card:hover {
-    transform: translateY(-7px);
-    box-shadow: 0 34px 90px rgba(0,0,0,0.32), var(--glass-inset);
+    transform: translateY(-5px);
+    box-shadow: 0 18px 44px rgba(0,0,0,0.34), var(--glass-inset);
 }
 html[data-theme="light"] .work-card:hover {
     box-shadow:
@@ -943,7 +957,7 @@ html[data-theme="light"] .work-placeholder {
     .work-card.is-landscape,
     .work-card.is-square,
     .work-card.is-portrait {
-        width: 100%;
+        width: auto;
         margin-top: 0;
         min-height: 0;
     }
@@ -2000,6 +2014,20 @@ function setupReveal() {
     }, { threshold: 0.12, rootMargin: '0px 0px -10% 0px' });
     items.forEach(el => io.observe(el));
 }
+
+// 作品胶片条：把竖向滚轮转成横向滚动，滚到两端时交还给页面正常上下滚
+(function () {
+    const strip = document.getElementById('works-grid');
+    if (!strip) return;
+    strip.addEventListener('wheel', (e) => {
+        if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+        const atStart = strip.scrollLeft <= 0;
+        const atEnd = strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 1;
+        if ((e.deltaY < 0 && atStart) || (e.deltaY > 0 && atEnd)) return;
+        e.preventDefault();
+        strip.scrollLeft += e.deltaY;
+    }, { passive: false });
+})();
 
 loadData();
 </script>

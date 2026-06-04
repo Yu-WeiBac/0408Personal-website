@@ -1025,6 +1025,31 @@ input[type="range"]#cover-scrub:focus { box-shadow: none; }
             </div>
         </div>
 
+        <div class="card">
+            <h3>联系二维码（微信 / 公众号 / 小红书等，显示在首页联系区）</h3>
+            <div id="qr-list"></div>
+            <div class="grid" style="margin-top: 1rem;">
+                <div>
+                    <label>名称（如：微信 / 公众号）</label>
+                    <input type="text" id="qr-label" placeholder="微信">
+                </div>
+                <div>
+                    <label>二维码图片</label>
+                    <div class="upload-zone" data-target="qr">
+                        <input type="file" accept="image/*">
+                        <div class="upload-zone-text">点击上传二维码</div>
+                        <div class="upload-filename"></div>
+                        <div class="upload-status"></div>
+                    </div>
+                    <input type="hidden" id="qr-img">
+                </div>
+            </div>
+            <div class="actions">
+                <button class="btn btn-primary" id="add-qr-btn">+ 加入二维码</button>
+            </div>
+            <div id="qr-msg"></div>
+        </div>
+
         <div class="actions">
             <button class="btn btn-primary" id="save-settings-btn">💾 保存所有设置</button>
         </div>
@@ -1179,6 +1204,7 @@ async function loadAll() {
         renderWorksList();
         renderSettingsForm();
         renderClientsList();
+        renderQRList();
     } catch (err) {
         console.error('Load failed:', err);
         showMsg('login-msg', '加载失败：' + err.message, false);
@@ -1529,6 +1555,8 @@ function onUploadDone(target, url, detectedAR) {
         document.getElementById('s-portrait-status').textContent = '✓ 新肖像已上传（保存设置后生效）';
     } else if (target === 'logo') {
         document.getElementById('c-logo').value = url;
+    } else if (target === 'qr') {
+        document.getElementById('qr-img').value = url;
     }
 }
 
@@ -1665,6 +1693,53 @@ document.getElementById('add-client-btn').onclick = async () => {
         renderClientsList();
     } catch (e) {
         showMsg('clients-msg', '失败：' + e.message, false);
+    }
+};
+
+function renderQRList() {
+    const list = allSettings.qrcodes || [];
+    const el = document.getElementById('qr-list');
+    if (!el) return;
+    if (!list.length) {
+        el.innerHTML = '<p style="color:var(--gray); font-size: 0.9rem;">还没有二维码。下方添加（微信、公众号、小红书等）。</p>';
+        return;
+    }
+    el.innerHTML = list.map((q, i) => `
+        <div class="client-row">
+            <div class="logo-prev">${q.imageUrl ? `<img src="${escapeHtml(q.imageUrl)}" alt="">` : '—'}</div>
+            <div class="client-row-name">${escapeHtml(q.label || '(未命名)')}</div>
+            <button class="btn btn-danger btn-sm" data-i="${i}">删除</button>
+        </div>
+    `).join('');
+    el.querySelectorAll('button[data-i]').forEach(b => {
+        b.onclick = async () => {
+            const i = parseInt(b.dataset.i);
+            const list = allSettings.qrcodes || [];
+            list.splice(i, 1);
+            allSettings.qrcodes = list;
+            try {
+                await api('/admin/settings', { method: 'PUT', body: allSettings });
+                renderQRList();
+            } catch (e) { alert('失败：' + e.message); }
+        };
+    });
+}
+
+document.getElementById('add-qr-btn').onclick = async () => {
+    const label = document.getElementById('qr-label').value.trim();
+    const img = document.getElementById('qr-img').value.trim();
+    if (!img) { showMsg('qr-msg', '请先上传二维码图片', false); return; }
+    if (!allSettings.qrcodes) allSettings.qrcodes = [];
+    allSettings.qrcodes.push({ label, imageUrl: img });
+    try {
+        await api('/admin/settings', { method: 'PUT', body: allSettings });
+        document.getElementById('qr-label').value = '';
+        document.getElementById('qr-img').value = '';
+        const fn = document.querySelector('[data-target="qr"] .upload-filename');
+        if (fn) fn.textContent = '';
+        renderQRList();
+    } catch (e) {
+        showMsg('qr-msg', '失败：' + e.message, false);
     }
 };
 
@@ -1946,7 +2021,7 @@ document.getElementById('cleanup-orphans-btn').onclick = async () => {
 
 document.getElementById('change-pwd-btn').onclick = async () => {
     const np = document.getElementById('new-pwd').value;
-    if (np.length < 8) { showMsg('account-msg', '密码至少 8 位', false); return; }
+    if (np.length < 12) { showMsg('account-msg', '密码至少 12 位', false); return; }
     try {
         await api('/admin/password', { method: 'PUT', body: { password: np } });
         document.getElementById('new-pwd').value = '';

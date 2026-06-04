@@ -883,13 +883,13 @@ html[data-theme="light"] .work-placeholder {
 
 .work-info {
     position: absolute;
-    left: 0.75rem; right: 0.75rem; bottom: 0.75rem;
+    left: 0.75rem; right: auto; bottom: 0.75rem;
+    max-width: calc(100% - 1.5rem);
     padding: 0.85rem 1.1rem;
     background: var(--glass-bg);
     border: 0.5px solid var(--glass-border);
     border-radius: 8px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
     gap: 0.8rem;
     z-index: 2;
@@ -953,12 +953,37 @@ html[data-theme="light"] .work-placeholder {
     }
     .works-filter { width: 100%; justify-content: flex-start; }
     .work-info {
-        left: 0.7rem; right: 0.7rem; bottom: 0.7rem;
+        left: 0.7rem; right: auto; bottom: 0.7rem;
+        max-width: calc(100% - 1.4rem);
         padding: 0.7rem 0.9rem;
     }
     .work-name { font-size: 0.88rem; }
     .work-meta { font-size: 0.66rem; }
 }
+
+.works-all {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.6rem;
+}
+.works-all-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1.7rem;
+    border: 0.5px solid var(--glass-border);
+    border-radius: 999px;
+    background: var(--glass-bg);
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 0.92rem;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    transition: transform 0.4s var(--ease-out), border-color 0.4s var(--ease-out), background 0.4s;
+}
+.works-all-link svg { width: 18px; height: 18px; transition: transform 0.4s var(--ease-out); }
+.works-all-link:hover { transform: translateY(-2px); border-color: var(--ink); }
+.works-all-link:hover svg { transform: translateX(4px); }
 
 /* ========================================================================
    电影院模式
@@ -1474,6 +1499,12 @@ footer {
         <div class="works-grid" id="works-grid">
             <div class="works-empty" data-i18n="works_loading">作品加载中…</div>
         </div>
+        <div class="works-all reveal">
+            <a class="works-all-link" href="works.html">
+                <span data-i18n="works_all">查看全部作品</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </a>
+        </div>
     </div>
 </section>
 
@@ -1563,6 +1594,7 @@ const DICT = {
         works_title: '精选<span class="em">作品。</span>',
         filter_all: '全部', filter_commercial: '商业', filter_personal: '个人',
         works_loading: '作品加载中…',
+        works_all: '查看全部作品',
         works_empty: '作品暂未发布',
         clients_label: '精选合作 / 工具 / 平台',
         about_title: '关于<span class="em">我。</span>',
@@ -1585,6 +1617,7 @@ const DICT = {
         works_title: 'Selected <em class="em">Works.</em>',
         filter_all: 'All', filter_commercial: 'Commercial', filter_personal: 'Personal',
         works_loading: 'Loading…',
+        works_all: 'View All Works',
         works_empty: 'Coming soon',
         clients_label: 'SELECTED CLIENTS / TOOLS / PLATFORMS',
         about_title: 'About <em class="em">me.</em>',
@@ -1863,17 +1896,40 @@ function renderWorks() {
 
 function renderClients() {
     const list = (siteSettings.clients || []).filter(c => c && (c.name || c.logoUrl));
+    const section = document.getElementById('clients-section');
+    const track = document.getElementById('clients-track');
     if (!list.length) {
-        document.getElementById('clients-section').style.display = 'none';
+        section.style.display = 'none';
         return;
     }
-    document.getElementById('clients-section').style.display = '';
-    const html = list.map(c =>
+    section.style.display = '';
+    const itemHTML = list.map(c =>
         c.logoUrl
             ? `<div class="client-item"><img src="${escapeHtml(c.logoUrl)}" alt="${escapeHtml(c.name || '')}"></div>`
             : `<div class="client-item">${escapeHtml(c.name)}</div>`
     ).join('');
-    document.getElementById('clients-track').innerHTML = html + html;
+
+    const fill = () => {
+        // 先放一组量宽度，再按视口宽度复制到"半条"≥一屏，整体复制一份做无缝循环
+        track.style.animationDuration = '';
+        track.innerHTML = itemHTML;
+        const one = track.scrollWidth || 1;
+        const vw = window.innerWidth || 1280;
+        const repeats = Math.max(1, Math.ceil(vw / one) + 1);
+        const half = itemHTML.repeat(repeats);
+        track.innerHTML = half + half;
+        // 70s/组的原始速度：每多复制一组，动画时长等比拉长，视觉速度不变
+        track.style.animationDuration = (70 * repeats) + 's';
+    };
+    fill();
+
+    if (!renderClients._bound) {
+        window.addEventListener('resize', () => {
+            clearTimeout(renderClients._t);
+            renderClients._t = setTimeout(fill, 200);
+        });
+        renderClients._bound = true;
+    }
 }
 
 function renderSocials() {

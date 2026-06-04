@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0A0A0A">
+
+<!-- 防止明暗 / 语言首屏闪烁 -->
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('theme') || 'dark';
+    var l = localStorage.getItem('lang') || 'zh';
+    var r = document.documentElement;
+    r.setAttribute('data-theme', t);
+    r.setAttribute('lang', l === 'zh' ? 'zh-CN' : 'en');
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'light' ? '#EAE6DD' : '#0A0A0A');
+  } catch(e){}
+})();
+</script>
+
+<title>全部作品 — 于未氵 | All Works</title>
+<meta name="description" content="于未氵的全部影像作品，按影视分类陈列：商业项目与个人创作。Full catalogue of works by visual artist 于未氵.">
+<link rel="canonical" href="https://04080606.xyz/works.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="于未氵 · Visual Artist">
+<meta property="og:title" content="全部作品 — 于未氵">
+<meta property="og:description" content="于未氵的全部影像作品，按影视分类陈列。">
+<meta property="og:url" content="https://04080606.xyz/works.html">
+<meta property="og:image" content="https://04080606.xyz/og-cover.jpg">
+
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='24'%20fill='%230A0A0A'/%3E%3Cpath%20d='M50%2022C50%2022%2074%2050%2074%2064a24%2024%200%201%201-48%200C26%2050%2050%2022%2050%2022Z'%20fill='%23FAFAF7'/%3E%3C/svg%3E">
+<link rel="icon" href="/favicon.ico" sizes="any">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..400&family=Inter:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --paper:        #0A0A0A;
+    --paper-2:      #161616;
+    --ink:          #FAFAF7;
+    --gray:         #86868B;
+    --gray-2:       #8A8A8F;
+    --line:         rgba(255, 255, 255, 0.08);
+    --line-2:       rgba(255, 255, 255, 0.16);
+    --glass-bg:         rgba(20, 20, 20, 0.55);
+    --glass-bg-soft:    rgba(255, 255, 255, 0.055);
+    --glass-bg-strong:  rgba(20, 20, 20, 0.80);
+    --glass-border:     rgba(255, 255, 255, 0.14);
+    --glass-highlight:  rgba(255, 255, 255, 0.34);
+    --glass-shadow:     0 18px 60px rgba(0, 0, 0, 0.28);
+    --glass-inset:      inset 0 0.5px 0 rgba(255, 255, 255, 0.24), inset 0 -1px 0 rgba(255, 255, 255, 0.055);
+    --accent-cool:      rgba(126, 164, 214, 0.18);
+    --accent-warm:      rgba(226, 188, 137, 0.11);
+    --font-display:     'Fraunces', 'Noto Serif SC', "Songti SC", serif;
+    --font-serif-cn:    'Noto Serif SC', "Songti SC", serif;
+    --font-sans:        'Inter', -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+    --gutter:       clamp(1.2rem, 5vw, 5rem);
+    --ease:         cubic-bezier(0.25, 0.1, 0.25, 1);
+    --ease-out:     cubic-bezier(0.16, 1, 0.3, 1);
+}
+html[data-theme="light"] {
+    --paper:        #EAE6DD;
+    --paper-2:      #DCD8CE;
+    --ink:          #0A0A0A;
+    --gray:         #86868B;
+    --gray-2:       #6E6E73;
+    --line:         rgba(0, 0, 0, 0.10);
+    --line-2:       rgba(0, 0, 0, 0.18);
+    --glass-bg:         rgba(252, 252, 250, 0.62);
+    --glass-bg-soft:    rgba(252, 252, 250, 0.55);
+    --glass-bg-strong:  rgba(252, 252, 250, 0.85);
+    --glass-border:     rgba(255, 255, 255, 0.55);
+    --glass-highlight:  rgba(255, 255, 255, 0.95);
+    --glass-shadow:     0 18px 56px rgba(60, 50, 40, 0.18);
+    --glass-inset:      inset 0 0.5px 0 rgba(255, 255, 255, 0.95);
+    --accent-cool:      rgba(93, 132, 188, 0.10);
+    --accent-warm:      rgba(188, 142, 86, 0.08);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; }
+body {
+    background:
+        linear-gradient(125deg, var(--accent-cool) 0%, transparent 34%),
+        linear-gradient(245deg, var(--accent-warm) 0%, transparent 38%),
+        linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 52%, var(--paper) 100%);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+    transition: background 0.6s var(--ease), color 0.6s var(--ease);
+    -webkit-font-smoothing: antialiased;
+}
+img, video { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+/* 环境光斑 */
+.ambient-orbs { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.orb { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.5; }
+.orb-1 { width: 46vw; height: 46vw; left: -10vw; top: -8vw; background: radial-gradient(circle, rgba(126,164,214,0.22), transparent 70%); animation: drift1 80s ease-in-out infinite; }
+.orb-2 { width: 38vw; height: 38vw; right: -8vw; top: 18vh; background: radial-gradient(circle, rgba(226,188,137,0.16), transparent 70%); animation: drift2 92s ease-in-out infinite; }
+.orb-3 { width: 30vw; height: 30vw; left: 28vw; bottom: -12vw; background: radial-gradient(circle, rgba(126,164,214,0.14), transparent 70%); animation: drift3 86s ease-in-out infinite; }
+html[data-theme="light"] .orb { opacity: 0.4; }
+@keyframes drift1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(6vw,4vh)} }
+@keyframes drift2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-5vw,3vh)} }
+@keyframes drift3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(4vw,-4vh)} }
+
+nav.top, main, footer, .cinema { position: relative; z-index: 1; }
+.cinema { z-index: 200; }
+
+/* 顶部导航（与首页一致） */
+nav.top {
+    position: fixed;
+    top: 1rem; left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.55rem 0.5rem 1.25rem;
+    background: var(--glass-bg);
+    backdrop-filter: saturate(210%) blur(24px);
+    -webkit-backdrop-filter: saturate(210%) blur(24px);
+    border: 0.5px solid var(--glass-border);
+    border-radius: 999px;
+    box-shadow: var(--glass-shadow), var(--glass-inset);
+    max-width: calc(100vw - 1.6rem);
+}
+nav.top::before {
+    content: '';
+    position: absolute;
+    inset: 1px 10px auto 10px;
+    height: 1px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
+    pointer-events: none;
+}
+.brand {
+    font-family: var(--font-serif-cn);
+    font-weight: 500;
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    display: flex;
+    align-items: baseline;
+    gap: 0.15em;
+    padding-right: 0.9rem;
+    border-right: 0.5px solid var(--line-2);
+    white-space: nowrap;
+}
+.brand .water { font-family: var(--font-display); font-style: italic; transition: transform 0.6s var(--ease-out); }
+.brand:hover .water { transform: translateY(-2px) scaleY(1.15); }
+.menu { display: flex; gap: 0.1rem; list-style: none; }
+.menu a {
+    padding: 0.45rem 0.85rem;
+    font-size: 0.8rem;
+    color: var(--gray);
+    border-radius: 999px;
+    transition: color 0.3s, background 0.3s;
+    white-space: nowrap;
+}
+.menu a:hover { color: var(--ink); background: var(--line); }
+.nav-actions { display: flex; gap: 0.2rem; padding-left: 0.6rem; border-left: 0.5px solid var(--line-2); }
+.nav-btn {
+    width: 32px; height: 32px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 999px;
+    color: var(--gray);
+    font-size: 0.72rem; font-weight: 500;
+    transition: color 0.3s, background 0.3s;
+}
+.nav-btn:hover { color: var(--ink); background: var(--line); }
+.nav-btn svg { width: 16px; height: 16px; }
+
+/* 页头 */
+main { padding: clamp(7rem, 12vw, 9rem) var(--gutter) clamp(4rem, 8vw, 7rem); max-width: 1500px; margin: 0 auto; }
+.page-head { margin-bottom: clamp(2.4rem, 5vw, 4rem); }
+.page-num {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.78rem;
+    color: var(--gray);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+}
+.page-title {
+    font-family: var(--font-serif-cn);
+    font-weight: 300;
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+}
+.page-title .em { font-family: var(--font-display); font-style: italic; font-weight: 300; }
+.page-sub {
+    margin-top: 0.9rem;
+    color: var(--gray-2);
+    font-size: 0.95rem;
+    max-width: 38rem;
+}
+
+/* 分类区块 */
+.cat-section { margin-top: clamp(2.6rem, 5vw, 4rem); }
+.cat-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    margin-bottom: 1.6rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 0.5px solid var(--line);
+}
+.cat-name {
+    font-family: var(--font-serif-cn);
+    font-weight: 400;
+    font-size: clamp(1.3rem, 2.6vw, 1.9rem);
+    color: var(--ink);
+}
+.cat-count {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--gray);
+}
+
+/* 瀑布流卡片网格（保留各自比例、不裁切） */
+.cat-grid { column-count: 3; column-gap: clamp(1rem, 2vw, 1.5rem); }
+@media (max-width: 1040px) { .cat-grid { column-count: 2; } }
+@media (max-width: 620px)  { .cat-grid { column-count: 1; } }
+
+.work-card {
+    position: relative;
+    display: block;
+    width: 100%;
+    margin: 0 0 clamp(1rem, 2vw, 1.5rem);
+    break-inside: avoid;
+    -webkit-column-break-inside: avoid;
+    aspect-ratio: 4 / 3;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    background: rgba(255,255,255,0.045);
+    border: 0.5px solid var(--glass-border);
+    box-shadow: 0 12px 34px rgba(0,0,0,0.30), var(--glass-inset);
+    transition: transform 0.6s var(--ease-out), box-shadow 0.6s var(--ease-out);
+}
+.work-card:hover { transform: translateY(-5px); box-shadow: 0 18px 44px rgba(0,0,0,0.34), var(--glass-inset); }
+html[data-theme="light"] .work-card:hover {
+    box-shadow: 0 34px 90px -14px rgba(60,50,40,0.28), 0 12px 28px -8px rgba(60,50,40,0.16), var(--glass-inset);
+}
+.work-card:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+.work-media {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 1.4s var(--ease-out), filter 0.6s;
+    filter: saturate(0.9) contrast(0.98);
+}
+.work-card:hover .work-media { transform: scale(1.04); filter: saturate(1.05); }
+.work-placeholder {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    padding: clamp(1rem, 3vw, 2.4rem);
+    text-align: center;
+    background:
+        linear-gradient(135deg, rgba(126,164,214,0.18), transparent 36%),
+        linear-gradient(315deg, rgba(226,188,137,0.12), transparent 34%),
+        rgba(255,255,255,0.035);
+}
+html[data-theme="light"] .work-placeholder {
+    background:
+        linear-gradient(135deg, rgba(126,164,214,0.10), transparent 36%),
+        linear-gradient(315deg, rgba(188,142,86,0.08), transparent 34%),
+        rgba(255,255,255,0.30);
+}
+.work-placeholder strong {
+    display: block;
+    color: var(--ink);
+    font-family: var(--font-serif-cn);
+    font-weight: 300;
+    font-size: clamp(1.1rem, 2vw, 1.6rem);
+}
+
+.work-info {
+    position: absolute;
+    left: 0.75rem; right: auto; bottom: 0.75rem;
+    max-width: calc(100% - 1.5rem);
+    padding: 0.8rem 1rem;
+    background: var(--glass-bg);
+    border: 0.5px solid var(--glass-border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    z-index: 2;
+    transition: transform 0.6s var(--ease-out);
+    box-shadow: var(--glass-inset);
+}
+.work-card:hover .work-info { transform: translateY(-4px); }
+.work-name {
+    font-family: var(--font-serif-cn);
+    font-weight: 400;
+    font-size: 0.92rem;
+    line-height: 1.3;
+    color: var(--ink);
+    margin-bottom: 0.15rem;
+}
+.work-meta {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.7rem;
+    color: var(--gray);
+}
+.work-arrow {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    color: var(--ink);
+    border: 0.5px solid var(--glass-border);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.4s var(--ease-out);
+}
+.work-card:hover .work-arrow { transform: rotate(-45deg); }
+.work-arrow svg { width: 12px; height: 12px; }
+
+.state {
+    padding: 5rem 1.5rem;
+    text-align: center;
+    color: var(--gray);
+    font-family: var(--font-display);
+    font-style: italic;
+    border: 1px dashed var(--line-2);
+    border-radius: 8px;
+}
+
+/* 电影院模式（与首页一致） */
+.cinema {
+    position: fixed; inset: 0;
+    background: rgba(8, 8, 10, 0.78);
+    backdrop-filter: saturate(200%) blur(24px);
+    -webkit-backdrop-filter: saturate(200%) blur(24px);
+    display: none; opacity: 0;
+    transition: opacity 0.4s var(--ease);
+}
+.cinema.is-open { display: flex; opacity: 1; }
+.cinema-close {
+    position: absolute; top: 1.2rem; right: 1.2rem;
+    width: 44px; height: 44px; border-radius: 999px;
+    background: rgba(255,255,255,0.08); color: #fff; z-index: 5;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: background 0.3s;
+}
+.cinema-close:hover { background: rgba(255,255,255,0.16); }
+.cinema-close:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.cinema-close svg { width: 18px; height: 18px; }
+.cinema-inner {
+    width: 100%; height: 100%;
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    max-width: 1500px; margin: 0 auto;
+    padding: 4rem 3rem; gap: 2rem;
+    align-items: center;
+}
+.cinema-video-box {
+    position: relative; aspect-ratio: 16/9;
+    background: #000; border-radius: 8px; overflow: hidden;
+    border: 0.5px solid rgba(255,255,255,0.12);
+    box-shadow: 0 28px 90px rgba(0,0,0,0.45), inset 0 0.5px 0 rgba(255,255,255,0.18);
+}
+.cinema-video-box video { width: 100%; height: 100%; object-fit: contain; }
+.cinema-info {
+    color: #fafaf7; max-height: 80vh; overflow-y: auto;
+    padding: clamp(1rem, 2.4vw, 2rem); border-radius: 8px;
+    border: 0.5px solid rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.075);
+    backdrop-filter: saturate(190%) blur(22px);
+    -webkit-backdrop-filter: saturate(190%) blur(22px);
+    box-shadow: inset 0 0.5px 0 rgba(255,255,255,0.18);
+}
+.cinema-info::-webkit-scrollbar { width: 4px; }
+.cinema-info::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+.cinema-cat {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 0.78rem; color: rgba(255,255,255,0.6);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem;
+}
+.cinema-title {
+    font-family: var(--font-serif-cn); font-weight: 300;
+    font-size: clamp(1.4rem, 3vw, 2.4rem); line-height: 1.2; margin-bottom: 1.5rem;
+}
+.cinema-meta {
+    font-size: 0.74rem; color: rgba(255,255,255,0.5);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.4rem;
+}
+.cinema-meta-val { color: #fafaf7; font-size: 0.92rem; font-weight: 400; margin-bottom: 1.4rem; }
+.cinema-desc {
+    font-family: var(--font-serif-cn); font-weight: 300;
+    font-size: 0.92rem; line-height: 1.85; color: rgba(255,255,255,0.75);
+    margin: 1.2rem 0; padding-left: 1rem; border-left: 0.5px solid rgba(255,255,255,0.3);
+}
+@media (max-width: 1000px) {
+    .cinema-inner { grid-template-columns: 1fr; padding: 3.5rem 1rem 1.5rem; gap: 1.2rem; align-items: start; overflow-y: auto; }
+    .cinema-info { max-height: none; padding: 1rem; }
+    .cinema-close { top: 0.8rem; right: 0.8rem; width: 40px; height: 40px; }
+}
+
+footer {
+    padding: 2.5rem var(--gutter) 3rem;
+    border-top: 0.5px solid var(--line);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+    color: var(--gray);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    max-width: 1500px; margin: 0 auto;
+}
+footer a:hover { color: var(--ink); }
+
+/* 进场动画 */
+.reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out); }
+.reveal.is-visible { opacity: 1; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .orb { animation: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="ambient-orbs" aria-hidden="true">
+    <span class="orb orb-1"></span>
+    <span class="orb orb-2"></span>
+    <span class="orb orb-3"></span>
+</div>
+
+<nav class="top">
+    <a href="/" class="brand">于未<span class="water">氵</span></a>
+    <ul class="menu">
+        <li><a href="/" data-i18n="back">返回首页</a></li>
+    </ul>
+    <div class="nav-actions">
+        <button class="nav-btn" id="lang-btn" aria-label="语言">EN</button>
+        <button class="nav-btn" id="theme-btn" aria-label="主题">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" id="icon-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" id="icon-moon" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+    </div>
+</nav>
+
+<main>
+    <div class="page-head reveal">
+        <div class="page-num">— Archive / All Works</div>
+        <h1 class="page-title"><span data-i18n="page_title">全部作品</span><span class="em">.</span></h1>
+        <p class="page-sub" data-i18n="page_sub">按影视分类陈列的完整作品集。</p>
+    </div>
+    <div id="cats">
+        <div class="state" data-i18n="loading">作品加载中…</div>
+    </div>
+</main>
+
+<footer>
+    <span>© <span id="year"></span> 于未氵 / 04080606.xyz</span>
+    <a href="/" data-i18n="back">返回首页</a>
+</footer>
+
+<!-- 电影院弹窗 -->
+<div class="cinema" id="cinema" role="dialog" aria-modal="true" aria-hidden="true">
+    <button class="cinema-close" id="cinema-close" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 6L18 18M6 18L18 6"/></svg>
+    </button>
+    <div class="cinema-inner">
+        <div class="cinema-video-box" id="cinema-box"></div>
+        <div class="cinema-info">
+            <div class="cinema-cat" id="cin-cat"></div>
+            <h3 class="cinema-title" id="cin-title"></h3>
+            <div class="cinema-desc" id="cin-desc" style="display:none;"></div>
+            <div id="cin-client-row" style="display:none;">
+                <div class="cinema-meta" data-i18n="meta_client">CLIENT</div>
+                <div class="cinema-meta-val" id="cin-client"></div>
+            </div>
+            <div id="cin-roles-row" style="display:none;">
+                <div class="cinema-meta" data-i18n="meta_roles">ROLES</div>
+                <div class="cinema-meta-val" id="cin-roles"></div>
+            </div>
+            <div id="cin-year-row" style="display:none;">
+                <div class="cinema-meta" data-i18n="meta_year">YEAR</div>
+                <div class="cinema-meta-val" id="cin-year"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+'use strict';
+
+const DICT = {
+    zh: {
+        back: '返回首页',
+        page_title: '全部作品',
+        page_sub: '按影视分类陈列的完整作品集。',
+        loading: '作品加载中…',
+        empty: '作品暂未发布',
+        cat_Commercial: '商业',
+        cat_Personal: '个人',
+        cat_Other: '其他',
+        meta_client: 'CLIENT', meta_roles: 'ROLES', meta_year: 'YEAR'
+    },
+    en: {
+        back: 'Back to Home',
+        page_title: 'All Works',
+        page_sub: 'The complete archive, organized by category.',
+        loading: 'Loading…',
+        empty: 'Coming soon',
+        cat_Commercial: 'Commercial',
+        cat_Personal: 'Personal',
+        cat_Other: 'Other',
+        meta_client: 'CLIENT', meta_roles: 'ROLES', meta_year: 'YEAR'
+    }
+};
+
+let currentLang = localStorage.getItem('lang') || 'zh';
+let currentTheme = localStorage.getItem('theme') || 'dark';
+let allWorks = [];
+let cinemaLastFocus = null;
+
+function escapeHtml(s) {
+    if (s == null) return '';
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function catLabel(cat) {
+    const d = DICT[currentLang];
+    return d['cat_' + cat] || cat;
+}
+
+function applyLang() {
+    const d = DICT[currentLang];
+    document.documentElement.setAttribute('lang', currentLang === 'zh' ? 'zh-CN' : 'en');
+    document.getElementById('lang-btn').textContent = currentLang === 'zh' ? 'EN' : '中';
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (d[key]) el.textContent = d[key];
+    });
+}
+
+function updateThemeIcon() {
+    document.getElementById('icon-sun').style.display = currentTheme === 'light' ? 'none' : '';
+    document.getElementById('icon-moon').style.display = currentTheme === 'light' ? '' : 'none';
+}
+
+document.getElementById('lang-btn').onclick = () => {
+    currentLang = currentLang === 'zh' ? 'en' : 'zh';
+    localStorage.setItem('lang', currentLang);
+    applyLang();
+    renderAll();
+};
+document.getElementById('theme-btn').onclick = () => {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('theme', currentTheme);
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', currentTheme === 'dark' ? '#0A0A0A' : '#EAE6DD');
+    updateThemeIcon();
+};
+
+function cardHTML(w, idx) {
+    const hasPoster = !!(w.posterUrl && String(w.posterUrl).trim());
+    const hasVideo  = !!(w.videoUrl  && String(w.videoUrl).trim());
+    let media;
+    if (hasVideo) {
+        const posterAttr = hasPoster ? ` poster="${escapeHtml(w.posterUrl)}"` : '';
+        media = `<video class="work-media" data-idx="${idx}"${posterAttr} src="${escapeHtml(w.videoUrl)}" muted loop playsinline preload="metadata"></video>`;
+    } else if (hasPoster) {
+        media = `<img class="work-media" data-idx="${idx}" src="${escapeHtml(w.posterUrl)}" alt="${escapeHtml(w.title || '')}" loading="lazy">`;
+    } else {
+        media = `<div class="work-placeholder"><strong>${escapeHtml(w.title || (currentLang === 'zh' ? '未命名' : 'Untitled'))}</strong></div>`;
+    }
+    const arVal = parseFloat(w.aspectRatio);
+    const arStyle = (isFinite(arVal) && arVal > 0) ? ` style="aspect-ratio:${arVal};"` : '';
+    const meta = escapeHtml((w.category || '') + (w.year ? ' · ' + w.year : ''));
+    const aria = escapeHtml((w.title || (currentLang === 'zh' ? '未命名' : 'Untitled')) + ' — ' + (currentLang === 'zh' ? '查看作品' : 'View work'));
+    return `
+        <article class="work-card" data-idx="${idx}" tabindex="0" role="button" aria-label="${aria}"${arStyle}>
+            ${media}
+            <div class="work-info">
+                <div>
+                    <div class="work-name">${escapeHtml(w.title || (currentLang === 'zh' ? '未命名' : 'Untitled'))}</div>
+                    <div class="work-meta">${meta}</div>
+                </div>
+                <div class="work-arrow">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                </div>
+            </div>
+        </article>`;
+}
+
+function renderAll() {
+    const root = document.getElementById('cats');
+    if (!allWorks.length) {
+        root.innerHTML = `<div class="state">${DICT[currentLang].empty}</div>`;
+        return;
+    }
+    // 按 category 分组，保留首次出现顺序
+    const groups = {};
+    const order = [];
+    allWorks.forEach((w, idx) => {
+        const cat = (w.category && String(w.category).trim()) ? String(w.category).trim() : 'Other';
+        if (!groups[cat]) { groups[cat] = []; order.push(cat); }
+        groups[cat].push(idx);
+    });
+
+    root.innerHTML = order.map(cat => {
+        const cards = groups[cat].map(idx => cardHTML(allWorks[idx], idx)).join('');
+        return `
+            <section class="cat-section reveal">
+                <div class="cat-head">
+                    <h2 class="cat-name">${escapeHtml(catLabel(cat))}</h2>
+                    <span class="cat-count">${groups[cat].length}</span>
+                </div>
+                <div class="cat-grid">${cards}</div>
+            </section>`;
+    }).join('');
+
+    // 绑定交互：hover 播放、真实比例校正、点击放大、键盘
+    root.querySelectorAll('.work-card').forEach(card => {
+        const idx = parseInt(card.dataset.idx);
+        const img = card.querySelector('img.work-media');
+        const v   = card.querySelector('video.work-media');
+        const applyAR = (wd, ht) => {
+            if (!wd || !ht) return;
+            card.style.aspectRatio = (wd / ht).toFixed(4);
+        };
+        if (img) {
+            if (img.complete && img.naturalWidth) applyAR(img.naturalWidth, img.naturalHeight);
+            else img.addEventListener('load', () => applyAR(img.naturalWidth, img.naturalHeight));
+        }
+        if (v) {
+            v.addEventListener('loadedmetadata', () => applyAR(v.videoWidth, v.videoHeight), { once: true });
+            if (v.readyState >= 1 && v.videoWidth) applyAR(v.videoWidth, v.videoHeight);
+            card.addEventListener('mouseenter', () => v.play().catch(() => {}));
+            card.addEventListener('mouseleave', () => { v.pause(); try { v.currentTime = 0; } catch {} });
+        }
+        card.addEventListener('click', () => openCinema(idx));
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCinema(idx); }
+        });
+    });
+
+    setupReveal();
+}
+
+function openCinema(idx) {
+    const w = allWorks[idx];
+    if (!w) return;
+    cinemaLastFocus = document.activeElement;
+    const cin = document.getElementById('cinema');
+    document.getElementById('cin-cat').textContent = (catLabel(w.category) || (currentLang === 'zh' ? '作品' : 'Work')).toUpperCase();
+    document.getElementById('cin-title').textContent = w.title || '';
+
+    const descEl = document.getElementById('cin-desc');
+    if (w.desc && w.desc.trim()) { descEl.style.display = ''; descEl.innerHTML = escapeHtml(w.desc).replace(/\n/g, '<br>'); }
+    else { descEl.style.display = 'none'; }
+
+    const setRow = (rowId, valId, val) => {
+        const row = document.getElementById(rowId);
+        if (val && String(val).trim()) { row.style.display = ''; document.getElementById(valId).textContent = val; }
+        else { row.style.display = 'none'; }
+    };
+    setRow('cin-client-row', 'cin-client', w.client);
+    setRow('cin-roles-row', 'cin-roles', w.roles);
+    setRow('cin-year-row',  'cin-year',  w.year);
+
+    document.getElementById('cinema-box').innerHTML = w.videoUrl
+        ? `<video src="${escapeHtml(w.videoUrl)}" controls autoplay playsinline ${w.posterUrl ? `poster="${escapeHtml(w.posterUrl)}"` : ''}></video>`
+        : (w.posterUrl ? `<img src="${escapeHtml(w.posterUrl)}" alt="${escapeHtml(w.title)}" style="width:100%;height:100%;object-fit:contain;">` : '');
+
+    cin.classList.add('is-open');
+    cin.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    const cbtn = document.getElementById('cinema-close');
+    if (cbtn) cbtn.focus();
+}
+function closeCinema() {
+    const cin = document.getElementById('cinema');
+    cin.classList.remove('is-open');
+    cin.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    document.getElementById('cinema-box').innerHTML = '';
+    if (cinemaLastFocus && typeof cinemaLastFocus.focus === 'function') cinemaLastFocus.focus();
+    cinemaLastFocus = null;
+}
+document.getElementById('cinema-close').onclick = closeCinema;
+document.getElementById('cinema').addEventListener('click', e => { if (e.target.id === 'cinema') closeCinema(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCinema(); });
+document.getElementById('cinema').addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
+    const cin = document.getElementById('cinema');
+    if (!cin.classList.contains('is-open')) return;
+    const nodes = cin.querySelectorAll('button, a[href], video, [tabindex]:not([tabindex="-1"])');
+    const list = Array.prototype.filter.call(nodes, el => el.offsetParent !== null);
+    if (!list.length) return;
+    const first = list[0], last = list[list.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+});
+
+function setupReveal() {
+    const items = document.querySelectorAll('.reveal:not(.is-visible)');
+    if (!items.length) return;
+    if (!('IntersectionObserver' in window)) {
+        items.forEach(el => el.classList.add('is-visible'));
+        return;
+    }
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach(en => {
+            if (en.isIntersecting) { en.target.classList.add('is-visible'); io.unobserve(en.target); }
+        });
+    }, { threshold: 0.08 });
+    items.forEach(el => io.observe(el));
+}
+
+async function loadWorks() {
+    try {
+        const res = await fetch('/api/works');
+        allWorks = await res.json();
+        if (!Array.isArray(allWorks)) allWorks = [];
+    } catch (e) {
+        allWorks = [];
+    }
+    renderAll();
+}
+
+document.getElementById('year').textContent = new Date().getFullYear();
+applyLang();
+updateThemeIcon();
+setupReveal();
+loadWorks();
+</script>
+</body>
+</html>

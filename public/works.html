@@ -205,6 +205,31 @@ main { padding: clamp(7rem, 12vw, 9rem) var(--gutter) clamp(4rem, 8vw, 7rem); ma
     max-width: 38rem;
 }
 
+/* 影视分类筛选条 */
+.genre-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: clamp(1.4rem, 3vw, 2rem);
+}
+.genre-chip {
+    appearance: none;
+    -webkit-appearance: none;
+    font: inherit;
+    cursor: pointer;
+    min-height: 36px;
+    padding: 0.5rem 1.05rem;
+    font-size: 0.82rem;
+    letter-spacing: 0.01em;
+    color: var(--gray);
+    background: transparent;
+    border: 0.5px solid var(--line-2);
+    border-radius: 999px;
+    transition: color 0.35s var(--ease), border-color 0.35s var(--ease), background 0.35s var(--ease), transform 0.35s var(--ease-out);
+}
+.genre-chip:hover { color: var(--ink); border-color: var(--ink); transform: translateY(-1px); }
+.genre-chip.active { color: var(--paper); background: var(--ink); border-color: var(--ink); }
+
 /* 分类区块 */
 .cat-section { margin-top: clamp(2.6rem, 5vw, 4rem); }
 .cat-head {
@@ -463,6 +488,7 @@ footer a:hover { color: var(--ink); }
         <h1 class="page-title"><span data-i18n="page_title">全部作品</span><span class="em">.</span></h1>
         <p class="page-sub" data-i18n="page_sub">按影视分类陈列的完整作品集。</p>
     </div>
+    <div id="genre-filter" class="genre-filter" hidden></div>
     <div id="cats">
         <div class="state" data-i18n="loading">作品加载中…</div>
     </div>
@@ -510,6 +536,7 @@ const DICT = {
         page_sub: '按影视分类陈列的完整作品集。',
         loading: '作品加载中…',
         empty: '作品暂未发布',
+        genre_all: '全部',
         cat_Commercial: '商业',
         cat_Personal: '个人',
         cat_Other: '其他',
@@ -521,6 +548,7 @@ const DICT = {
         page_sub: 'The complete archive, organized by category.',
         loading: 'Loading…',
         empty: 'Coming soon',
+        genre_all: 'All',
         cat_Commercial: 'Commercial',
         cat_Personal: 'Personal',
         cat_Other: 'Other',
@@ -531,6 +559,8 @@ const DICT = {
 let currentLang = localStorage.getItem('lang') || 'zh';
 let currentTheme = localStorage.getItem('theme') || 'dark';
 let allWorks = [];
+let activeGenre = 'all';
+let siteGenres = [];
 let cinemaLastFocus = null;
 
 function escapeHtml(s) {
@@ -562,6 +592,7 @@ document.getElementById('lang-btn').onclick = () => {
     currentLang = currentLang === 'zh' ? 'en' : 'zh';
     localStorage.setItem('lang', currentLang);
     applyLang();
+    renderGenreFilter();
     renderAll();
 };
 document.getElementById('theme-btn').onclick = () => {
@@ -603,6 +634,27 @@ function cardHTML(w, idx) {
         </article>`;
 }
 
+function renderGenreFilter() {
+    const bar = document.getElementById('genre-filter');
+    if (!bar) return;
+    if (!siteGenres.length) { bar.hidden = true; bar.innerHTML = ''; return; }
+    bar.hidden = false;
+    const chips = [{ v: 'all', label: DICT[currentLang].genre_all }]
+        .concat(siteGenres.map(g => ({ v: g, label: g })));
+    bar.innerHTML = chips.map(c =>
+        `<button type="button" class="genre-chip${activeGenre === c.v ? ' active' : ''}" data-g="${escapeHtml(c.v)}">${escapeHtml(c.label)}</button>`
+    ).join('');
+    bar.querySelectorAll('.genre-chip').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const g = btn.dataset.g;
+            if (g === activeGenre) return;
+            activeGenre = g;
+            bar.querySelectorAll('.genre-chip').forEach(b => b.classList.toggle('active', b.dataset.g === g));
+            renderAll();
+        });
+    });
+}
+
 function renderAll() {
     const root = document.getElementById('cats');
     if (!allWorks.length) {
@@ -613,10 +665,15 @@ function renderAll() {
     const groups = {};
     const order = [];
     allWorks.forEach((w, idx) => {
+        if (activeGenre !== 'all' && String(w.genre || '').trim() !== activeGenre) return;
         const cat = (w.category && String(w.category).trim()) ? String(w.category).trim() : 'Other';
         if (!groups[cat]) { groups[cat] = []; order.push(cat); }
         groups[cat].push(idx);
     });
+    if (!order.length) {
+        root.innerHTML = `<div class="state">${DICT[currentLang].empty}</div>`;
+        return;
+    }
 
     root.innerHTML = order.map(cat => {
         const cards = groups[cat].map(idx => cardHTML(allWorks[idx], idx)).join('');
@@ -730,12 +787,16 @@ function setupReveal() {
 
 async function loadWorks() {
     try {
-        const res = await fetch('/api/works');
-        allWorks = await res.json();
+        const [wRes, sRes] = await Promise.all([fetch('/api/works'), fetch('/api/settings')]);
+        allWorks = await wRes.json();
         if (!Array.isArray(allWorks)) allWorks = [];
+        const settings = sRes.ok ? await sRes.json() : {};
+        siteGenres = Array.isArray(settings.genres) ? settings.genres.filter(g => g && String(g).trim()) : [];
     } catch (e) {
         allWorks = [];
+        siteGenres = [];
     }
+    renderGenreFilter();
     renderAll();
 }
 

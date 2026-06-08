@@ -790,6 +790,12 @@ input[type="range"]#cover-scrub:focus { box-shadow: none; }
                     </select>
                 </div>
                 <div>
+                    <label>影视分类</label>
+                    <select id="f-genre">
+                        <option value="">未分类</option>
+                    </select>
+                </div>
+                <div>
                     <label>年份</label>
                     <input type="text" id="f-year" placeholder="2025">
                 </div>
@@ -1050,6 +1056,21 @@ input[type="range"]#cover-scrub:focus { box-shadow: none; }
             <div id="qr-msg"></div>
         </div>
 
+        <div class="card">
+            <h3>影视分类（作品页筛选用，如 MG / AI / 合成 / 纪录片 / 故事片 / TVC）</h3>
+            <div id="genre-list"></div>
+            <div class="grid" style="margin-top: 1rem;">
+                <div class="full">
+                    <label>新增分类名称</label>
+                    <input type="text" id="genre-name" placeholder="例如：MG" maxlength="20">
+                </div>
+            </div>
+            <div class="actions">
+                <button class="btn btn-primary" id="add-genre-btn">+ 加入分类</button>
+            </div>
+            <div id="genre-msg"></div>
+        </div>
+
         <div class="actions">
             <button class="btn btn-primary" id="save-settings-btn">💾 保存所有设置</button>
         </div>
@@ -1205,6 +1226,7 @@ async function loadAll() {
         renderSettingsForm();
         renderClientsList();
         renderQRList();
+        renderGenreList();
     } catch (err) {
         console.error('Load failed:', err);
         showMsg('login-msg', '加载失败：' + err.message, false);
@@ -1238,7 +1260,7 @@ function renderWorksList() {
                 <div class="work-thumb">${thumb}</div>
                 <div class="work-row-info">
                     <h4>${escapeHtml(w.title || '未命名')}</h4>
-                    <div class="work-row-meta">${escapeHtml(w.category || 'Work')}${w.year ? ' · ' + escapeHtml(w.year) : ''}${arBadge}${coverBadge}</div>
+                    <div class="work-row-meta">${escapeHtml(w.category || 'Work')}${w.genre ? ' · ' + escapeHtml(w.genre) : ''}${w.year ? ' · ' + escapeHtml(w.year) : ''}${arBadge}${coverBadge}</div>
                 </div>
                 <div class="work-row-actions">
                     ${i > 0 ? `<button class="btn btn-ghost btn-sm" data-act="up" data-i="${i}">↑</button>` : ''}
@@ -1292,6 +1314,7 @@ function openWorkForm(idx) {
     document.getElementById('f-coverTime').value = (w.coverTime != null && isFinite(parseFloat(w.coverTime))) ? w.coverTime : '';
     document.getElementById('f-title').value = w.title || '';
     document.getElementById('f-category').value = w.category || 'Commercial';
+    fillGenreSelect(w.genre || '');
     document.getElementById('f-year').value = w.year || '';
     document.getElementById('f-client').value = w.client || '';
     document.getElementById('f-roles').value = w.roles || '';
@@ -1317,6 +1340,7 @@ document.getElementById('save-work-btn').onclick = async () => {
     const w = {
         title: document.getElementById('f-title').value.trim(),
         category: document.getElementById('f-category').value,
+        genre: document.getElementById('f-genre').value,
         year: document.getElementById('f-year').value.trim(),
         client: document.getElementById('f-client').value.trim(),
         roles: document.getElementById('f-roles').value.trim(),
@@ -1740,6 +1764,67 @@ document.getElementById('add-qr-btn').onclick = async () => {
         renderQRList();
     } catch (e) {
         showMsg('qr-msg', '失败：' + e.message, false);
+    }
+};
+
+// ---- 影视分类（genres）管理 ----
+function fillGenreSelect(desired) {
+    const sel = document.getElementById('f-genre');
+    if (!sel) return;
+    const cur = (desired !== undefined) ? desired : sel.value;
+    const list = allSettings.genres || [];
+    sel.innerHTML = '<option value="">未分类</option>' +
+        list.map(g => `<option value="${escapeHtml(g)}">${escapeHtml(g)}</option>`).join('');
+    if (cur && !list.includes(cur)) {
+        sel.insertAdjacentHTML('beforeend', `<option value="${escapeHtml(cur)}">${escapeHtml(cur)}（已删除）</option>`);
+    }
+    sel.value = cur;
+}
+
+function renderGenreList() {
+    const list = allSettings.genres || [];
+    const el = document.getElementById('genre-list');
+    if (!el) return;
+    if (!list.length) {
+        el.innerHTML = '<p style="color:var(--gray); font-size: 0.9rem;">还没有影视分类。下方添加（如 MG、AI、合成、纪录片、故事片、TVC）。作品页筛选条按此顺序显示。</p>';
+        return;
+    }
+    el.innerHTML = list.map((g, i) => `
+        <div class="client-row">
+            <div class="client-row-name">${escapeHtml(g)}</div>
+            <button class="btn btn-sm" data-mv="up" data-i="${i}" ${i === 0 ? 'disabled' : ''}>↑</button>
+            <button class="btn btn-sm" data-mv="down" data-i="${i}" ${i === list.length - 1 ? 'disabled' : ''}>↓</button>
+            <button class="btn btn-danger btn-sm" data-del="${i}">删除</button>
+        </div>
+    `).join('');
+    const save = async () => { await api('/admin/settings', { method: 'PUT', body: allSettings }); renderGenreList(); fillGenreSelect(); };
+    el.querySelectorAll('button[data-del]').forEach(b => b.onclick = async () => {
+        allSettings.genres.splice(parseInt(b.dataset.del), 1);
+        try { await save(); } catch (e) { alert('失败：' + e.message); }
+    });
+    el.querySelectorAll('button[data-mv]').forEach(b => b.onclick = async () => {
+        const i = parseInt(b.dataset.i), arr = allSettings.genres;
+        const j = b.dataset.mv === 'up' ? i - 1 : i + 1;
+        if (j < 0 || j >= arr.length) return;
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+        try { await save(); } catch (e) { alert('失败：' + e.message); }
+    });
+}
+
+document.getElementById('add-genre-btn').onclick = async () => {
+    const name = document.getElementById('genre-name').value.trim();
+    if (!name) { showMsg('genre-msg', '请填写分类名称', false); return; }
+    if (!allSettings.genres) allSettings.genres = [];
+    if (allSettings.genres.includes(name)) { showMsg('genre-msg', '该分类已存在', false); return; }
+    allSettings.genres.push(name);
+    try {
+        await api('/admin/settings', { method: 'PUT', body: allSettings });
+        document.getElementById('genre-name').value = '';
+        showMsg('genre-msg', '已添加', true);
+        renderGenreList();
+        fillGenreSelect();
+    } catch (e) {
+        showMsg('genre-msg', '失败：' + e.message, false);
     }
 };
 
